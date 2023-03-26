@@ -1,0 +1,78 @@
+\documentclass{hcmut-report}
+\usepackage{codespace}
+
+% Sub-preambles
+% https://github.com/MartinScharrer/standalone
+
+% Encodings
+\usepackage{gensymb,textcomp}
+
+% Better tables
+% Wide tables go to https://tex.stackexchange.com/q/332902
+\usepackage{array,multicol,multirow,siunitx,tabularx}
+
+% Better enum
+\usepackage{enumitem}
+
+% Graphics
+\usepackage{caption,float}
+
+% Allow setting >max< width of figure
+% 'export' allows adjustbox keys in \includegraphics
+% For demonstration purposes, remove in production
+\usepackage[export]{adjustbox}
+
+% For demonstration purposes, remove in production
+\usepackage{mwe}
+
+% Configurations
+\newcounter{memberrowno}
+\setcounter{memberrowno}{0}
+\reportlayout%
+
+% Override (some) default values
+\ocoursename{PROBABILITY AND STATISTICS (MT2013)}
+\oreporttype{Assignment}
+\title{Who knows}
+
+% Custom commands
+\newcommand*\mean[1]{\bar{#1}}
+
+\begin{document}
+\coverpage%
+
+\section*{Member list \& Workload}
+\begin{center}
+  \begin{tabular}{>{\stepcounter{memberrowno}\thememberrowno}llcc}
+    \toprule
+    \multicolumn{1}{c}{\textbf{No.}} & \textbf{Full name} & \textbf{Student ID} & \textbf{Percentage of work} \\
+    \midrule
+                                     & h                  & xxxxxxx             & 100\%                       \\
+                                     & h                  & xxxxxxx             & 100\%                       \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Normal section}
+This is how you normally work with \LaTeX, but you can also split a project into smaller files for easier management.
+To import other files, you can use \mintinline{latex}{\input{}} or \mintinline{latex}{\include{}}.
+There differences can be found at \url{https://tex.stackexchange.com/a/250}, but in short
+
+\begin{center}
+  \mintinline{latex}{\include{filename}} = \mintinline{latex}{\clearpage \input{filename} \clearpage}
+\end{center}
+
+\include{chapters/example/bettertables.tex}
+\include{chapters/example/betterenum.tex}
+\include{chapters/example/codespace.tex}
+\include{chapters/example/figwidth.tex}
+
+\bibliographystyle{plain}
+\bibliography{refs}
+\nocite{*}
+
+\end{document}
