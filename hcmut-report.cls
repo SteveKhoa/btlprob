@@ -145,7 +145,6 @@
       \textbf{\Large \@coursename}                                 \\
       {}                                                           \\
       \midrule                                                     \\
-      {}                                                           \\
       \textbf{\Large \@reporttype}                                 \\
       {}                                                           \\
       \textbf{\Huge \parbox[c]{0.8\linewidth}{\centering \@title}} \\
@@ -154,7 +153,7 @@
     \end{tabular}
     \vfill%
     \begin{tabular}{rll}
-      % Advisor: & \@advisor & \\
+      Advisor: & \@advisor & \\
       Student:  & Le Hoang Duy                & 2152040 \\
                 & Le Tran Nguyen Khoa         & 2152674 \\
                 & Dinh Viet Thanh             & 2152966 \\
