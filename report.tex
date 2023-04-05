@@ -1,6 +1,6 @@
 \documentclass{hcmut-report}
 \usepackage{codespace}
-
+\usepackage{amssymb}
 % Sub-preambles
 % https://github.com/MartinScharrer/standalone
 
@@ -10,7 +10,7 @@
 % Better tables
 % Wide tables go to https://tex.stackexchange.com/q/332902
 \usepackage{array,multicol,multirow,siunitx,tabularx}
-
+\usepackage{blindtext}
 % Better enum
 \usepackage{enumitem}
 
@@ -26,15 +26,12 @@
 \usepackage{mwe}
 
 % Configurations
+\ocoursename{Course name h}
+\oreporttype{Report type h}
+\title{Report title h}
+\oadvisor{Advisor h}
 \newcounter{memberrowno}
 \setcounter{memberrowno}{0}
-\reportlayout%
-
-% Override (some) default values
-\ocoursename{PROBABILITY AND STATISTICS (MT2013)}
-\oreporttype{Assignment (Semester: 222)}
-\title{Who knows}
-\oadvisor{Dr. Nguyen Tien Dung}
 
 % Custom commands
 \newcommand*\mean[1]{\bar{#1}}
@@ -46,7 +43,7 @@
 \begin{center}
   \begin{tabular}{>{\stepcounter{memberrowno}\thememberrowno}llcc}
     \toprule
-    \multicolumn{1}{c}{\textbf{No.}} & \textbf{Full name} & \textbf{Student ID} & \textbf{Percentage of work} \\
+    \multicolumn{1}{c}{\textbf{No.}} & \textbf{Full name} & \textbf{Student ID} & \textbf{Contribution} \\
     \midrule
                                      & h                  & xxxxxxx             & 100\%                       \\
                                      & h                  & xxxxxxx             & 100\%                       \\
@@ -58,7 +55,15 @@
 \tableofcontents
 \newpage
 
-\include{chapters/sections/template_section}
+\input{chapters/rep/preface}
+\input{chapters/rep/data anylis/Data analysis}
+\input{chapters/rep/Conclusion}
+
+%\include{chapters/example/bettertables.tex}
+%\include{chapters/example/betterenum.tex}
+\include{chapters/example/codespace.tex}
+%\include{chapters/example/figwidth.tex}
+
 
 \bibliographystyle{plain}
 \bibliography{refs}
