@@ -1,6 +1,7 @@
-READ THIS NOTE - READ THIS NOTE
+READ THIS NOTE - READ THIS NOTE - READ THIS NOTE - READ THIS NOTE
 ---
 -   Edit *.tex files in chapters/main/
+-   All R-code and Datasets (both raw and preprocessed) in in rcode/
 
 
 Author of this template:
