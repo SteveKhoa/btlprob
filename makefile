@@ -6,5 +6,13 @@ TARGETS = report.tex
 default:
 	pdflatex -shell-escape $(TARGETS) | grep "Warning"
 
+rebuild: clean default
+
 clean:
-	find . -type f -name *'.aux' '*.dvi' '*.log' '*.to'c '*.pdf' -delete
+	find . -type f -name '*.aux'  -delete
+	find . -type f -name '*.dvi'  -delete
+	find . -type f -name '*.log'  -delete
+	find . -type f -name '*.toc'  -delete
+	find . -type f -name '*.pdf'  -delete
+	find . -type f -name '*.fdb_latexmk'  -delete
+	find . -type f -name '*.fls'  -delete
