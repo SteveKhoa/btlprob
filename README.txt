@@ -1,6 +1,6 @@
-Notes:
+READ THIS NOTE - READ THIS NOTE
 ---
-No notes
+-   Place *.tex files in chapters/main/
 
 
 Author of this template:
