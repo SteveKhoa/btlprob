@@ -1,11 +1,11 @@
 pacman::p_load(rio,     # for dealing with basic import export
                ggplot2, # for dealing with plot formats
                zoo,     # for dealing with year quarter formats
-               ggpubr)  # for gg arange 
+               ggpubr)  # customize ggplot 
 library(readr)
 # Import data
 setwd("***** YOUR WORKING DIRECTORY *******") # Set working directory
-data <- import("./cpu-short.csv") # rio::import
+data <- import("./cpu-before.csv") # rio::import
 
 # Rename labels
 names(data) <- c("market", "status", "ldate", "litho", 
@@ -55,9 +55,6 @@ data[,"memband"] <- as.numeric(
   gsub(" GB/s", "", data[,"memband"])
 )
 
-<<<<<<< Updated upstream
-
-=======
 # Preprocess temperature column
 # any way i did my own shit 
 data[,"temp"] <- (gsub("[^0-9]+", ",", data[,"temp"])) # change every word to , B1 or C1 or -20 will be come ,1, ,1,20, but highest temp is at least 60 so it fine
@@ -75,7 +72,6 @@ for (i in seq_along(data[["temp"]])) {# loop through each col and split the stri
   }
   data[i, "temp"] <- max_value
 }
->>>>>>> Stashed changes
 # --------------------- Local data preprocessing ---------------------
 #   Data preprocessing method at a specific step
 # Only take Launch date > 2005 - Q1 (as well as NAs)
