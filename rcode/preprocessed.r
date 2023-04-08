@@ -1,9 +1,11 @@
 pacman::p_load(rio,     # for dealing with basic import export
                ggplot2, # for dealing with plot formats
-               zoo)     # for dealing with year quarter formats
+               zoo,     # for dealing with year quarter formats
+               ggpubr)  # for gg arange 
+library(readr)
 # Import data
 setwd("***** YOUR WORKING DIRECTORY *******") # Set working directory
-data <- import("./cpu-short.csv") # rio::import
+data <- import("./cpu-before.csv") # rio::import
 
 # Rename labels
 names(data) <- c("market", "status", "ldate", "litho", 
@@ -27,12 +29,11 @@ data[,"litho"] <- as.numeric(
 
 # Preprocess prices - stage 1 : Just take the max value
 data[,"rprice"] <- gsub("(^\\$(\\d)+.(\\d)+ - )", "", data[,"rprice"])
-
-# Preprocess prices - stage 2 : Cut out dollar sign '$ '
-data[,"rprice"] <- as.numeric(
-  gsub("(^\\$)", "", data[,"rprice"])
-)
-
+#preporcess prices - stage 2 : change all "N/A" to N/A
+data$rprice <- ifelse(data$rprice == "N/A", NA, data$rprice)
+#write.csv(data, "cpu shorten.csv")
+# Preprocess prices - stage 3 : Cut out dollar sign '$ '
+data$rprice <- as.numeric(gsub('\\$|,', '', data$rprice))
 # Preprocess base frequency - stage 1: cut out 'GHz' and 'MHz'
 data[,"bfreq"] <- as.numeric(
   gsub("( GHz)|( MHz)", "", data[,"bfreq"])
@@ -50,9 +51,35 @@ data[,"memband"] <- as.numeric(
   gsub(" GB/s", "", data[,"memband"])
 )
 
+#preprocees temp
+?gsub
+data[,"temp"] <- as.numeric(gsub("[^0-9.-]", "", data[,"temp"]))
+write.csv(data, "cpu after.csv",row.names = FALSE)
 
 # --------------------- Local data preprocessing ---------------------
 #   Data preprocessing method at a specific step
 # Only take Launch date > 2005 - Q1 (as well as NAs)
 data <- data[data$ldate > as.yearqtr("Q1'05", format="Q%q'%y"), ]
 data <- data[!is.na(data$ldate), ]
+?ggplot
+p1 <- ggplot(data,aes(y = ..density..,x=tdp)) +
+  geom_histogram(color = "black", fill = "blue") +
+  geom_density(color = "red")
+ggplot(data,mapping = aes(x = bfreq,y = tdp)) +
+  geom_violin(aes(fill = as.factor(litho)))
+p2 <- ggplot(data,aes(x = bfreq,y = tdp,color = litho)) +
+  geom_point() +
+  geom_smooth()
+p3 <- ggplot(data,aes(x = ncore,y = tdp,color = litho)) +
+  geom_point() +
+  geom_smooth()
+p4 <- ggplot(data,aes(x = nthread,y = tdp,color = litho)) +
+  geom_point() +
+  geom_smooth()
+p5 <- ggplot(data,aes(x = rprice,y = tdp,color = litho)) +
+  geom_point() +
+  geom_smooth()
+p6 <- ggplot(data,aes(x = memband,y = tdp,color = litho)) +
+  geom_point() +
+  geom_smooth()
+ggarrange(p1, p2, p3, p4, p5, p6, common.legend = TRUE,nrow = 2, ncol = 3,legend = "right")
