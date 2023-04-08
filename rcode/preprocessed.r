@@ -11,6 +11,10 @@ data <- import("./cpu-short.csv") # rio::import
 names(data) <- c("market", "status", "ldate", "litho", 
                  "rprice", "ncore", "nthread", "bfreq", "tdp", 
                  "memband", "temp") # Rename columns, easier to deal with
+
+
+# write.csv(data, file = "my_data.csv", row.names = FALSE)
+
 # View 
 # levels(factor(data[,"market"])) # See how many MARKET SEGMENTS are there.
 # levels(factor(data[,"status"])) # See how many TYPES OF STATUS are there.
@@ -51,7 +55,27 @@ data[,"memband"] <- as.numeric(
   gsub(" GB/s", "", data[,"memband"])
 )
 
+<<<<<<< Updated upstream
 
+=======
+# Preprocess temperature column
+# any way i did my own shit 
+data[,"temp"] <- (gsub("[^0-9]+", ",", data[,"temp"])) # change every word to , B1 or C1 or -20 will be come ,1, ,1,20, but highest temp is at least 60 so it fine
+# Loop through each element in the "temp" column
+# Loop through each element in the "temp" column
+for (i in seq_along(data[["temp"]])) {# loop through each col and split the string, find the max val and then return it
+  # Split the element by commas and convert to numeric
+  temp_values <- strsplit(data[i, "temp"], ",")
+  temp_values <- unlist(lapply(temp_values, as.numeric))
+  
+  # Find the maximum value and save to the "temp" column
+  max_value <- max(temp_values, na.rm = TRUE)
+  if (is.infinite(max_value)) {
+    max_value <- NA
+  }
+  data[i, "temp"] <- max_value
+}
+>>>>>>> Stashed changes
 # --------------------- Local data preprocessing ---------------------
 #   Data preprocessing method at a specific step
 # Only take Launch date > 2005 - Q1 (as well as NAs)
@@ -82,3 +106,6 @@ ggplot(data,aes(x = litho,y = tdp,color = litho)) +
   geom_point() +
   geom_smooth()
 ggarrange(p1, p2, p3, p4, p5, p6, common.legend = TRUE,nrow = 2, ncol = 3,legend = "right")
+# Create a sample data
+
+
