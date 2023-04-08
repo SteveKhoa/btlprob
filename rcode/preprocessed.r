@@ -77,6 +77,7 @@ for (i in seq_along(data[["temp"]])) {# loop through each col and split the stri
 # Only take Launch date > 2005 - Q1 (as well as NAs)
 data <- data[data$ldate > as.yearqtr("Q1'05", format="Q%q'%y"), ]
 data <- data[!is.na(data$ldate), ]
+#huh
 ?ggplot
 p1 <- ggplot(data,aes(y = ..density..,x=tdp)) +
   geom_histogram(color = "black", fill = "blue") +
