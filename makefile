@@ -4,7 +4,7 @@
 TARGETS = report.tex
 
 default:
-	pdflatex -shell-escape $(TARGETS) | grep "Warning"
+	pdflatex -shell-escape $(TARGETS)
 
 rebuild: clean default
 
@@ -16,3 +16,5 @@ clean:
 	find . -type f -name '*.pdf'  -delete
 	find . -type f -name '*.fdb_latexmk'  -delete
 	find . -type f -name '*.fls'  -delete
+	find . -type f -name '*.pyg'  -delete
+	find . -type f -name '*.out'  -delete

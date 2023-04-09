@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{   }\PYG{c+c1}{\PYGZsh{} pacman::p\PYGZus{}load(rio,     \PYGZsh{} for dealing with basic import export}
+\PYG{+w}{                }\PYG{n}{ggplot2}\PYG{p}{,}\PYG{+w}{ }\PYG{c+c1}{\PYGZsh{} for dealing with plot formats}
+\PYG{+w}{                }\PYG{n}{zoo}\PYG{p}{,}\PYG{+w}{     }\PYG{c+c1}{\PYGZsh{} for dealing with year quarter formats}
+\PYG{+w}{                }\PYG{n}{ggpubr}\PYG{p}{)}\PYG{+w}{  }\PYG{c+c1}{\PYGZsh{} customize ggplot}
+
+\end{Verbatim}
