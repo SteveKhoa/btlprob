@@ -1,10 +1,9 @@
 pacman::p_load(rio,     # for dealing with basic import export
                ggplot2, # for dealing with plot formats
                zoo,     # for dealing with year quarter formats
-               ggpubr)  # customize ggplot 
-library(readr)
+              )  # customize ggplot 
 # Import data
-setwd("***** YOUR WORKING DIRECTORY *******") # Set working directory
+setwd("/Users/admin/Desktop/_probability_PROJECT/btlprob/rcode") # Set working directory
 data <- import("./cpu-before.csv") # rio::import
 
 # Rename labels
@@ -57,10 +56,11 @@ data[,"memband"] <- as.numeric(
 
 # Preprocess temperature column
 # any way i did my own shit 
-data[,"temp"] <- (gsub("[^0-9]+", ",", data[,"temp"])) # change every word to , B1 or C1 or -20 will be come ,1, ,1,20, but highest temp is at least 60 so it fine
+data[,"temp"] <- (gsub("[^(\\-?(0-9)+\\.?(0-9)*)]+", ",", data[,"temp"], perl=TRUE)) # change every word to , 
+# B1 or C1 or -20 will be come ,1, ,1,20, but highest temp is at least 60 so it fine
 # Loop through each element in the "temp" column
-# Loop through each element in the "temp" column
-for (i in seq_along(data[["temp"]])) {# loop through each col and split the string, find the max val and then return it
+for (i in seq_along(data[["temp"]])) {# loop through each col and split the string, 
+  #                                     find the max val and then return it
   # Split the element by commas and convert to numeric
   temp_values <- strsplit(data[i, "temp"], ",")
   temp_values <- unlist(lapply(temp_values, as.numeric))
@@ -72,38 +72,5 @@ for (i in seq_along(data[["temp"]])) {# loop through each col and split the stri
   }
   data[i, "temp"] <- max_value
 }
-# --------------------- Local data preprocessing ---------------------
-#   Data preprocessing method at a specific step
-# Only take Launch date > 2005 - Q1 (as well as NAs)
-data <- data[data$ldate > as.yearqtr("Q1'05", format="Q%q'%y"), ]
-data <- data[!is.na(data$ldate), ]
-#huh
-#hmm
-?ggplot
-p1 <- ggplot(data,aes(y = ..density..,x=tdp)) +
-  geom_histogram(color = "black", fill = "blue") +
-  geom_density(color = "red")
-ggplot(data,mapping = aes(x = bfreq,y = tdp)) +
-  geom_violin(aes(fill = as.factor(litho)))
-p2 <- ggplot(data,aes(x = bfreq,y = tdp,color = litho)) +
-  geom_point() +
-  geom_smooth()
-p3 <- ggplot(data,aes(x = ncore,y = tdp,color = litho)) +
-  geom_point() +
-  geom_smooth()
-p4 <- ggplot(data,aes(x = nthread,y = tdp,color = litho)) +
-  geom_point() +
-  geom_smooth()
-p5 <- ggplot(data,aes(x = rprice,y = tdp,color = litho)) +
-  geom_point() +
-  geom_smooth()
-p6 <- ggplot(data,aes(x = memband,y = tdp,color = litho)) +
-  geom_point() +
-  geom_smooth()
-ggplot(data,aes(x = litho,y = tdp,color = litho)) +
-  geom_point() +
-  geom_smooth()
-ggarrange(p1, p2, p3, p4, p5, p6, common.legend = TRUE,nrow = 2, ncol = 3,legend = "right")
-# Create a sample data
 
 
