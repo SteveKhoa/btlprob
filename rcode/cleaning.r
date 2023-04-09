@@ -119,11 +119,10 @@ data[,"memband"] <- as.numeric(
 #     Third, for each entry 'for (i in seq_along(...))' of that list, we keep only the maximum 
 #     numeric value among the elements of the same entry. Entries with no valid numerics are
 #     treated as NAs.
-data[,"temp"] <- (gsub("[^(\\-?(0-9)+\\.?(0-9)*)]+", ",", data[,"temp"], perl=TRUE))
+data[,"temp"] <- (gsub("[^0-9.\\-]+", ",", data[,"temp"]))  # 
 for (i in seq_along(data[["temp"]])) {                    # For each elements in the same entry
   temp_values <- strsplit(data[i, "temp"], ",")           # Split into a list of words
   temp_values <- unlist(lapply(temp_values, as.numeric))  # Transform them into equivalent numerics
-  
   max_value <- max(temp_values, na.rm = TRUE)             # Find max
   if (is.infinite(max_value)) {                           # Is it an invalid numeric?
     max_value <- NA
