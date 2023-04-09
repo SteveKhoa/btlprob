@@ -3,6 +3,9 @@
 ##  Input: cpu-short.csv
 ##  Output: cpu-clean.csv
 ##
+##  Dataset flow
+##      cpu-raw.csv ---importing.r---> cpu-short.csv ---cleaning.r---> cpu-clean.csv
+##
 ##  Description:
 ##      The dataset produced by this code is cleaned and all unecessary strings
 ##      such as 'nm', 'GHz', 'MHz' are cut out. Only numeric values are left.
