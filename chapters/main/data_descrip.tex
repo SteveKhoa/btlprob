@@ -15,6 +15,20 @@
 
 
 
+\subsection{Overview of the dataset}
+
+Write something about the dataset, because no one will understand what a chip is if we don't elaborate them.
+
+Some parts from Importing data section could be brought to here.
+
+
+
+
+
+
+
+
+
 
 \subsection{Importing data}
 For the first part of our project, we need to select a suitable dataset for us to analyze, as we are computer science students, we have decided to select a CPU data set, the data of which can be found \href{https://www.kaggle.com/datasets/iliassekkaf/computerparts?select=Intel_CPUs.csv}{here}:
@@ -131,18 +145,109 @@ However, since the values vary in types (such as string, non-standard year-quart
 we might want transform them into reproducible types, so that the analysis later on is easier, homogeneous and accurate.
 
 Note that this cleaning process \textbf{does not} remove the \mintinline{R}{NA} values, unless necessary. The reason is that, 
-in one instance, there might be important labels that should not be eliminated, under a specific scope of study, so we do not treat 
+in one instance, there might be important values that should not be eliminated, under a specific scope of study, so we do not treat 
 instances with \mintinline{R}{NA} as an invalid datum. In later sections, when we focus on a specific pattern of the data, only by then
 that the data will have a specialized \mintinline{R}{NA} cleaning, and we do not, by chance, loose any important instance.
 
 This process took \verb|/rcode/cpu-short.csv| from the importing procedure above as an input, and produce \verb|/rcode/cpu-clean.csv| as
 an output.
 
+\textbf{Changing labels}
 
+The original labels are very long and descriptive, we might not want that such level of details during coding. Therefore, the labels are suppressed
+into small, compact abbreviations. The mapping of each label is summarized in the below table:
 
-\textbf{Changing features' name}
+\begin{center}
+    \begin{tabularx}{\linewidth}{l*{2}{X}}
+        \toprule
+        \verb|Vertical segment -> market| & \verb|Status -> status|  & \verb|Launch date -> ldate|      \\
+        \verb|Lithography -> litho| & \verb|Recommended price -> rprice|  & \verb|Num. cores -> ncore|  \\
+        \verb|Base frequency -> bfreq| & \verb|TDP -> tdp|   & \verb|Memory bandwidth -> memband|       \\
+        \verb|Temperature -> tmp| & &                                                                   \\
+        \bottomrule
+    \end{tabularx}
+\end{center}
 
-
+\inputcode[firstline=30,lastline=34]{R}{rcode/cleaning.r}
 
 \textbf{Start cleaning}
 
+\verb|market| and \verb|status| are left unchanged, since the values are straightforward. See \nameref{section:data_clarify} for further analysis.
+
+The remaining features (columns) are processed as followed:
+
+\qquad      \verb|ldate|
+
+\inputcode[firstline=53,lastline=55]{R}{rcode/cleaning.r}
+
+Our goal is to transform raw, non-standard string representation of year-quarter into \verb|zoo|'s standard representation. 
+The function \mintinline{R}{as.yearqtr} takes a column and a format string as parameters. The format string is represented 
+as: \mintinline{R}{"Q%q'%y"}, in which two flags \mintinline{R}{"%q"}, \mintinline{R}{"%y"} stands for quarter and year, respectively.
+The format string hints the function to know the positions of quarter and year in our raw string.
+
+\qquad      \verb|litho|
+
+\inputcode[firstline=62,lastline=64]{R}{rcode/cleaning.r}
+
+Our goal is to cut out \verb|"nm"|, since every entry is recorded in nanometers anyway. \mintinline{R}{gsub} helps to replace a pattern 
+of a string with another string. In this case, we replace any occurence of \verb|"nm"| with an empty string, and then cast the remaining 
+value to numeric type. Notice that the pattern could be regular expression as well, this will be used intensively in the following cleaning
+process.
+
+\qquad      \verb|rprice|
+
+\inputcode[firstline=73,lastline=81]{R}{rcode/cleaning.r}
+
+\textbf{HEY VIET TUNG WRITE THIS FOR ME THANK YOU!}
+% YOU SHOULD EMBED THE BELOW LINE SOMEWHERE IN YOUR EXPLAINATION.
+but the pattern is a regular expression (regex). Please refer to \nameref{section:appendix:regex}
+for further information.
+
+\qquad      \verb|bfreq|
+
+\inputcode[firstline=89,lastline=94]{R}{rcode/cleaning.r}
+
+Our goal is to cut out \verb|"GHz"| and \verb|"MHz"| from the string, and convert all \verb|"MHz"| values into \verb|"GHz"|. Heuristically,
+we observed that any value greater than 10 must be \verb|MHz|, so we can every value like that will be multiply by 0.001 to get 
+the according \verb|MHz| value. \mintinline{R}{gsub} is used like as above. This time, that regex is used to match any substring that is 
+\verb|GHz| OR \verb|MHz|. Then, we multiply with the 0.001 any number greater than 10, and store it back to the dataframe. Notice that the
+\mintinline{R}{NA} values must be truncated first, as it is necessary to ensure dataframe subscripting to work.
+
+\qquad      \verb|tdp|
+
+\inputcode[firstline=100,lastline=102]{R}{rcode/cleaning.r}
+
+Our goal is to cut out \verb|"W"| from the string. The approach is similiar to the above.
+
+\qquad      \verb|memband|
+
+\inputcode[firstline=108,lastline=110]{R}{rcode/cleaning.r}
+
+Our goal is to cut out \verb|"GB/s"| from the string. The approach is similiar to the above.
+
+\qquad      \verb|temp|
+
+\inputcode[firstline=124,lastline=133]{R}{rcode/cleaning.r}
+
+Our goal is to only match the numeric values, then, take the maximum among those, since we are only interested in the maximum temperature.
+This feature's data are very varying in forms and the pattern we want is difficult if only a simple regular expression is used to match.
+Our approach is can be described as follows:
+
+\begin{itemize}
+    \item First, we attempt to match every decimal numbers possible, including the irrelevant number. The rest are replaced with commas \verb|","|.
+    
+    The result of this process will create a string of numbers separated by commas. By doing this, the numbers are well isolated for our purpose.
+
+    \item Second, we split these numbers and form a vector of them. This can be done through \mintinline{R}{strsplit} function. Notice that our numbers
+    are still in string format.
+
+    \item Third, we cast all these strings to numeric and push them into a vector of values using \mintinline{R}{unlist} and \mintinline{R}{lapply}
+    
+    \item Fourth, we find the maximum among all these values. Invalid numbers will automatically become \(-\infty\), and will be further treated as \mintinline{R}{NA}.
+
+\end{itemize}
+
+Notice that, we must loop through each row of the list to accomplish the above procedure.
+
+Finally, the program produces \verb|cpu-clean.csv| as a cleaned data, ready for further exploitation in the later sections. This section uses a lot of regular expression
+to match the desired strings, please refer to \nameref{section:appendix:regex} for more details.

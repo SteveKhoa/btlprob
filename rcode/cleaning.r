@@ -67,6 +67,8 @@ data[,"litho"] <- as.numeric(
 #     note      /regex/       : PLEASE EXPLAIN THE REGEX VIETUNG
 #
 #     TO-DO
+#     TO-DO
+#     TO-DO
 #
 data[,"rprice"] <- gsub(
   "(^\\$(\\d)+.(\\d)+ - )", 
