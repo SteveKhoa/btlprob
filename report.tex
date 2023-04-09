@@ -1,9 +1,11 @@
-\documentclass[draft]{hcmut-report}
+\documentclass{hcmut-report}
 \usepackage{codespace}
 \usepackage{amssymb}
 % Sub-preambles
 % https://github.com/MartinScharrer/standalone
-
+% use to create href
+\usepackage{hyperref}
+\usepackage{minted} % for minted code
 % Encodings
 \usepackage{gensymb,textcomp}
 
@@ -76,9 +78,8 @@
 \include{chapters/main/data_analysis.tex}
 \include{chapters/main/conclusion.tex}
 
-
-\bibliographystyle{plain}
-\bibliography{refs}
+ \bibliographystyle{plain}
+ \bibliography{refs}
 \nocite{*}
 
 \end{document}
