@@ -64,9 +64,9 @@ data[,"litho"] <- as.numeric(
 )
 
 ##  RPRICE
-#     note      /regex/       : PLEASE EXPLAIN THE REGEX VIETUNG
-#
-#     TO-DO
+#     This Regex make us choose all number of the left handside
+#     of the '-' (if there is) and replace the with blank space
+# 
 #
 data[,"rprice"] <- gsub(
   "(^\\$(\\d)+.(\\d)+ - )", 

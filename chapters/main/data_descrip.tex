@@ -10,12 +10,6 @@
 
 
 
-
-
-
-
-
-
 \subsection{Importing data}
 For the first part of our project, we need to select a suitable dataset for us to analyze, as we are computer science students, we have decided to select a CPU data set, the data of which can be found \href{https://www.kaggle.com/datasets/iliassekkaf/computerparts?select=Intel_CPUs.csv}{here}:
 \\
@@ -71,33 +65,13 @@ The data give us information about 2283 CPU and 45 of their feature which includ
 
 For coding the data, our team use a wide range of package which include 
 \begin{itemize}
-    \item rio: for basic import of data.
-    \item ggplot2: for dealing with plot formats.
-    \item zoo: for dealing with the year quarter format
-    \item ggpubr: to further customize the plot of ggplot
+    \item \verb|rio|.
+    \item \verb|ggplot2|.
+    \item \verb|zoo|
 \end{itemize}
-\begin{minted}[style=monokai]{R}
-   # pacman::p_load(rio,     # for dealing with basic import export
-                ggplot2, # for dealing with plot formats
-                zoo,     # for dealing with year quarter formats
-                ggpubr)  # customize ggplot 
-
-\end{minted}
-
-
-
-
-
-
-
-
-MAY NEN VIET CAI GI DO O DAY DE GIOI THIEU TRUOC KHI VAO PHAN NAY.!!!!!
-
-\textbf{Preparing the data}
-
-\inputcode[firstline=21,lastline=28]{R}{rcode/cleaning.r}
 
 Two primary packages used in this process are:
+
 \begin{itemize}
     \item \verb|rio| : for intuitive I/O code.
     With this package, import and export dataset is easier and safer. It could also handle multiple file formats, so that we do not have to
@@ -109,6 +83,12 @@ Two primary packages used in this process are:
 
 \end{itemize}
 
+\inputcode[firstline=21,lastline=25]{R}{rcode/cleaning.r}
+
+for importing in the code, we use the function \mintinline{R}{import()} from rio to import our data set.
+
+\inputcode[firstline=6,lastline=9]{R}{rcode/preprocessed.r}
+
 MAY NEN NOI GI DO THEM, VI CAI NAY TAO CHUA VIET XONG!!!!
 
 Viet tung do this.
@@ -116,6 +96,22 @@ Viet tung do this.
 You should describe how the features are chosen, why it is chosen, and stuff...
 
 NK merge this preprocessing section with this section.
+\subsection{data preprocessing}
+
+After examining the code, as we only want to focus on the performance and trend of the cpu designing, as there are many unesscessary such as Product\_Collection and Processor\_Number which only tell us about series of cpu they are from, some give only information about cpu hardware support, and some feature which also has a lot of \mintinline{R}{NA} values which make it hard to anylyze the data.So our team has decided to cut back some feature and use only a couple of them, that inlcude:
+
+\textbf{Need}: Vertical\_Segment, Status, Launch\_Date, Lithography, Recommended\_Customer\_Price, nb\_of\_Cores, nb\_of\_Threads, Processor\_Base\_Frequency, TDP, Max\_Memory\_Bandwidth, T.
+
+The reason for the choice of these feature is that they are all give us a lot of information about the performance and effiecency. They are also often the most important factors in measuring the performance of each cpu.
+
+\inputcode[firstline = 10,lastline=15]{R}{rcode/preprocessed.r}
+
+After we have select the feature, as the feature name are long and it has a lot of \_ in it which will make it difficult for coding, we decided to rename to shorter name.
+
+\inputcode[firstline=16,lastline=20]{R}{rcode/preprocessed.r}
+
+
+
 
 
 
