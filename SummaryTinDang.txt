@@ -1,0 +1,7 @@
+First I try to use the column litho and the column bfreq in order to test the hypothesis that
+whether the litho affect to the bfreq of CPU linearly or not. When I plot out, the line is likely
+to go down since the litho small, the freq will be stronger.
+
+Furthermore, the core should be accounted for the bfreq of the CPU, so I just use the regression of
+two variables, including cores and compare with the first model by ANOVA and it can be seen that
+adding the core does not improve much of the bfreq and still rely heavily on the litho.
