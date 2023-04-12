@@ -1,0 +1,149 @@
+##  DATA CLARIFICATION
+##
+##  Input: cpu-clean.csv
+##  Output: None
+##
+##
+##  Description:
+##
+##  Caveats:
+##
+##  NK
+##  ---
+
+PART 1. Attributes' distribution.
+
+
+```{r}
+pacman::p_load(
+  rio,     # for imports & exports
+  ggplot2, # for plots
+  zoo      # for year-quarter formats
+)
+##  IMPORT THE DATA
+setwd("/Users/admin/Desktop/_probability_PROJECT/btlprob/rcode")   # set working directory
+data <- import("cpu-clean.csv")        # rio::import
+```
+
+# draw piechart for markettable
+# should write some percentages too
+# we can see what constitue the most marketshare
+# Mobile & Desktop & Server were targetted market of Intel.
+```{r}
+pie(as.vector(table(data$market)), levels(factor(data$market)))
+```
+
+# Draw stacked column histogram for status ~ ldate (STUCK)
+# how many chips shutdown, supported, launched in each quarter?
+# TO-DO: There are so many EOL products in 2012-2013, why?
+# TO-DO: Try plotting EOL distribution -> and see
+```{r}
+ggplot(data = data, aes(x = data$ldate)) +
+  geom_histogram(aes(fill = data$status))
+```
+
+# Draw histogram for litho
+# there are some cpus having very high lithography, which come from older era, 
+# they can be considered as outliners.
+# Let's see what is the common range of lithography
+```{r}
+boxplot(data$litho)
+hist(data$litho)
+summary(data$litho)
+```
+
+# rprice for each market
+# many outliners can be seen for each kind of market
+# when analyzing them, we will perform further cleaning methods
+```{r}
+hist(data$rprice[data$market == "Mobile"])
+hist(data$rprice[data$market == "Desktop"])
+hist(data$rprice[data$market == "Embedded"])
+hist(data$rprice[data$market == "Server"])
+```
+
+# ncore for each market
+```{r}
+hist(data$ncore[data$market == "Mobile"])
+hist(data$ncore[data$market == "Desktop"])
+hist(data$ncore[data$market == "Embedded"])
+hist(data$ncore[data$market == "Server"])
+```
+# !!! POTENTIAL HYPOTHESIS TESTING BETWEEN nCore and rPrice : are they the same?
+
+
+
+# nthread ~ ncore ??
+# !!! POTENTIAL HYPOTHESIS TESTING BETWEEN : is the nthread = 2*ncore ???? is it dominant ???
+
+# bfreq
+# Does it follow the Normal distribution?
+```{r}
+hist(data$bfreq)
+```
+
+# tdp
+# most cpu on the market has tdp value in the following range, a few exceptions can be seen.
+```{r}
+hist(data$tdp)
+boxplot(data$tdp)
+summary(data$tdp)
+```
+
+
+
+
+
+# memband
+# the memband's variance is very low
+```{r}
+boxplot(data$memband)
+```
+
+
+# temp
+```{r}
+hist(data$temp)
+```
+
+
+
+
+
+
+
+
+
+
+PART 2. Relationship between features.
+
+
+
+
+
+
+# ncore ~ ldate
+# Increasing?
+```{r}
+plot(ncore ~ ldate, data=data)
+```
+
+# litho ~ ldate
+# Decreasing, getting better?
+```{r}
+plot(litho ~ ldate, data=data)
+```
+
+
+
+# rprice ~ ldate (DEPRECATED - No clear trend)
+```{r}
+plot(rprice ~ ldate, data=data)
+```
+
+
+```{r}
+table(factor(data$market))
+```
+
+

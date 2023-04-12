@@ -12,7 +12,8 @@
 \RequirePackage{geometry,graphicx,indentfirst,setspace}
 \RequirePackage{booktabs}
 
-\RequirePackage{fancyhdr,lastpage,hyperref}
+\RequirePackage{fancyhdr,lastpage}
+\RequirePackage[colorlinks=true,linkcolor=blue]{hyperref}
 \RequirePackage[super,square,sort]{natbib}
 \RequirePackage[nameinlink]{cleveref} % use \Cref{} instead of \ref{}
 

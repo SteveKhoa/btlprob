@@ -165,13 +165,13 @@ that the data will have a specialized \mintinline{R}{NA} cleaning, and we do not
 This process took \verb|/rcode/cpu-short.csv| from the importing procedure above as an input, and produce \verb|/rcode/cpu-clean.csv| as
 an output.
 
-\textbf{Start cleaning}
+\includegraphics[max width=0.9\linewidth]{An image of the dataset before cleaning should be here}
+
+\subsubsection*{ldate}
 
 \verb|market| and \verb|status| are left unchanged, since the values are straightforward. See \nameref{section:data_clarify} for further analysis.
 
 The remaining features (columns) are processed as followed:
-
-\qquad      \verb|ldate|
 
 \inputcode[firstline=53,lastline=55]{R}{rcode/cleaning.r}
 
@@ -180,7 +180,7 @@ The function \mintinline{R}{as.yearqtr} takes a column and a format string as pa
 as: \mintinline{R}{"Q%q'%y"}, in which two flags \mintinline{R}{"%q"}, \mintinline{R}{"%y"} stands for quarter and year, respectively.
 The format string hints the function to know the positions of quarter and year in our raw string.
 
-\qquad      \verb|litho|
+\subsubsection*{litho}
 
 \inputcode[firstline=62,lastline=64]{R}{rcode/cleaning.r}
 
@@ -189,7 +189,7 @@ of a string with another string. In this case, we replace any occurence of \verb
 value to numeric type. Notice that the pattern could be regular expression as well, this will be used intensively in the following cleaning
 process.
 
-\qquad      \verb|rprice|
+\subsubsection*{rprice}
 
 \inputcode[firstline=73,lastline=81]{R}{rcode/cleaning.r}
 
@@ -198,7 +198,7 @@ process.
 but the pattern is a regular expression (regex). Please refer to \nameref{section:appendix:regex}
 for further information.
 
-\qquad      \verb|bfreq|
+\subsubsection*{bfreq}
 
 \inputcode[firstline=89,lastline=94]{R}{rcode/cleaning.r}
 
@@ -208,19 +208,19 @@ the according \verb|MHz| value. \mintinline{R}{gsub} is used like as above. This
 \verb|GHz| OR \verb|MHz|. Then, we multiply with the 0.001 any number greater than 10, and store it back to the dataframe. Notice that the
 \mintinline{R}{NA} values must be truncated first, as it is necessary to ensure dataframe subscripting to work.
 
-\qquad      \verb|tdp|
+\subsubsection*{tdp}
 
 \inputcode[firstline=100,lastline=102]{R}{rcode/cleaning.r}
 
 Our goal is to cut out \verb|"W"| from the string. The approach is similiar to the above.
 
-\qquad      \verb|memband|
+\subsubsection*{memband}
 
 \inputcode[firstline=108,lastline=110]{R}{rcode/cleaning.r}
 
 Our goal is to cut out \verb|"GB/s"| from the string. The approach is similiar to the above.
 
-\qquad      \verb|temp|
+\subsubsection*{temp}
 
 \inputcode[firstline=124,lastline=133]{R}{rcode/cleaning.r}
 
@@ -246,3 +246,5 @@ Notice that, we must loop through each row of the list to accomplish the above p
 
 Finally, the program produces \verb|cpu-clean.csv| as a cleaned data, ready for further exploitation in the later sections. This section uses a lot of regular expression
 to match the desired strings, please refer to \nameref{section:appendix:regex} for more details.
+
+\includegraphics[max width=0.9\linewidth]{An image of the data after cleaned should be here}
