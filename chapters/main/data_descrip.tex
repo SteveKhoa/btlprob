@@ -17,7 +17,8 @@
 
 \subsection{Overview of the dataset}
 
-Write something about the dataset, because no one will understand what a chip is if we don't elaborate them.
+Write something about the dataset, because no one will understand what a chip is 
+if we don't elaborate them.
 
 Some parts from Importing data section could be brought to here.
 
@@ -94,7 +95,8 @@ Two primary packages used in this process are:
 
 \begin{itemize}
     \item \verb|rio| : for intuitive I/O code.
-    With this package, import and export dataset is easier and safer. It could also handle multiple file formats, so that we do not have to
+    With this package, import and export dataset is easier and safer. It could 
+    also handle multiple file formats, so that we do not have to
     change the command each time we change the file format.
 
     \item \verb|zoo| : for year-quarter format.
@@ -107,7 +109,7 @@ Two primary packages used in this process are:
 
 for importing in the code, we use the function \mintinline{R}{import()} from rio to import our data set.
 
-\inputcode[firstline=6,lastline=9]{R}{rcode/preprocessed.r}
+\inputcode[firstline=6,lastline=9]{R}{rcode/importing.r}
 
 MAY NEN NOI GI DO THEM, VI CAI NAY TAO CHUA VIET XONG!!!!
 
@@ -124,7 +126,7 @@ After examining the code, as we only want to focus on the performance and trend 
 
 The reason for the choice of these feature is that they are all give us a lot of information about the performance and effiecency. They are also often the most important factors in measuring the performance of each cpu.
 
-\inputcode[firstline = 10,lastline=15]{R}{rcode/preprocessed.r}
+\inputcode[firstline = 10,lastline=15]{R}{rcode/importing.r}
 
 \textbf{Changing labels}
 
@@ -142,7 +144,7 @@ into small, compact abbreviations. The mapping of each label is summarized in th
     \end{tabularx}
 \end{center}
 
-\inputcode[firstline=16,lastline=20]{R}{rcode/preprocessed.r}
+\inputcode[firstline=16,lastline=20]{R}{rcode/importing.r}
 
 
 

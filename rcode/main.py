@@ -1,3 +1,7 @@
+'''
+    For testing validity of the cleaned data.
+'''
+
 import csv
 
 with open('cpu-short.csv', newline='') as csvfile:

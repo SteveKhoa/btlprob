@@ -13,7 +13,7 @@ clean:
 	find . -type f -name '*.dvi'  -delete
 	find . -type f -name '*.log'  -delete
 	find . -type f -name '*.toc'  -delete
-	find . -type f -name '*.pdf'  -delete
+	rm -rf *.pdf
 	find . -type f -name '*.fdb_latexmk'  -delete
 	find . -type f -name '*.fls'  -delete
 	find . -type f -name '*.pyg'  -delete
