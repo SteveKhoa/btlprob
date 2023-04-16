@@ -1,4 +1,4 @@
-\documentclass[draft]{hcmut-report}
+\documentclass{hcmut-report}
 \usepackage{codespace}
 \usepackage{amssymb}
 % Sub-preambles
@@ -18,6 +18,13 @@
 
 % Graphics
 \usepackage{caption,float}
+\usepackage{subcaption}
+
+\DeclareCaptionFormat{custom}
+{%
+    \textbf{#1#2}\textit{\small #3}
+}
+\captionsetup{format=custom}
 
 % Allow setting >max< width of figure
 % 'export' allows adjustbox keys in \includegraphics

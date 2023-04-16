@@ -5,3 +5,87 @@
 \clearpage
 \section{Data clarification}
 \label{section:data_clarify}
+
+
+
+
+
+
+
+
+\subsection{Overview of features}
+
+In this section, we provide a big picture of the our data via visualizations.
+
+\subsubsection{Categorical features}
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/pie_market.pdf}
+        \caption{Pie of market share}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/pie_status.pdf}
+        \caption{Pie of support status}
+    \end{subfigure}
+\end{figure}
+
+\subsubsection{Continuous features}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./graphics/hist_ldate.pdf}
+    \caption{Histogram of launch date}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./graphics/box_litho.pdf}
+    \includegraphics[width=0.5\textwidth]{./graphics/sum_litho.png}
+    \caption{Box plot and Summary of Lithography}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./graphics/hist_bfreq.pdf}
+    \caption{Histogram of Base Frequency}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./graphics/box_tdp.pdf}
+    \includegraphics[width=0.5\textwidth]{./graphics/sum_tdp.png}
+    \caption{Histogram of Thermal Design Power (TDP)}
+\end{figure}
+
+% Should we plot memory bandwidth
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./graphics/box_memband.pdf}
+    \includegraphics[width=0.5\textwidth]{./graphics/sum_memband.png}
+    \caption{Histogram of Maximum Memory Bandwidth}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./graphics/hist_temp.pdf}
+    \caption{Histogram of Temperature}
+\end{figure}
+
+
+Note that we skipped plotting three features: Recommended Price, Number of Cores, Number of Threads and Number of Maximum Memory Bandwidth
+since they are market-dependent and do not represent well for the overall trends.
+
+
+
+
+
+
+
+
+
+\subsection{Relationship between features}

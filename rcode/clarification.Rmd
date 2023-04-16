@@ -11,9 +11,8 @@
 ##  NK
 ##  ---
 
-PART 1. Attributes' distribution.
 
-
+LOADING PACKAGES & IMPORTING DATA
 ```{r}
 pacman::p_load(
   rio,     # for imports & exports
@@ -25,32 +24,101 @@ setwd("/Users/admin/Desktop/_probability_PROJECT/btlprob/rcode")   # set working
 data <- import("cpu-clean.csv")        # rio::import
 ```
 
-# draw piechart for markettable
-# should write some percentages too
-# we can see what constitue the most marketshare
-# Mobile & Desktop & Server were targetted market of Intel.
+
+CATEGORIAL PIES
 ```{r}
-pie(as.vector(table(data$market)), levels(factor(data$market)))
+# Config market pie
+freq = as.vector(table(data$market))
+levels = levels(factor(data$market))
+title = "market"
 ```
 
-# Draw stacked column histogram for status ~ ldate (STUCK)
-# how many chips shutdown, supported, launched in each quarter?
-# TO-DO: There are so many EOL products in 2012-2013, why?
-# TO-DO: Try plotting EOL distribution -> and see
 ```{r}
-ggplot(data = data, aes(x = data$ldate)) +
-  geom_histogram(aes(fill = data$status))
+# Config status pie
+freq = as.vector(table(data$status))
+levels = levels(factor(data$status))
+title = "status"
 ```
 
-# Draw histogram for litho
-# there are some cpus having very high lithography, which come from older era, 
-# they can be considered as outliners.
-# Let's see what is the common range of lithography
 ```{r}
-boxplot(data$litho)
-hist(data$litho)
+# Drawing the pie
+# Calculate the vector of percentages
+percentages <- round(
+  100 * freq / sum(freq), 
+  1
+  )
+
+# Create the data frame of levels, frequency of values, and percentages
+data_percentages <- data.frame(
+  market = levels, 
+  value = freq, 
+  percent = percentages
+  )
+
+# Create a pie chart with percentages
+ggplot(
+  data_percentages, 
+  aes(x="", y=value, fill=market)) +
+  geom_bar(stat="identity", width=1, color="white") + # Draw the bar
+  coord_polar(theta = "y") +               # Representing the values in polar
+                                           # coordinate. Instead of stacked bars
+  # Add labels (percentage numbers)
+  geom_text(
+    aes(label = paste0(percent, "%")),     # Concat 'percent' + '%'
+    position = position_stack(vjust = 0.5) # Each slide is a stack bar
+                                           # Use position_stack to stack the labels
+                                           # on each slide.
+    ) +
+  labs(fill = title) +
+  theme_void()
+```
+
+
+
+
+
+
+Histogram of launch date
+```{r}
+ggplot(data, aes(x = ldate)) +
+  geom_histogram(binwidth = 1, fill="deepskyblue") +
+  labs(x = "Date", y = "Count")
+```
+
+
+Boxplot of Lithography
+```{r}
+ggplot(data, aes(y = litho)) +
+  geom_boxplot(fill="deepskyblue") +
+  labs(x = "Date", y = "Count")
+
 summary(data$litho)
 ```
+
+
+Histogram of Base frequency
+```{r}
+ggplot(data, aes(x = bfreq)) +
+  geom_histogram(binwidth = 0.1, fill="deepskyblue") +
+  labs(x = "Date", y = "Count")
+```
+
+
+
+
+
+
+Histogram of Base frequency
+```{r}
+ggplot(data, aes(x = tdp)) +
+  geom_histogram(binwidth = 5, fill="deepskyblue") +
+  labs(x = "Date", y = "Count")
+```
+
+
+
+
+
 
 # rprice for each market
 # many outliners can be seen for each kind of market
