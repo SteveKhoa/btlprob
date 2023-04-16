@@ -100,8 +100,8 @@ summary(data$litho)
 Histogram of Lithography
 ```{r}
 ggplot(data, aes(x = ldate, y = litho)) +
-  geom_histogram(binwidth = 1, fill="deepskyblue") +
-  labs(x = "Market", y = "Lithography (nm)")
+  geom_point(color="deepskyblue") +
+  labs(x = "Launch Date", y = "Lithography (nm)")
 ```
 
 Boxplot of Recommended Price
