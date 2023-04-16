@@ -118,7 +118,7 @@ Viet tung do this.
 You should describe how the features are chosen, why it is chosen, and stuff...
 
 NK merge this preprocessing section with this section.
-\subsection{data preprocessing}
+\subsection{Data preprocessing}
 
 After examining the code, as we only want to focus on the performance and trend of the cpu designing, as there are many unesscessary such as Product\_Collection and Processor\_Number which only tell us about series of cpu they are from, some give only information about cpu hardware support, and some feature which also has a lot of \mintinline{R}{NA} values which make it hard to anylyze the data.So our team has decided to cut back some feature and use only a couple of them, that inlcude:
 
@@ -167,7 +167,11 @@ that the data will have a specialized \mintinline{R}{NA} cleaning, and we do not
 This process took \verb|/rcode/cpu-short.csv| from the importing procedure above as an input, and produce \verb|/rcode/cpu-clean.csv| as
 an output.
 
-\includegraphics[max width=0.9\linewidth]{An image of the dataset before cleaning should be here}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[max width=0.9\linewidth]{./graphics/short_data.png}
+    \caption{Data before cleaning.}
+\end{figure}
 
 \subsubsection*{ldate}
 
@@ -249,4 +253,8 @@ Notice that, we must loop through each row of the list to accomplish the above p
 Finally, the program produces \verb|cpu-clean.csv| as a cleaned data, ready for further exploitation in the later sections. This section uses a lot of regular expression
 to match the desired strings, please refer to \nameref{section:appendix:regex} for more details.
 
-\includegraphics[max width=0.9\linewidth]{An image of the data after cleaned should be here}
+\begin{figure}[H]
+    \centering
+    \includegraphics[max width=0.9\linewidth]{./graphics/cleaned_data.png}
+    \caption{Data after cleaning.}
+\end{figure}

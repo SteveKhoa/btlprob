@@ -12,6 +12,15 @@
 ##  ---
 
 
+
+
+
+
+
+
+
+PART I. OVERVIEW OF THE FEATURES
+
 LOADING PACKAGES & IMPORTING DATA
 ```{r}
 pacman::p_load(
@@ -23,7 +32,6 @@ pacman::p_load(
 setwd("/Users/admin/Desktop/_probability_PROJECT/btlprob/rcode")   # set working directory
 data <- import("cpu-clean.csv")        # rio::import
 ```
-
 
 CATEGORIAL PIES
 ```{r}
@@ -73,11 +81,6 @@ ggplot(
   theme_void()
 ```
 
-
-
-
-
-
 Histogram of launch date
 ```{r}
 ggplot(data, aes(x = ldate)) +
@@ -85,133 +88,125 @@ ggplot(data, aes(x = ldate)) +
   labs(x = "Date", y = "Count")
 ```
 
-
 Boxplot of Lithography
 ```{r}
-ggplot(data, aes(y = litho)) +
+ggplot(data, aes(x = market, y = litho)) +
   geom_boxplot(fill="deepskyblue") +
-  labs(x = "Date", y = "Count")
+  labs(x = "Market", y = "Lithography (nm)")
 
 summary(data$litho)
 ```
 
+Histogram of Lithography
+```{r}
+ggplot(data, aes(x = ldate, y = litho)) +
+  geom_histogram(binwidth = 1, fill="deepskyblue") +
+  labs(x = "Market", y = "Lithography (nm)")
+```
+
+Boxplot of Recommended Price
+```{r}
+ggplot(data, aes(x = market, y = rprice)) +
+  geom_boxplot(fill="deepskyblue") +
+  labs(x = "Market", y = "Recommended Price ($)")
+```
+
+Scatter plot of ncore
+```{r}
+ggplot(data, aes(x = ldate, y = ncore)) + 
+  geom_point()
+```
 
 Histogram of Base frequency
 ```{r}
 ggplot(data, aes(x = bfreq)) +
   geom_histogram(binwidth = 0.1, fill="deepskyblue") +
-  labs(x = "Date", y = "Count")
+  labs(x = "Base frequency (GHz)", y = "Count")
 ```
 
-
-
-
-
-
-Histogram of Base frequency
+Histogram of Thermal Design Power
 ```{r}
-ggplot(data, aes(x = tdp)) +
-  geom_histogram(binwidth = 5, fill="deepskyblue") +
-  labs(x = "Date", y = "Count")
-```
+ggplot(data, aes(x = market,y = tdp)) +
+  geom_boxplot(fill="deepskyblue") +
+  labs(x = "Market", y = "Thermal deisgn power (W)")
 
-
-
-
-
-
-# rprice for each market
-# many outliners can be seen for each kind of market
-# when analyzing them, we will perform further cleaning methods
-```{r}
-hist(data$rprice[data$market == "Mobile"])
-hist(data$rprice[data$market == "Desktop"])
-hist(data$rprice[data$market == "Embedded"])
-hist(data$rprice[data$market == "Server"])
-```
-
-# ncore for each market
-```{r}
-hist(data$ncore[data$market == "Mobile"])
-hist(data$ncore[data$market == "Desktop"])
-hist(data$ncore[data$market == "Embedded"])
-hist(data$ncore[data$market == "Server"])
-```
-# !!! POTENTIAL HYPOTHESIS TESTING BETWEEN nCore and rPrice : are they the same?
-
-
-
-# nthread ~ ncore ??
-# !!! POTENTIAL HYPOTHESIS TESTING BETWEEN : is the nthread = 2*ncore ???? is it dominant ???
-
-# bfreq
-# Does it follow the Normal distribution?
-```{r}
-hist(data$bfreq)
-```
-
-# tdp
-# most cpu on the market has tdp value in the following range, a few exceptions can be seen.
-```{r}
-hist(data$tdp)
-boxplot(data$tdp)
 summary(data$tdp)
 ```
 
-
-
-
-
-# memband
-# the memband's variance is very low
+Histogram of Memmory Bandwith
+Currently hidden in our report.
 ```{r}
-boxplot(data$memband)
+ggplot(data, aes(y = memband)) +
+  geom_boxplot(fill="deepskyblue") +
+  labs(x = "Max Memory Bandwidth (GB/s)", y = "Count")
+
+summary(data$memband)
 ```
 
-
-# temp
+Histogram of Temperature
 ```{r}
-hist(data$temp)
-```
-
-
-
-
-
-
-
-
-
-
-PART 2. Relationship between features.
-
-
-
-
-
-
-# ncore ~ ldate
-# Increasing?
-```{r}
-plot(ncore ~ ldate, data=data)
-```
-
-# litho ~ ldate
-# Decreasing, getting better?
-```{r}
-plot(litho ~ ldate, data=data)
+ggplot(data, aes(x = temp)) +
+  geom_histogram(binwidth = 1, fill="deepskyblue") +
+  labs(x = "Temperature (°C)", y = "Count")
 ```
 
 
 
-# rprice ~ ldate (DEPRECATED - No clear trend)
+
+
+
+
+
+
+PART 2. ANALYSIS OF FEATURES
+
+ANOVA - two way [market & rprice ~ bfreq]
+
+1. Clean the data: cutting the outliners
 ```{r}
-plot(rprice ~ ldate, data=data)
+# Clear rprice's NAs
+data <- data[!is.na(data$rprice),]
+
+# Check the quantile range -> choose if the suitable quantile so that the variance can be
+# approximately the same.
+probs <- c(0,0.05,0.5,0.95,1)
+quantile(data$rprice, probs = probs)
+hist(data$rprice) # See the histogram
+
+# Cut the outliners (Which values)
+data <- data[data$rprice < 5000, ]
+
+# Which intervals??
+
+# Check the variance of these intervals
+var(...) ?????
+```
+
+2. Plot the markets
+```{r}
+ggplot(data, aes(x = market,y = bfreq)) +
+  geom_boxplot(fill="deepskyblue") +
+  labs(x = "Market", y = "Frequency (GHz)")
+```
+3. Plot Price range
+```{r}
+
+# Divide the intervals - Really important, they must have the same variance!
+very_cheap <- data$rprice[data$rprice < 150]
+cheap <- data$rprice[150 <= data$rprice & data$rprice < 450]
+mid <- data$rprice[450 <= data$rprice & data$rprice < 800]
+expensive <- data$rprice[700 <= data$rprice & data$rprice < 2500]
+
+
+
+
+ggplot(data, aes(x = status,y = bfreq)) +
+  geom_boxplot(fill="deepskyblue") +
+  labs(x = "Price Segments", y = "Frequency (GHz)")
+
+rm(very_cheap)
 ```
 
 
-```{r}
-table(factor(data$market))
-```
 
 
