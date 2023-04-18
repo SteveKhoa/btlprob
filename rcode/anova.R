@@ -10,134 +10,72 @@ pacman::p_load(rio,     # for dealing with basic import export
 library(readr)
 # Import data
 data <- import("./cpu-clean.csv") # rio::import
-# set the dependent and the independenet variable
-
-#------------test for ldate and market-----------#
-
-data$gldate <- cut(data$ldate,
-                    breaks = c(2005,2010,2014,Inf))
-                    #labels = c("low","medium","high"))
-
-data <- data[complete.cases(data[, c("market","gldate")]), ]
-
-ggplot(data, aes(x = ldate, y = bfreq,color = market))+
-  geom_point()+
-  facet_wrap(~market+gldate)
-
-ggplot(data,aes(x = bfreq))+
-  geom_histogram(aes(fill = market)) +
-  facet_wrap(~market)
-
-ggplot(data,aes(x = market,y = bfreq)) +
-  geom_boxplot()
-leveneTest(bfreq ~ as.factor(market),data = data)
-data <- data[data$ldate > 2005,]
-# test for variance
-
-# split the money data
-
-# detect oulier
-outlier <- data %>%
-  group_by(market,gldate) %>% 
-  identify_outliers(!!sym(x))
-
-#filter out the extreme outlier
-
-outlier <- outlier %>% filter(!is.extreme)
-
-# remove the extreme outlier from the data
-# data<- data %>%
-#   anti_join(outlier , by = c(independent, x))
-
-data_clean <- data[complete.cases(data[, c("status","gldate")]), ]
-#build model
-ggplot(data_clean, aes(x = gldate, y = bfreq,color = market))+
-  geom_boxplot()
-model <- aov(bfreq ~ market * gldate, data=data_clean)
-table(data$gldate,data$market)
-summary(model)
-leveneTest(bfreq ~ market * gldate,data = data_clean)
-
 
 #----------test for litho----------#
 # Import data
 data <- import("./cpu-clean.csv") # rio::import
-#only data from 2005 allow
-ggplot(data, aes(x = litho,y = bfreq))+
-  geom_point()
-data <- data[data$ldate > 2003,]
+
+# Only data from 2004 as it is less noisy
+data <- data[data$ldate > 1999,]
+
+# remove data with few count group ldate and remove NA
 data <- data[data$litho !=28,]
-#data <- data[data$litho !=90,]
-data <- data[data$litho !=130,]
-#data <- data[data$litho !=65,]
-#data <- data[data$litho !=14,]
-#data <- data[data$litho !=22,]
+#data <- data[data$litho !=130,]
 data$litho <- as.factor(data$litho)
 data$gldate <- cut(data$ldate,
-                   breaks = c(0,2009,2013,Inf))
+                   breaks = c(0,2004,2008,2012,2016,Inf))
 #labels = c("low","medium","high"))
-data <- data[complete.cases(data[, c("gldate")]), ]
+data <- data[complete.cases(data[, c("status")]), ]
 data <- data[complete.cases(data[, c("litho")]), ]
 
-table(data$gldate,data$litho)
-ggplot(data, aes(x = ldate,y = bfreq,color = litho))+
+# create the count table to check for factors with few observation
+table(data$status,data$litho)
+count_table<-table(data$status,data$litho)
+count_table <- as.data.frame.matrix(count_table > 20)
+
+# loop over the data and add all the row that has factor below the observation limit
+out <- rbind(data[0,])
+for (x in 1:nrow(data)) {
+  # extract the "litho" and "gldate" values for the current row
+  comp <- data[x, c("litho", "status")]
+  # check if the corresponding value in "wow" is TRUE
+  if (count_table[comp$status,comp$litho] == FALSE) {
+    # TODO if condition is true remove the rows from the data
+    out <- rbind(out,data[x,])
+  }
+}
+
+# remove the row that has below observation limit
+data <- anti_join(x = data, y = out)
+#data <- data[!(data$litho == "90" & data$status == "End of Interactive Support"),]
+data <- data[!(data$litho == "32" & data$status == "End of Interactive Support"),]
+# plot for the cleaned data
+ggplot(data, aes(x = status,y = bfreq,color = litho))+
   geom_point()
 
-ggplot(data, aes(x = litho,y = bfreq,color = gldate))+
+ggplot(data, aes(x = status,y = bfreq,color = litho))+
   geom_boxplot()
 
-leveneTest(bfreq ~ as.factor(litho) * as.factor(gldate) ,data = data)
-oneway.test(bfreq ~ as.factor(litho) ,data = data,var.equal = FALSE)
+#levent test for Equality of variances
+as.character()
+leveneTest(bfreq ~ as.factor(litho) * status ,data = data)
 
+# create anova model of type III as our data is unbalanced
+model<- aov(bfreq ~ litho * status ,data = data)
+#Anova(model, type = "III")
+plot(model, 1)
+#take out the residual to check for the normality
+resid <- residuals(model)
 
+#histogram of residual
+ggplot(data,aes(x=resid))+
+  geom_histogram()
+# qqplot of residual
+qqPlot(resid)
 
-# #----------------test for normal-------------#
-# 
-# x = "bfreq"
-# independent = "litho"
-# 
-# # see the table
-# table(data$market)
-# # build and summary the first anova model
-# model <- aov(data[[x]]  ~ data[[independent]] , data = data)
-# summary(model)
-# 
-# #take out the resid
-# resid <- unname(residuals(model))
-# 
-# # find the outlier
-# 
-# outlier <- data %>%
-#   group_by(!!sym(independent)) %>%
-#   identify_outliers(!!sym(x))
-# 
-# #filter out the extreme outlier
-# 
-# outlier <- outlier %>% filter(!is.extreme)
-# 
-# # remove the extreme outlier from the data
-# data<- data %>%
-#   anti_join(outlier , by = c(independent, x))
-# 
-# # build the model again
-# 
-# model <- aov(data[[x]]  ~  data[[independent]], data = data)
-# summary(model)
-# resid <- unname(residuals(model))
-# 
-# #qq norm
-# qqnorm(resid)
-# qqline(resid)
-# #shapiro
-# shapiro.test(resid)
-# hist(resid)
-# 
-# data %>%
-#   group_by(!!sym(independent)) %>%
-#   shapiro_test(!!sym(x))
-# 
-# 
-# ggplot(data,aes(x = data[[x]] )) +
-#   geom_histogram(bins = 30) +
-#   facet_wrap(vars(!!sym(independent)), scales = "free")
+# sharpiro test for the residual
+shapiro.test(resid)
+
+summary(model)
+
 
