@@ -97,7 +97,7 @@ ggplot(data, aes(x = market, y = litho)) +
 summary(data$litho)
 ```
 
-Histogram of Lithography
+Scatter plot of Lithography
 ```{r}
 ggplot(data, aes(x = ldate, y = litho)) +
   geom_point(color="deepskyblue") +
@@ -109,12 +109,6 @@ Boxplot of Recommended Price
 ggplot(data, aes(x = market, y = rprice)) +
   geom_boxplot(fill="deepskyblue") +
   labs(x = "Market", y = "Recommended Price ($)")
-```
-
-Scatter plot of ncore
-```{r}
-ggplot(data, aes(x = ldate, y = ncore)) + 
-  geom_point()
 ```
 
 Histogram of Base frequency
@@ -160,52 +154,162 @@ ggplot(data, aes(x = temp)) +
 
 PART 2. ANALYSIS OF FEATURES
 
-ANOVA - two way [market & rprice ~ bfreq]
+[litho & ncore ~ bfreq]
 
-1. Clean the data: cutting the outliners
+? Why we are interested in Base frequency ?
+bfreq is a very good representative for CPU's performance, so we will explore
+how other factors contribute to the performance of the CPU.
+
+? Why we are interested in litho ?
+Lithography is represents well for the distinction of each period, in fact, it is
+a better representation for `ldate`. Refer to `the plot` we provided in the last section,
+with bare eyes, we can see `litho` is associated with the launch-date very well, and
+it is decreasing over time. What makes it better than `ldate` is that `litho` spans
+over a period of time, and not fixed to a specific year-quarter. One more advantage
+is that, some records do not have launch dates, but they have lithography instead, so using
+it is better to gain more data. We would like to see the impact of decreasing lithography
+on the performance of the CPU.
+
+? Why we are interested in ncore ?
+Number of cores is the driving factor of modern computing, which helps computer utilizing 
+the power of parallelization, which is considered to be a work-around for the approaching lower limit Lithography of 1.5 nanometers. [refer to (https://www.quora.com/Have-we-reached-the-limit-in-lithography-of-CPUs)]. On the other hand, more cores also means more cost for a CPU to be manufactured. Because of that, analyzing the number of cores with respect to its perform is neccessary to decide
+whether it is worthy to invest a lot of money produce cores, and whether increasing no. cores impact negatively to the base frequency.
+
 ```{r}
-# Clear rprice's NAs
-data <- data[!is.na(data$rprice),]
+# We plot the histogram of litho ~ bfreq
+ggplot(data, aes(x = bfreq)) +
+  geom_histogram(binwidth = 0.1, fill="deepskyblue") + 
+  facet_wrap(~data$litho)
 
-# Check the quantile range -> choose if the suitable quantile so that the variance can be
-# approximately the same.
-probs <- c(0,0.05,0.5,0.95,1)
-quantile(data$rprice, probs = probs)
-hist(data$rprice) # See the histogram
+# We see that some categories of lithography are not significant in terms of
+# quantity, and do not follow any clear distribution. We will treat them as
+# outliners.
 
-# Cut the outliners (Which values)
-data <- data[data$rprice < 5000, ]
+# We choose to keep the following category:
+# 14, 22, 32, 45:
+data <- subset(data, data$litho %in% c(14,22,32,45))
 
-# Which intervals??
+# We plot the histogram of ncore ~ bfreq
+ggplot(data, aes(x = bfreq)) +
+  geom_histogram(binwidth = 0.1, fill="deepskyblue") + 
+  facet_wrap(~data$ncore)
 
-# Check the variance of these intervals
-var(...) ?????
+# We see that some categories of ncore are not significant in terms of quantity
+# -> remove it too
+
+# We choose to keep the following category:
+# 1, 2, 4, 6 ,8, 10, 12
+data <- subset(data, data$ncore %in% c(2,4))
+
+# Group them as factors
+data$ncore <- as.factor(data$ncore)
+data$litho <- as.factor(data$litho)
+
+# Now, we visualize all of this up, to see what did we get so far:
+ggplot(data, aes(x = ncore,y = bfreq,color = litho))+
+  geom_boxplot()
 ```
 
-2. Plot the markets
+
+Since the variance and normality is not perfect, we better do a non-parametric test,
+such as Kruskal–Wallis one-way analysis of variance.
+ANOVA - one way [litho ~ bfreq]
+
+We can see that the values of the test is small (< 0.05), we can say that there are significant differences between the
+"ranks" (<- explain this furter)
 ```{r}
-ggplot(data, aes(x = market,y = bfreq)) +
-  geom_boxplot(fill="deepskyblue") +
-  labs(x = "Market", y = "Frequency (GHz)")
+ggplot(data, aes(x = litho,y = bfreq))+
+  geom_boxplot(fill = "deepskyblue")
+kruskal.test(bfreq ~ litho, data = data)
 ```
-3. Plot Price range
+
+
+To see which group is significantly different from others, we must perform a
+post-hoc comparison, in this case, we use Wilcoxon test
+[https://en.wikipedia.org/wiki/Kruskal%E2%80%93Wallis_one-way_analysis_of_variance]
 ```{r}
-
-# Divide the intervals - Really important, they must have the same variance!
-very_cheap <- data$rprice[data$rprice < 150]
-cheap <- data$rprice[150 <= data$rprice & data$rprice < 450]
-mid <- data$rprice[450 <= data$rprice & data$rprice < 800]
-expensive <- data$rprice[700 <= data$rprice & data$rprice < 2500]
-
-
-
-
-ggplot(data, aes(x = status,y = bfreq)) +
-  geom_boxplot(fill="deepskyblue") +
-  labs(x = "Price Segments", y = "Frequency (GHz)")
-
-rm(very_cheap)
+pairwise.wilcox.test(data$bfreq, data$litho, p.adjust.method = "bonferroni")
 ```
+
+
+
+
+ANOVA - one way (ncore ~ bfreq)
+
+```{r}
+# OK YOU GET THE IDEA, PLEASE DO THAT FOR ME VIETTUNG
+```
+
+ANOVA - two way [litho & ncore ~ bfreq]
+
+Now we construct Two-way ANOVA model
+```{r}
+model<- aov(bfreq ~ litho * ncore ,data = data)
+qqPlot(residuals(model))
+shapiro.test(residuals(model))
+leveneTest(bfreq ~ litho *  ncore ,data = data)
+Anova(model, type='III')
+```
+
+
+Transform the data to rank-based. Nonparametric Two-way ANOVA
+"Finaly, let’s perform two-way ANOVA on the rank-transformed data. Ranking is one of many procedures used to transform data that do not meet the assumptions of normality. Conover and Iman (1981) provided a review of the four main types of rank transformations. One method replaces each original data value by its rank (from 1 for the smallest to N for the largest, where N is the combined data sample size)"
+[https://www.cfholbert.com/blog/nonparametric_two_way_anova/]
+
+As we can see, it looks worse.
+```{r}
+model<- aov(rank(bfreq) ~ litho * ncore ,data = data)
+qqPlot(residuals(model))
+shapiro.test(residuals(model))
+leveneTest(rank(bfreq) ~ litho *  ncore ,data = data)
+Anova(model, type='III')
+```
+
+One frustrating thing about tests is that they are very sensitive to large data.
+So do not trust in tests, but the intuition.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -160,9 +160,9 @@ However, since the values vary in types (such as string, non-standard year-quart
 we might want transform them into reproducible types, so that the analysis later on is easier, homogeneous and accurate.
 
 Note that this cleaning process \textbf{does not} remove the \mintinline{R}{NA} values, unless necessary. The reason is that, 
-in one instance, there might be important values that should not be eliminated, under a specific scope of study, so we do not treat 
-instances with \mintinline{R}{NA} as an invalid datum. In later sections, when we focus on a specific pattern of the data, only by then
-that the data will have a specialized \mintinline{R}{NA} cleaning, and we do not, by chance, loose any important instance.
+in one instance, there might be important values that should not be eliminated. Under different scopes of study, we can not treat 
+instances with \mintinline{R}{NA} as an invalid datum for all scopes. In later sections, when we focus on a specific pattern of the data, only by then
+that the data will have a tailored \mintinline{R}{NA} cleaning, and we will not, by chance, loose any important instance.
 
 This process took \verb|/rcode/cpu-short.csv| from the importing procedure above as an input, and produce \verb|/rcode/cpu-clean.csv| as
 an output.

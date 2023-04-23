@@ -8,75 +8,23 @@ pacman::p_load(rio,     # for dealing with basic import export
                car)
 library(readr)
 # Import data
+setwd("/Users/admin/Desktop/_probability_PROJECT/btlprob/rcode")
 data <- import("./cpu-clean.csv") # rio::import
 
+# What is the purpose of litho ~ gldate?
+# I thought we agree that they are the same?
 #----------test for litho and gldate ----------(not really good but u can check)#
-# Import data
-data <- import("./cpu-clean.csv") # rio::import
+# Launch date is useless, deprecated.
 
 
-# Only data from 2004 as it is less noisy
-data <- data[data$ldate > 2000,]
 
-# remove data with few count group ldate and remove NA
-data <- data[data$litho !=28,]
-data <- data[data$litho !=130,]
-data$litho <- as.factor(data$litho)
-data$gldate <- cut(data$ldate,
-                   breaks = c(2005,2007.5,2,2010,2012,5,2015.5,Inf))
-                    #labels = c("low","medium","high"))
-data <- data[complete.cases(data[, c("gldate")]), ]
-data <- data[complete.cases(data[, c("litho")]), ]
 
-# create the count table to check for factors with few observation
-table(data$gldate,data$litho)
-count_table<-table(data$gldate,data$litho)
-count_table <- as.data.frame.matrix(count_table > 44)
 
-# loop over the data and add all the row that has factor below the observation limit
-out <- rbind(data[0,])
-for (x in 1:nrow(data)) {
-  # extract the "litho" and "gldate" values for the current row
-  comp <- data[x, c("litho", "gldate")]
-  # check if the corresponding value in "wow" is TRUE
-  if (count_table[comp$gldate,comp$litho] == FALSE) {
-    # TODO if condition is true remove the rows from the data
-    out <- rbind(out,data[x,])
-  }
-}
 
-# remove the row that has below observation limit
-data <- anti_join(x = data, y = out)
-#data <- data[!(data$litho == "90" & data$status == "End of Interactive Support"),]
-data <- data[!(data$litho == "32" & data$gldate == "End of Interactive Support"),]
-# plot for the cleaned data
-ggplot(data, aes(x = ldate,y = bfreq,color = litho))+
-  geom_point()
 
-ggplot(data, aes(x = gldate,y = bfreq,color = litho))+
-  geom_boxplot()
 
-#levent test for Equality of variances
-as.character()
-leveneTest(bfreq ~ as.factor(litho) * gldate ,data = data)
 
-# create anova model of type III as our data is unbalanced
-model<- aov(bfreq ~ litho * gldate ,data = data)
-#Anova(model, type = "III")
-plot(model, 1)
-#take out the residual to check for the normality
-resid <- residuals(model)
 
-#histogram of residual
-ggplot(data,aes(x=resid))+
-  geom_histogram()
-# qqplot of residual
-qqPlot(resid)
-
-# sharpiro test for the residual
-shapiro.test(resid)
-
-summary(model)
 
 #-----------litho and ncore(the only decent stuff)-------------#
 
@@ -148,6 +96,16 @@ qqPlot(resid)
 shapiro.test(resid)
 
 summary(model)
+
+
+
+
+
+
+
+
+
+
 
 #--------------if kruskal only work for one way anova-----------#
 #--------------then we will do only litho and call it-----------#
@@ -225,5 +183,18 @@ summary(model)
 outlier <- data %>% 
   group_by(litho) %>%
   identify_outliers(bfreq)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
