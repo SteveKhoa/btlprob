@@ -4,5 +4,59 @@
 %   
 \clearpage
 \section{Data analysis}
+\label{section:data_analysis}
+
+
+
+
+
+
+
+
+
 \subsection{Analysis of Variance (ANOVA)}
-\subsection{Regression}
+
+In this section, we analyze the relationships between variables, namely \verb|bfreq| with respect to \verb|litho| and \verb|ncore|.
+
+There are interesting facts about the above attributes:
+\begin{itemize}
+    \item \verb|bfreq| is a very good representative for CPU's performance, so we will explore
+    how other factors contribute to the performance of the CPU.
+    \item \verb|litho| represents well for the distinction of each period, in fact, it is
+    a better representation for \verb|ldate|. Refer to \textbf{[Figure \ref{fig:scatter_litho}]} we provided in the last section,
+    with bare eyes, we can see `litho` is associated with the launch-date very well, and
+    it is decreasing over time. What makes it better than \verb|ldate| is that \verb|litho| spans
+    over a period of time, and not fixed to a specific year-quarter. One more advantage
+    is that, some records do not have launch dates, but they have lithography instead, so using
+    it is better to gain more data. We would like to see the impact of decreasing lithography
+    on the performance of the CPU.
+    \item \verb|ncore| is the driving factor of modern computing, which helps computer utilizing 
+    the power of parallelization. This is considered to be a work-around for the approaching lower limit Lithography of 1.5 nanometers
+    \cite{2nm-barrier}. On the other hand, more cores also means more cost 
+    for a CPU to be manufactured. Because of that, analyzing the number of cores with respect to its perform is neccessary to decide
+    whether it is worthy to invest a lot of money produce cores, and whether increasing no. cores impact negatively to the base frequency.
+\end{itemize}
+
+Because of that, we chose to analyze them to get a good insight over our CPU dataset.
+
+Refer to \textbf{Figure \ref{fig:box_bfreq_wrt_ncore_litho}}, we can observe that the means of \textit{Base frequency} 
+of each \textit{Lithography} were approximately the same when \verb|ncore = 4|, while they were more fluctuated for \verb|ncore = 2|.
+From that, we have the following hypotheses:
+\begin{enumerate}
+    \item For \verb|ncore = 4|, the \textit{Base frequencies} are the same among all groups of \textit{Lithography}.
+    \item 
+    \item adkgjakdsg
+    \item adgkajdhg
+\end{enumerate}
+
+\subsubsection{Kruskal-Wallis One-way ANOVA}
+
+\subsubsection{Rank-based Two-way ANOVA}
+
+\subsubsection{Conclusion}
+
+
+
+
+
+\subsection{Regression models}

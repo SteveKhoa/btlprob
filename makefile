@@ -4,7 +4,13 @@
 TARGETS = report.tex
 
 default:
-	pdflatex -shell-escape $(TARGETS)
+	@pdflatex -shell-escape $(TARGETS)
+
+full-build:
+	@pdflatex -shell-escape $(TARGETS)
+	@bibtex refs
+	@pdflatex -shell-escape $(TARGETS)
+	@pdflatex -shell-escape $(TARGETS)
 
 rebuild: clean default
 

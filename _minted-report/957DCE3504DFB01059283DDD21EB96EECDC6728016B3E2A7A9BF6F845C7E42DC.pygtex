@@ -8,7 +8,7 @@
 
 \PYG{n}{data}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{import}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}./cpu\PYGZhy{}raw.csv\PYGZdq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZsh{} rio::import}
 
-\PYG{c+c1}{\PYGZsh{}Data feature selection}
+\PYG{c+c1}{\PYGZsh{}Data attribute selection}
 \PYG{n}{data}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{[,}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Vertical\PYGZus{}Segment\PYGZdq{}}\PYG{p}{,}\PYG{l+s}{\PYGZdq{}Status\PYGZdq{}}\PYG{p}{,}\PYG{l+s}{\PYGZdq{}Launch\PYGZus{}Date\PYGZdq{}}\PYG{p}{,}
 \PYG{+w}{                 }\PYG{l+s}{\PYGZdq{}Lithography\PYGZdq{}}\PYG{p}{,}\PYG{l+s}{\PYGZdq{}Recommended\PYGZus{}Customer\PYGZus{}Price\PYGZdq{}}\PYG{p}{,}
 \PYG{+w}{                 }\PYG{l+s}{\PYGZdq{}nb\PYGZus{}of\PYGZus{}Cores\PYGZdq{}}\PYG{p}{,}\PYG{l+s}{\PYGZdq{}nb\PYGZus{}of\PYGZus{}Threads\PYGZdq{}}\PYG{p}{,}\PYG{l+s}{\PYGZdq{}Processor\PYGZus{}Base\PYGZus{}Frequency\PYGZdq{}}\PYG{p}{,}

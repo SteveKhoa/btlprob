@@ -7,7 +7,7 @@ library(readr)
 
 data <- import("./cpu-raw.csv") # rio::import
 
-#Data feature selection
+#Data attribute selection
 data <- data[, c("Vertical_Segment","Status","Launch_Date",
                  "Lithography","Recommended_Customer_Price",
                  "nb_of_Cores","nb_of_Threads","Processor_Base_Frequency",

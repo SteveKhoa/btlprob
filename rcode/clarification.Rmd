@@ -4,22 +4,14 @@
 ##  Output: None
 ##
 ##
-##  Description:
+##  Description: 
 ##
-##  Caveats:
+##  Caveats: DO NOT CHANGE THE NUMBER OF LINES IN THIS FILE
 ##
 ##  NK
 ##  ---
 
-
-
-
-
-
-
-
-
-PART I. OVERVIEW OF THE FEATURES
+PART I. OVERVIEW OF THE attributeS
 
 LOADING PACKAGES & IMPORTING DATA
 ```{r}
@@ -85,7 +77,7 @@ Histogram of launch date
 ```{r}
 ggplot(data, aes(x = ldate)) +
   geom_histogram(binwidth = 1, fill="deepskyblue") +
-  labs(x = "Date", y = "Count")
+  labs(x = "Date", y = "Count")                      # Label of axes
 ```
 
 Boxplot of Lithography
@@ -127,8 +119,7 @@ ggplot(data, aes(x = market,y = tdp)) +
 summary(data$tdp)
 ```
 
-Histogram of Memmory Bandwith
-Currently hidden in our report.
+Histogram of Memmory Bandwith (HIDDEN IN OUR REPORT)
 ```{r}
 ggplot(data, aes(y = memband)) +
   geom_boxplot(fill="deepskyblue") +
@@ -137,11 +128,57 @@ ggplot(data, aes(y = memband)) +
 summary(data$memband)
 ```
 
-Histogram of Temperature
+Histogram of Temperature (HIDDEN IN OUR REPORT)
 ```{r}
 ggplot(data, aes(x = temp)) +
   geom_histogram(binwidth = 1, fill="deepskyblue") +
   labs(x = "Temperature (°C)", y = "Count")
+```
+
+# NOTE, PLEASE DO NOT CHANGE ANYTHING ABOVE THIS LINE
+# ---------------------------------------------------
+
+
+
+
+
+
+
+
+
+PART 2. ANALYSIS OF attributes
+
+[bfreq & ncore ~ tdp]
+
+We plot the distribution of Thermal Design Power as histogram.
+And cut the outliners
+```{r}
+ggplot(data, aes(x = tdp)) +
+  geom_histogram(binwidth = 5, fill="deepskyblue")
+
+# Data after cut the outliners of TDP
+data2 <- data[data$tdp < 150, ]
+
+# 
+```
+
+Now we will find out, on what attribute that TDP actually depends on.
+
+Test for market ~ tdp
+```{r}
+ggplot(data, aes(x = market,y = tdp))+
+  geom_boxplot(fill="deepskyblue")
+
+# We see that the distribution of Desktop and Server is approximately the same.
+# We will cut the data, containing only Desktop and Server, to perform ANOVA test on it.
+data2 <- subset(data2, data2$market %in% c("Desktop","Server"))
+
+ggplot(data2, aes(x = market,y = tdp))+
+  geom_boxplot(fill="deepskyblue")
+
+ggplot(data2, aes(x = tdp)) +
+  geom_histogram(binwidth = 10, fill="deepskyblue") + 
+  facet_wrap(~data2$market)
 ```
 
 
@@ -152,32 +189,21 @@ ggplot(data, aes(x = temp)) +
 
 
 
-PART 2. ANALYSIS OF FEATURES
 
-[litho & ncore ~ bfreq]
 
-? Why we are interested in Base frequency ?
-bfreq is a very good representative for CPU's performance, so we will explore
-how other factors contribute to the performance of the CPU.
 
-? Why we are interested in litho ?
-Lithography is represents well for the distinction of each period, in fact, it is
-a better representation for `ldate`. Refer to `the plot` we provided in the last section,
-with bare eyes, we can see `litho` is associated with the launch-date very well, and
-it is decreasing over time. What makes it better than `ldate` is that `litho` spans
-over a period of time, and not fixed to a specific year-quarter. One more advantage
-is that, some records do not have launch dates, but they have lithography instead, so using
-it is better to gain more data. We would like to see the impact of decreasing lithography
-on the performance of the CPU.
 
-? Why we are interested in ncore ?
-Number of cores is the driving factor of modern computing, which helps computer utilizing 
-the power of parallelization, which is considered to be a work-around for the approaching lower limit Lithography of 1.5 nanometers. [refer to (https://www.quora.com/Have-we-reached-the-limit-in-lithography-of-CPUs)]. On the other hand, more cores also means more cost for a CPU to be manufactured. Because of that, analyzing the number of cores with respect to its perform is neccessary to decide
-whether it is worthy to invest a lot of money produce cores, and whether increasing no. cores impact negatively to the base frequency.
+
+
+
+
+
+
+
 
 ```{r}
 # We plot the histogram of litho ~ bfreq
-ggplot(data, aes(x = bfreq)) +
+ggplot(data, aes(x = tdp)) +
   geom_histogram(binwidth = 0.1, fill="deepskyblue") + 
   facet_wrap(~data$litho)
 
@@ -191,14 +217,14 @@ data <- subset(data, data$litho %in% c(14,22,32,45))
 
 # We plot the histogram of ncore ~ bfreq
 ggplot(data, aes(x = bfreq)) +
-  geom_histogram(binwidth = 0.1, fill="deepskyblue") + 
+  geom_histogram(binwidth = 2, fill="deepskyblue") + 
   facet_wrap(~data$ncore)
 
 # We see that some categories of ncore are not significant in terms of quantity
 # -> remove it too
 
 # We choose to keep the following category:
-# 1, 2, 4, 6 ,8, 10, 12
+# 2, 4
 data <- subset(data, data$ncore %in% c(2,4))
 
 # Group them as factors
@@ -211,18 +237,20 @@ ggplot(data, aes(x = ncore,y = bfreq,color = litho))+
 ```
 
 
+
+
+ANOVA - one way [litho ~ bfreq when ncore = 4]
+
 Since the variance and normality is not perfect, we better do a non-parametric test,
 such as Kruskal–Wallis one-way analysis of variance.
-ANOVA - one way [litho ~ bfreq]
 
 We can see that the values of the test is small (< 0.05), we can say that there are significant differences between the
-"ranks" (<- explain this furter)
+"ranks" (<- explain this further)
 ```{r}
 ggplot(data, aes(x = litho,y = bfreq))+
   geom_boxplot(fill = "deepskyblue")
 kruskal.test(bfreq ~ litho, data = data)
 ```
-
 
 To see which group is significantly different from others, we must perform a
 post-hoc comparison, in this case, we use Wilcoxon test
@@ -233,12 +261,14 @@ pairwise.wilcox.test(data$bfreq, data$litho, p.adjust.method = "bonferroni")
 
 
 
-
 ANOVA - one way (ncore ~ bfreq)
 
 ```{r}
 # OK YOU GET THE IDEA, PLEASE DO THAT FOR ME VIETTUNG
 ```
+
+
+
 
 ANOVA - two way [litho & ncore ~ bfreq]
 

@@ -1,0 +1,316 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  DATA CLARIFICATION}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  Input: cpu\PYGZhy{}clean.csv}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  Output: None}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  Description: }
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  Caveats: DO NOT CHANGE THE NUMBER OF LINES IN THIS FILE}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  NK}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  \PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n}{PART}\PYG{+w}{ }\PYG{n}{I.}\PYG{+w}{ }\PYG{n}{OVERVIEW}\PYG{+w}{ }\PYG{n}{OF}\PYG{+w}{ }\PYG{n}{THE}\PYG{+w}{ }\PYG{n}{attributeS}
+
+\PYG{n}{LOADING}\PYG{+w}{ }\PYG{n}{PACKAGES}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{+w}{ }\PYG{n}{IMPORTING}\PYG{+w}{ }\PYG{n}{DATA}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{pacman::p\PYGZus{}load(}
+\PYG{n}{  rio,     \PYGZsh{} for imports \PYGZam{} exports}
+\PYG{n}{  ggplot2, \PYGZsh{} for plots}
+\PYG{n}{  zoo      \PYGZsh{} for year\PYGZhy{}quarter formats}
+\PYG{n}{)}
+\PYG{n}{\PYGZsh{}\PYGZsh{}  IMPORT THE DATA}
+\PYG{n}{setwd(\PYGZdq{}/Users/admin/Desktop/\PYGZus{}probability\PYGZus{}PROJECT/btlprob/rcode\PYGZdq{})   \PYGZsh{} set working directory}
+\PYG{n}{data \PYGZlt{}\PYGZhy{} import(\PYGZdq{}cpu\PYGZhy{}clean.csv\PYGZdq{})        \PYGZsh{} rio::import}
+\PYG{n}{```}
+
+\PYG{n}{CATEGORIAL}\PYG{+w}{ }\PYG{n}{PIES}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{\PYGZsh{} Config market pie}
+\PYG{n}{freq = as.vector(table(data\PYGZdl{}market))}
+\PYG{n}{levels = levels(factor(data\PYGZdl{}market))}
+\PYG{n}{title = \PYGZdq{}market\PYGZdq{}}
+\PYG{n}{```}
+
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{\PYGZsh{} Config status pie}
+\PYG{n}{freq = as.vector(table(data\PYGZdl{}status))}
+\PYG{n}{levels = levels(factor(data\PYGZdl{}status))}
+\PYG{n}{title = \PYGZdq{}status\PYGZdq{}}
+\PYG{n}{```}
+
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{\PYGZsh{} Drawing the pie}
+\PYG{n}{\PYGZsh{} Calculate the vector of percentages}
+\PYG{n}{percentages \PYGZlt{}\PYGZhy{} round(}
+\PYG{n}{  100 * freq / sum(freq), }
+\PYG{n}{  1}
+\PYG{n}{  )}
+
+\PYG{n}{\PYGZsh{} Create the data frame of levels, frequency of values, and percentages}
+\PYG{n}{data\PYGZus{}percentages \PYGZlt{}\PYGZhy{} data.frame(}
+\PYG{n}{  market = levels, }
+\PYG{n}{  value = freq, }
+\PYG{n}{  percent = percentages}
+\PYG{n}{  )}
+
+\PYG{n}{\PYGZsh{} Create a pie chart with percentages}
+\PYG{n}{ggplot(}
+\PYG{n}{  data\PYGZus{}percentages, }
+\PYG{n}{  aes(x=\PYGZdq{}\PYGZdq{}, y=value, fill=market)) +}
+\PYG{n}{  geom\PYGZus{}bar(stat=\PYGZdq{}identity\PYGZdq{}, width=1, color=\PYGZdq{}white\PYGZdq{}) + \PYGZsh{} Draw the bar}
+\PYG{n}{  coord\PYGZus{}polar(theta = \PYGZdq{}y\PYGZdq{}) +               \PYGZsh{} Representing the values in polar}
+\PYG{n}{                                           \PYGZsh{} coordinate. Instead of stacked bars}
+\PYG{n}{  \PYGZsh{} Add labels (percentage numbers)}
+\PYG{n}{  geom\PYGZus{}text(}
+\PYG{n}{    aes(label = paste0(percent, \PYGZdq{}\PYGZpc{}\PYGZdq{})),     \PYGZsh{} Concat \PYGZsq{}percent\PYGZsq{} + \PYGZsq{}\PYGZpc{}\PYGZsq{}}
+\PYG{n}{    position = position\PYGZus{}stack(vjust = 0.5) \PYGZsh{} Each slide is a stack bar}
+\PYG{n}{                                           \PYGZsh{} Use position\PYGZus{}stack to stack the labels}
+\PYG{n}{                                           \PYGZsh{} on each slide.}
+\PYG{n}{    ) +}
+\PYG{n}{  labs(fill = title) +}
+\PYG{n}{  theme\PYGZus{}void()}
+\PYG{n}{```}
+
+\PYG{n}{Histogram}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{launch}\PYG{+w}{ }\PYG{n}{date}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = ldate)) +}
+\PYG{n}{  geom\PYGZus{}histogram(binwidth = 1, fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Date\PYGZdq{}, y = \PYGZdq{}Count\PYGZdq{})                      \PYGZsh{} Label of axes}
+\PYG{n}{```}
+
+\PYG{n}{Boxplot}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{Lithography}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = market, y = litho)) +}
+\PYG{n}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Market\PYGZdq{}, y = \PYGZdq{}Lithography (nm)\PYGZdq{})}
+
+\PYG{n}{summary(data\PYGZdl{}litho)}
+\PYG{n}{```}
+
+\PYG{n}{Scatter}\PYG{+w}{ }\PYG{n}{plot}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{Lithography}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = ldate, y = litho)) +}
+\PYG{n}{  geom\PYGZus{}point(color=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Launch Date\PYGZdq{}, y = \PYGZdq{}Lithography (nm)\PYGZdq{})}
+\PYG{n}{```}
+
+\PYG{n}{Boxplot}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{Recommended}\PYG{+w}{ }\PYG{n}{Price}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = market, y = rprice)) +}
+\PYG{n}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Market\PYGZdq{}, y = \PYGZdq{}Recommended Price (\PYGZdl{})\PYGZdq{})}
+\PYG{n}{```}
+
+\PYG{n}{Histogram}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{Base}\PYG{+w}{ }\PYG{n}{frequency}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = bfreq)) +}
+\PYG{n}{  geom\PYGZus{}histogram(binwidth = 0.1, fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Base frequency (GHz)\PYGZdq{}, y = \PYGZdq{}Count\PYGZdq{})}
+\PYG{n}{```}
+
+\PYG{n}{Histogram}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{Thermal}\PYG{+w}{ }\PYG{n}{Design}\PYG{+w}{ }\PYG{n}{Power}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = market,y = tdp)) +}
+\PYG{n}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Market\PYGZdq{}, y = \PYGZdq{}Thermal deisgn power (W)\PYGZdq{})}
+
+\PYG{n}{summary(data\PYGZdl{}tdp)}
+\PYG{n}{```}
+
+\PYG{n}{Histogram}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{Memmory}\PYG{+w}{ }\PYG{n+nf}{Bandwith }\PYG{p}{(}\PYG{n}{HIDDEN}\PYG{+w}{ }\PYG{n}{IN}\PYG{+w}{ }\PYG{n}{OUR}\PYG{+w}{ }\PYG{n}{REPORT}\PYG{p}{)}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(y = memband)) +}
+\PYG{n}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Max Memory Bandwidth (GB/s)\PYGZdq{}, y = \PYGZdq{}Count\PYGZdq{})}
+
+\PYG{n}{summary(data\PYGZdl{}memband)}
+\PYG{n}{```}
+
+\PYG{n}{Histogram}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n+nf}{Temperature }\PYG{p}{(}\PYG{n}{HIDDEN}\PYG{+w}{ }\PYG{n}{IN}\PYG{+w}{ }\PYG{n}{OUR}\PYG{+w}{ }\PYG{n}{REPORT}\PYG{p}{)}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = temp)) +}
+\PYG{n}{  geom\PYGZus{}histogram(binwidth = 1, fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Temperature (°C)\PYGZdq{}, y = \PYGZdq{}Count\PYGZdq{})}
+\PYG{n}{```}
+
+\PYG{c+c1}{\PYGZsh{} NOTE, PLEASE DO NOT CHANGE ANYTHING ABOVE THIS LINE}
+\PYG{c+c1}{\PYGZsh{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+
+
+
+
+
+
+
+
+\PYG{n}{PART}\PYG{+w}{ }\PYG{l+m}{2}\PYG{n}{.}\PYG{+w}{ }\PYG{n}{ANALYSIS}\PYG{+w}{ }\PYG{n}{OF}\PYG{+w}{ }\PYG{n}{attributes}
+
+\PYG{p}{[}\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{+w}{ }\PYG{n}{ncore}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{bfreq}\PYG{p}{]}
+
+\PYG{o}{?}\PYG{+w}{ }\PYG{n}{Why}\PYG{+w}{ }\PYG{n}{we}\PYG{+w}{ }\PYG{n}{are}\PYG{+w}{ }\PYG{n}{interested}\PYG{+w}{ }\PYG{n}{in}\PYG{+w}{ }\PYG{n}{Base}\PYG{+w}{ }\PYG{n}{frequency}\PYG{+w}{ }\PYG{o}{?}
+\PYG{n}{bfreq}\PYG{+w}{ }\PYG{n}{is}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{very}\PYG{+w}{ }\PYG{n}{good}\PYG{+w}{ }\PYG{n}{representative}\PYG{+w}{ }\PYG{n}{for}\PYG{+w}{ }\PYG{n}{CPU}\PYG{l+s}{\PYGZsq{}s performance, so we will explore}
+\PYG{l+s}{how other factors contribute to the performance of the CPU.}
+
+\PYG{l+s}{? Why we are interested in litho ?}
+\PYG{l+s}{Lithography is represents well for the distinction of each period, in fact, it is}
+\PYG{l+s}{a better representation for `ldate`. Refer to `the plot` we provided in the last section,}
+\PYG{l+s}{with bare eyes, we can see `litho` is associated with the launch\PYGZhy{}date very well, and}
+\PYG{l+s}{it is decreasing over time. What makes it better than `ldate` is that `litho` spans}
+\PYG{l+s}{over a period of time, and not fixed to a specific year\PYGZhy{}quarter. One more advantage}
+\PYG{l+s}{is that, some records do not have launch dates, but they have lithography instead, so using}
+\PYG{l+s}{it is better to gain more data. We would like to see the impact of decreasing lithography}
+\PYG{l+s}{on the performance of the CPU.}
+
+\PYG{l+s}{? Why we are interested in ncore ?}
+\PYG{l+s}{Number of cores is the driving factor of modern computing, which helps computer utilizing }
+\PYG{l+s}{the power of parallelization, which is considered to be a work\PYGZhy{}around for the approaching lower limit Lithography of 1.5 nanometers. [refer to (https://www.quora.com/Have\PYGZhy{}we\PYGZhy{}reached\PYGZhy{}the\PYGZhy{}limit\PYGZhy{}in\PYGZhy{}lithography\PYGZhy{}of\PYGZhy{}CPUs)]. On the other hand, more cores also means more cost for a CPU to be manufactured. Because of that, analyzing the number of cores with respect to its perform is neccessary to decide}
+\PYG{l+s}{whether it is worthy to invest a lot of money produce cores, and whether increasing no. cores impact negatively to the base frequency.}
+
+\PYG{l+s}{```\PYGZob{}r\PYGZcb{}}
+\PYG{l+s}{\PYGZsh{} We plot the histogram of litho \PYGZti{} bfreq}
+\PYG{l+s}{ggplot(data, aes(x = bfreq)) +}
+\PYG{l+s}{  geom\PYGZus{}histogram(binwidth = 0.1, fill=\PYGZdq{}deepskyblue\PYGZdq{}) + }
+\PYG{l+s}{  facet\PYGZus{}wrap(\PYGZti{}data\PYGZdl{}litho)}
+
+\PYG{l+s}{\PYGZsh{} We see that some categories of lithography are not significant in terms of}
+\PYG{l+s}{\PYGZsh{} quantity, and do not follow any clear distribution. We will treat them as}
+\PYG{l+s}{\PYGZsh{} outliners.}
+
+\PYG{l+s}{\PYGZsh{} We choose to keep the following category:}
+\PYG{l+s}{\PYGZsh{} 14, 22, 32, 45:}
+\PYG{l+s}{data \PYGZlt{}\PYGZhy{} subset(data, data\PYGZdl{}litho \PYGZpc{}in\PYGZpc{} c(14,22,32,45))}
+
+\PYG{l+s}{\PYGZsh{} We plot the histogram of ncore \PYGZti{} bfreq}
+\PYG{l+s}{ggplot(data, aes(x = bfreq)) +}
+\PYG{l+s}{  geom\PYGZus{}histogram(binwidth = 0.1, fill=\PYGZdq{}deepskyblue\PYGZdq{}) + }
+\PYG{l+s}{  facet\PYGZus{}wrap(\PYGZti{}data\PYGZdl{}ncore)}
+
+\PYG{l+s}{\PYGZsh{} We see that some categories of ncore are not significant in terms of quantity}
+\PYG{l+s}{\PYGZsh{} \PYGZhy{}\PYGZgt{} remove it too}
+
+\PYG{l+s}{\PYGZsh{} We choose to keep the following category:}
+\PYG{l+s}{\PYGZsh{} 2, 4}
+\PYG{l+s}{data \PYGZlt{}\PYGZhy{} subset(data, data\PYGZdl{}ncore \PYGZpc{}in\PYGZpc{} c(2,4))}
+
+\PYG{l+s}{\PYGZsh{} Group them as factors}
+\PYG{l+s}{data\PYGZdl{}ncore \PYGZlt{}\PYGZhy{} as.factor(data\PYGZdl{}ncore)}
+\PYG{l+s}{data\PYGZdl{}litho \PYGZlt{}\PYGZhy{} as.factor(data\PYGZdl{}litho)}
+
+\PYG{l+s}{\PYGZsh{} Now, we visualize all of this up, to see what did we get so far:}
+\PYG{l+s}{ggplot(data, aes(x = ncore,y = bfreq,color = litho))+}
+\PYG{l+s}{  geom\PYGZus{}boxplot()}
+\PYG{l+s}{```}
+
+
+
+
+\PYG{l+s}{ANOVA \PYGZhy{} one way [litho \PYGZti{} bfreq when ncore = 4]}
+
+\PYG{l+s}{Since the variance and normality is not perfect, we better do a non\PYGZhy{}parametric test,}
+\PYG{l+s}{such as Kruskal–Wallis one\PYGZhy{}way analysis of variance.}
+
+\PYG{l+s}{We can see that the values of the test is small (\PYGZlt{} 0.05), we can say that there are significant differences between the}
+\PYG{l+s}{\PYGZdq{}ranks\PYGZdq{} (\PYGZlt{}\PYGZhy{} explain this further)}
+\PYG{l+s}{```\PYGZob{}r\PYGZcb{}}
+\PYG{l+s}{ggplot(data, aes(x = litho,y = bfreq))+}
+\PYG{l+s}{  geom\PYGZus{}boxplot(fill = \PYGZdq{}deepskyblue\PYGZdq{})}
+\PYG{l+s}{kruskal.test(bfreq \PYGZti{} litho, data = data)}
+\PYG{l+s}{```}
+
+\PYG{l+s}{To see which group is significantly different from others, we must perform a}
+\PYG{l+s}{post\PYGZhy{}hoc comparison, in this case, we use Wilcoxon test}
+\PYG{l+s}{[https://en.wikipedia.org/wiki/Kruskal\PYGZpc{}E2\PYGZpc{}80\PYGZpc{}93Wallis\PYGZus{}one\PYGZhy{}way\PYGZus{}analysis\PYGZus{}of\PYGZus{}variance]}
+\PYG{l+s}{```\PYGZob{}r\PYGZcb{}}
+\PYG{l+s}{pairwise.wilcox.test(data\PYGZdl{}bfreq, data\PYGZdl{}litho, p.adjust.method = \PYGZdq{}bonferroni\PYGZdq{})}
+\PYG{l+s}{```}
+
+
+
+\PYG{l+s}{ANOVA \PYGZhy{} one way (ncore \PYGZti{} bfreq)}
+
+\PYG{l+s}{```\PYGZob{}r\PYGZcb{}}
+\PYG{l+s}{\PYGZsh{} OK YOU GET THE IDEA, PLEASE DO THAT FOR ME VIETTUNG}
+\PYG{l+s}{```}
+
+
+
+
+\PYG{l+s}{ANOVA \PYGZhy{} two way [litho \PYGZam{} ncore \PYGZti{} bfreq]}
+
+\PYG{l+s}{Now we construct Two\PYGZhy{}way ANOVA model}
+\PYG{l+s}{```\PYGZob{}r\PYGZcb{}}
+\PYG{l+s}{model\PYGZlt{}\PYGZhy{} aov(bfreq \PYGZti{} litho * ncore ,data = data)}
+\PYG{l+s}{qqPlot(residuals(model))}
+\PYG{l+s}{shapiro.test(residuals(model))}
+\PYG{l+s}{leveneTest(bfreq \PYGZti{} litho *  ncore ,data = data)}
+\PYG{l+s}{Anova(model, type=\PYGZsq{}}\PYG{n}{III}\PYG{l+s}{\PYGZsq{})}
+\PYG{l+s}{```}
+
+
+\PYG{l+s}{Transform the data to rank\PYGZhy{}based. Nonparametric Two\PYGZhy{}way ANOVA}
+\PYG{l+s}{\PYGZdq{}Finaly, let’s perform two\PYGZhy{}way ANOVA on the rank\PYGZhy{}transformed data. Ranking is one of many procedures used to transform data that do not meet the assumptions of normality. Conover and Iman (1981) provided a review of the four main types of rank transformations. One method replaces each original data value by its rank (from 1 for the smallest to N for the largest, where N is the combined data sample size)\PYGZdq{}}
+\PYG{l+s}{[https://www.cfholbert.com/blog/nonparametric\PYGZus{}two\PYGZus{}way\PYGZus{}anova/]}
+
+\PYG{l+s}{As we can see, it looks worse.}
+\PYG{l+s}{```\PYGZob{}r\PYGZcb{}}
+\PYG{l+s}{model\PYGZlt{}\PYGZhy{} aov(rank(bfreq) \PYGZti{} litho * ncore ,data = data)}
+\PYG{l+s}{qqPlot(residuals(model))}
+\PYG{l+s}{shapiro.test(residuals(model))}
+\PYG{l+s}{leveneTest(rank(bfreq) \PYGZti{} litho *  ncore ,data = data)}
+\PYG{l+s}{Anova(model, type=\PYGZsq{}}\PYG{n}{III}\PYG{l+s}{\PYGZsq{}}\PYG{err}{)}
+\PYG{n}{``}`
+
+\PYG{n}{One}\PYG{+w}{ }\PYG{n}{frustrating}\PYG{+w}{ }\PYG{n}{thing}\PYG{+w}{ }\PYG{n}{about}\PYG{+w}{ }\PYG{n}{tests}\PYG{+w}{ }\PYG{n}{is}\PYG{+w}{ }\PYG{n}{that}\PYG{+w}{ }\PYG{n}{they}\PYG{+w}{ }\PYG{n}{are}\PYG{+w}{ }\PYG{n}{very}\PYG{+w}{ }\PYG{n}{sensitive}\PYG{+w}{ }\PYG{n}{to}\PYG{+w}{ }\PYG{n}{large}\PYG{+w}{ }\PYG{n}{data.}
+\PYG{n}{So}\PYG{+w}{ }\PYG{n}{do}\PYG{+w}{ }\PYG{n}{not}\PYG{+w}{ }\PYG{n}{trust}\PYG{+w}{ }\PYG{n}{in}\PYG{+w}{ }\PYG{n}{tests}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{but}\PYG{+w}{ }\PYG{n}{the}\PYG{+w}{ }\PYG{n}{intuition.}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{Verbatim}
