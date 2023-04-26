@@ -255,7 +255,7 @@ data <- clone
 
 data_litho_subset <- subset(data, data$litho %in% c(14,22,32,45,65))
 
-litho_anova_model <- aov(tdp ~ litho ,data = data_litho_subset)
+litho_anova_model <- aov(tdp ~ as.factor(litho) ,data = data_litho_subset)
 # OK, pretty bad that the residuals of the subset of Lithography does not folow Normality, so we can not just use One-way ANOVA.
 
 # Levene's & Shapiro
@@ -264,12 +264,52 @@ litho_anova_model <- aov(tdp ~ litho ,data = data_litho_subset)
 # 12 -> 65 : kruskal does not detect any differences
 kruskal.test(tdp ~ litho, data = data_litho_subset)
 
+# no need for Tukey post hoc test as all the mean are equal
+# Kruskal test
+kruskal.test(tdp ~ litho, data = data_litho_subset)
+# no need for Kruskal post hoc test as all the mean are equal
+
 # (should add this to the conclusion of the regression model)
 # We can conclude that, over the entire the development of lithography, thermal design power changes, but recently,
 # Intel has done their job to keep the TDP as stable as possible over the smaller lithography. That is illustrated by
 # minor differences between 12, 22, 32, 45 and 65, in which there are no statistically differences between them.
 ```
+## One way ANOVA for tdp ~ market
+```{R}
+data <- clone
+#box plot
+ggplot(data, aes(x = market,y = tdp,color = market))+
+  geom_boxplot()
 
+
+# create anova model 
+model<- aov(tdp ~ market ,data = data)
+
+#take out the residual to check for the normality
+resid <- residuals(model)
+
+# qqplot of residual
+qqPlot(resid)
+
+# sharpiro and levene test to check the assumption
+shapiro.test(resid)
+leveneTest(tdp ~ as.factor(market),data = data)
+
+# summary of the model only for reference as our data does not satisfy the Homogeneity of variance and the Normality assumption
+
+summary(model)
+
+# post hoc Tukey test
+Tukey<-TukeyHSD(model)
+# If the line touch 0 it has the same mean https://www.r-bloggers.com/2021/08/how-to-perform-tukey-hsd-test-in-r/
+Tukey
+plot(Tukey,las = 2)
+# Kruskal test
+kruskal.test(tdp ~ market, data = data)
+#post hoc Kruskal test
+# Overall it give a similar result to anova and TUKEY HSD which show that none of the mean are equal
+dunnTest(tdp ~ as.factor(market), data = data,method = "bonferroni")
+```
 ### 1. multi-linear model [ncore + bfreq + litho + temp ~ tdp]
 
 -   The fact that we use too much data so `Pr(>|t|)` values are oddly small,
