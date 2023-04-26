@@ -1,0 +1,216 @@
+---
+title: "REGRESSION MODEL"
+author: "Thanh Dinh"
+date: "April 2023"
+output: 
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+<http://rmarkdown.rstudio.com> **Knit**
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+
+
+
+
+## Preperation for code running
+We need to attach some library to ensure that all functions below can run smoothly
+```{r}
+library(car)
+library(caret)
+library(dplyr)
+library(drc)
+library(ggplot2)
+library(lessR)
+library(randomForest)
+library(readr)
+library(nlme)
+library(nls.multstart)
+library(pacman)
+library(readxl)
+library(tidyverse)
+```
+
+Beside, it is essential to change the directory of data to run this code
+```{r}
+# LOAD ORIGINAL DATA FRAME -----------------------------------------------------
+
+# Remember to modify the directory of the data
+DIR = "C:/ACA/PnS_Project/cpu-clean.csv"
+
+df <- read.csv(DIR)
+df = na.omit(df)
+```
+
+## Splitting data into train set and validated set
+Before building model for prediction, we must seperate data into 2 data set: train set and validated set (test set). 80% data is used for train set, while the remaining 20% data is used for test set.
+
+```{r}
+# Set default seed for random
+set.seed(123)
+#Use 80% of data frame as training set and 20% as test set
+train_indices <- sample(1:nrow(df), nrow(df) * 0.8)
+train <- df[train_indices, ]
+test <- df[-train_indices, ]
+head(train, 5)
+head(test, 5)
+# head(train, 5)
+# head(test, 5)
+```
+
+
+## Multi-linear regression model
+
+Since the scatter plot (in report) of the feature **thermal design power** (tdp) with other variables, it can be seen that they may related to **Linear regression**
+
+To start with, we build a linear regression model using **lm()**
+
+```{r}
+# Model and summary
+model.lr <- lm(tdp ~ ncore + temp + bfreq, data = train)
+summary(model.lr)
+```
+
+// Add image + ... here ------------
+
+```{r}
+# Plotting residual histogram
+hist(resid(model.lr))
+```
+Base on the summary of this model, we can come up with a model for this relationship:
+tdp = 88.36451 + 5.3557 × ncore − 1.06298 × temp + 18.44835 × bfreq 
+
+
+To test if the residuals is normally distributed, we plot the Q-Q plot using the command plot()
+```{r}
+plot(model.lr, which = 2)
+```
+
+At the end of this model, we will do the scatter plotting for the predicted value compared with the real value in test set. The plotted red line in graph is (d) y = x. The more concentration on this line the more correct the model does.
+
+```{r}
+# Create data frame for real tdp value and predicted tdp value
+comtab.lr <- test['tdp']
+comtab.lr['tdp_predicted'] <- as.data.frame(predict(model.lr, newdata = test), row.names = NULL)
+
+# Plotting
+plot(comtab.lr$tdp, comtab.lr$tdp_predicted, xlab = "tdp", ylab = "tdp_predicted", asp = 1)
+x <- -5:500
+y <- x
+lines(x, y, col = "red", lwd = 2)
+```
+
+## Random forest regression model
+In this section, we will introduce Random Forest regression model. In fact, random forest models are often used for predicting system performance metrics such as CPU usage, re-sponse time, and throughput. The algorithm can handle both continuous and categorical data, making it a suitable choice for modeling CPU attribute data that may contain a mix of numerical and categorical variables.
+
+First, we build the Random Forest Regression model with **randomForest()**.
+
+```{r}
+# Model and summary
+model.rfr <- randomForest(formula = tdp ~ bfreq + ncore + temp, data = train, ntree = 500)
+print(model.rfr)
+summary(model.rfr)
+```
+
+Another method to test the fitness of this model is checking the Mean Absolute Error (MAE) of this model. The lower the MAE, the better this model validates our hypothesis. To check MAE, using the following commands
+
+```{r}
+# Create data frame for real tdp value and predicted tdp value
+comtab.rfr <- test['tdp']
+comtab.rfr['tdp_predicted'] <- as.data.frame(predict(model.rfr, newdata = test), row.names = NULL)
+
+# Evaluate model performance
+accuracy <- sum(1-(comtab.rfr$tdp_predicted - comtab.rfr$tdp) / comtab.rfr$tdp) / nrow(comtab.rfr)
+print(accuracy)
+error <- sum(abs(comtab.rfr$tdp_predicted - comtab.rfr$tdp)) / nrow(comtab.rfr)
+print(error)
+```
+
+Similarly with the R-squared validation, to compute the R-squared value, we use the following commands
+```{r}
+# Calculate R-squared on testing data
+r2_test <- cor(comtab.rfr$tdp, comtab.rfr$tdp_predicted)^2
+print(r2_test)
+```
+
+Because the assumption of this Random Forest model requires that the residual must follow normal distribution, we will use Q-Q plot to test if the residuals is normally distributed:
+
+```{r}
+# Calculate the residuals by subtracting the actual values from the predicted values
+residuals <- comtab.rfr$tdp - comtab.rfr$tdp_predicted
+
+# Create a normal probability plot of the residuals
+qqnorm(residuals)
+qqline(residuals)
+```
+
+At the end of this model, we will do the scatter plotting for the predicted value compared with the real value in test set. The plotted red line in graph is (d) y = x. The more concentration on this line the more correct the model does.
+```{r}
+# Plotting
+plot(comtab.rfr$tdp, comtab.rfr$tdp_predicted, xlab = "tdp", ylab = "tdp_predicted", asp = 1)
+x <- -20:30000
+y <- x
+lines(x, y, col = "red", lwd = 2)
+```
+
+
+## LOGISTIC REGRESSION MODEL
+Logistic Regression is a type of statistical analysis that is used to model and predict the probability of a binary outcome based on one or more predictor variables. It is a type of supervised learning algorithm that is commonly used in machine learning and data analysis.
+
+Because we have learned that each features have significant relationship with each others, we want to study that if the CPU chips manufactured for market Desktop or Server is different from that of the rest of the market: Mobile and Embedded. Now, we will label each with corresponding type 1 or 0; 1 for market Desktop or Server and 0 for the rest:
+
+```{r}
+# Add Type column
+# Server or Desktop will be in type 1, otherwise type 0
+train$type <- ifelse(train$market == 'Server' | train$market == 'Desktop', 1, 0)
+test$type <- ifelse(test$market == 'Server' | test$market == 'Desktop', 1, 0)
+```
+
+Then, we will build the logistic model for train dataset and make prediction using test data set
+```{r}
+# Model
+model.l <- glm(type ~ bfreq + ncore + temp, data = train, family = 'binomial')
+
+# Make predictions on the test data
+predicted_probs <- predict(model.l, newdata = test, type = "response")
+predicted_classes <- ifelse(predicted_probs > 0.5, 0, 1)
+```
+
+Now, different from other two previous models, evaluate the performance of a binary classification model, such as a logistic regression model, we use confusion matrix. The
+confusion matrix provides a summary of the number of correct and incorrect predictions made by the model, and is constructed by comparing the predicted values of the model with the actual values of the dependent variable
+
+```{r}
+# Evaluate model performance
+# Convert the predicted classes and actual classes to factors with the same levels and labels
+predicted_classes_factor <- factor(predicted_classes, levels = c(0, 1), labels = c("Negative", "Positive"))
+actual_classes_factor <- factor(test$type, levels = c(0, 1), labels = c("Negative", "Positive"))
+
+# Create a confusion matrix
+conf_matrix <- confusionMatrix(predicted_classes_factor, actual_classes_factor)
+```
+
+Then, we express it out with these below commands
+```{r}
+# Print the confusion matrix
+print(conf_matrix)
+
+# Print performance metrics
+print(paste("Accuracy:", conf_matrix$overall['Accuracy']))
+print(paste("Precision:", conf_matrix$byClass['Pos Pred Value']))
+print(paste("Recall:", conf_matrix$byClass['Sensitivity']))
+print(paste("F1 score:", conf_matrix$byClass['F1']))
+```
+To use a confusion matrix to evaluate the performance of a logistic regression model, the first step is to use the model to make predictions on a test dataset that was not used to train the model. Then, the predicted values of the model are compared to the actual values of the dependent variable, and a confusion matrix is constructed
