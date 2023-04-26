@@ -145,8 +145,9 @@ ggplot(data, aes(x = temp)) +
 
 
 
-PART 2. Support arguments of the Regression model
+PART 2. Regression models
 
+Load and split the dataset
 ```{r}
 pacman::p_load(
   rio,     # for imports & exports
@@ -160,7 +161,7 @@ data <- import("cpu-clean.csv")        # rio::import
 # CLEAN THE DATA
 # hist(data$tdp)
 
-data <- data[data$tdp < 175, ]
+data <- data[data$tdp < 150, ]
 data <- data[!is.na(data$tdp), ]
 data <- data[!is.na(data$bfreq), ]
 data <- data[!is.na(data$litho), ]
@@ -178,7 +179,98 @@ train <- data[train_indices, ]
 test <- data[-train_indices, ]
 ```
 
-1. multi-linear model [bfreq * litho * ncore ~ tdp]
+-   A few plots to clarify our intentions
+
+-   We want to focus on TDP.
+
+```{r}
+plot_data <- clone
+
+plot_data$ncore <- as.factor(plot_data$ncore)
+
+# There is a clear linear trend between ncore ~ tdp
+ggplot(plot_data, aes(x = ncore, y = tdp)) +
+  geom_boxplot(fill="deepskyblue")
+
+# Bfreq is a bit random, but the trend of linearity is still evident
+ggplot(plot_data, aes(x = bfreq, y = tdp)) +
+  geom_point(color="deepskyblue")
+
+plot_data$litho <- as.factor(plot_data$litho)
+
+# Lithograhpy as tdp is less convincing however, we wee that recent lithography techniques
+# tend to have stable bfreq
+ggplot(plot_data, aes(x = litho, y = tdp)) +
+  geom_boxplot(fill="deepskyblue")
+
+# For temperature < 100, tdp increases upward, but drops when it is > 100.
+ggplot(plot_data, aes(x = temp, y = tdp)) +
+  geom_point(color="deepskyblue", )
+
+# We see that the CPUs produced for each market is different, but there are clear distinction between Desktop and Embedded.
+ggplot(plot_data, aes(x = market, y = tdp)) +
+  geom_boxplot(fill="deepskyblue")
+```
+### 0.1 Lithography as an era of CPU design.
+
+## 0.1.1 Lithography distinction over the years
+```{r}
+data <- clone
+
+# quantile(data$ldate,na.rm = T,probs = c(0.05,0.95))
+
+data$litho <- as.factor(data$litho)
+
+retval <- data.frame(NA, NA, NA)
+names(retval)<-c("5% quantile","95% quantile", "Interval")
+
+for (lit in levels(data$litho))
+{
+      quants <- quantile(
+        data[data$litho == lit, ]$ldate,
+        na.rm = T,
+        probs = c(0.05,0.95)
+      )
+      
+      new_row <- data.frame(quants[1], quants[2], quants[2]-quants[1])
+      names(new_row)<-c("5% quantile","95% quantile", "Interval")
+      
+      retval <- rbind(retval, new_row)
+}
+rownames(retval) <- c("NULL", levels(data$litho))
+retval <- retval[-1,]
+
+print(retval)
+
+ggplot(data, aes(x = ldate, y = litho)) +
+  geom_boxplot(fill="deepskyblue")
+```
+## 0.1.2 Stability of Lithography in recent years
+```{r}
+data <- clone
+
+# We can see that recent Lithography is approximately the same, we will try to test it (using ANOVA)
+# We will try to test [14, 22, 32] to see whether it is the same or not, and is there any improvements in
+# tdp recent among Intel CPUs
+
+data_litho_subset <- subset(data, data$litho %in% c(14,22,32,45,65))
+
+litho_anova_model <- aov(tdp ~ litho ,data = data_litho_subset)
+# OK, pretty bad that the residuals of the subset of Lithography does not folow Normality, so we can not just use One-way ANOVA.
+
+# Levene's & Shapiro
+
+# Let's use Kruskal–Wallis one-way analysis of variance - a nonparametric test.
+# 12 -> 65 : kruskal does not detect any differences
+kruskal.test(tdp ~ litho, data = data_litho_subset)
+
+# (should add this to the conclusion of the regression model)
+# We can conclude that, over the entire the development of lithography, thermal design power changes, but recently,
+# Intel has done their job to keep the TDP as stable as possible over the smaller lithography. That is illustrated by
+# minor differences between 12, 22, 32, 45 and 65, in which there are no statistically differences between them.
+```
+
+### 1. multi-linear model [ncore + bfreq + litho + temp ~ tdp]
 
 -   The fact that we use too much data so `Pr(>|t|)` values are oddly small,
 and the responses are extremely fit. That is one of the weakness of
@@ -187,55 +279,109 @@ the R-squared value is acceptable, so this model is fitted properly.
 
 ```{r}
 data <- clone
-
-# Why we choose ncore, bfreq and litho (plot some stuff)
-plot(tdp ~ ncore, data=data)
-plot(tdp ~ bfreq, data=data)
-plot(tdp ~ litho, data=data)
-plot(tdp ~ temp, data=data)
-
 # Config model
 # Interchange the independent variables, we can see the difference in root mean squared error
 # Choose the config with the least root mean squared error
-# Perhaps you might use ANOVA to explain why we choose these configurations
-model.lr <- lm(tdp ~ ncore + bfreq + litho + temp + market, data = train) 
+# Choosing more attributes lead to smaller mean squared error, however, normality
+# is also gradually damaged. Because of that, only a few notable attributes are selected.
 
-# Test Normality Assumption & test homoscedasticity -> acceptable
-hist(resid(model.lr))
-plot(model.lr, which = 2)
+# litho do not contribute so much to the prediction. (We see it on the previous section)
+# However, adding one more attribute to the model improves normality, and does decrease
+# RMSE a little bit, so we added it anyway attribute we choose, the less
+
+# We also see that the more attributes included, the better the model performs.
+model.lr <- lm(tdp ~ ncore + bfreq + temp + litho, data = train) 
+
+# Test for Normality
+# and homoscedasticity
+ggplot(model.lr, aes(x = resid(model.lr))) +
+  geom_histogram(binwidth = 2, fill="deepskyblue") # histogram of residuals
+ggplot(model.lr, aes(sample = rstandard(model.lr))) +
+  stat_qq(shape=1, color="blue") + stat_qq_line() +
+  labs(x="Theoretical quantiles", y="Standardized residuals")
 
 # Summary of the model
 summary(model.lr)
 
 # Create data frame for real tdp value and predicted tdp value (for Testing the test set)
 comtab.lr <- test['tdp']
-comtab.lr['tdp_predicted'] <- as.data.frame(predict(model.lr, newdata = test), row.names = NULL)
+comtab.lr['tdp_predicted'] <- as.data.frame(predict(model.lr, newdata = test))
 
 # Plotting
-plot(comtab.lr$tdp, comtab.lr$tdp_predicted, xlab = "tdp", ylab = "tdp_predicted", asp = 1)
-lines(-5:500, -5:500, col = "red", lwd = 2)
+# The majority of points lie near the line, so its ok.
+ggplot(comtab.lr, aes(x = tdp, y = tdp_predicted)) +
+  geom_point(shape=1, color="blue") +
+  geom_abline(mapping=aes(intercept= 0, slope=1), color="darkblue") +
+  labs(x = "TDP", y = "TDP Predicted")
 
 # Check root mean squared error
-rmse <- sqrt ( sum((comtab.lr$tdp_predicted - comtab.lr$tdp)^2) / nrow(comtab.lr) )
+rmse <- sqrt(mean((comtab.lr$tdp_predicted - comtab.lr$tdp)^2))
 print(paste0("Root Mean Squared Error: ", rmse))
 ```
 
-2. random-forrest model [bfreq * ncore * temp ~ tdp] : 
+### 2. random-forrest model [ncore + bfreq + temp + litho ~ tdp] : 
 
--   We want to improve the the prediction of tdp -> lets use a different model
 -   Why use tree-based regression model?
--   Why random forrest? but not normal regression model?
--   it must be labelled
+As we saw from the above Linear Regression model. The relationships are not always linear
+for all attributes. In fact, some attributes (such as ncore, temp and market) are
+really different in each neighborhood
+  -   ncore is somehow divided into some distinguished parts. And each part (or cluster) have a very different
+  from each other. (Kruskal-test)
+  -   different trends observed for temp (use Covariance)
+  -   clear distinction between markets (visualization)
+Furthermore, we have abundant amount of data (> 1500 instances in the training set), which cover almost everything Intel has. This model
+also does not need strict requirements like normality and homoscedasticity. With the amount of instances we have, and the high variance characteristic
+of our dataset, adding more attributes will not likely to overfit our model, but infact improve accuracy. So it is reliable to use our dataset to examine the big picture 
+of the Intel's CPU industry.
+  ->    Because of that, it is better to use a regression tree model
+
+- Why random forrest?
+Random forrest is just an augmentation of regression trees and decision trees. In our dataset, there is a complex interaction between the variables that 
+we are not really sure to figure it out with bare eyes. Therefore, by using a random forrest, we can let the algorithm automatically capture these interaction,
+and choose the best interaction possible. This could help us to minimize our RMSE, still apparently large in our last attempt of linear regression.
+
+- Practical incentives
+Random forrest is frequently used as a good model to predict trends in the CPU industry [needs citation]
+
+    -- Hypothesis testing --
+    1: Abnomal stability of TDP w.r.t ncores
+      `Abnomal` since it is not really `linear` as expected in the model above.
+    2: Different trends within `temp`
+```{r}
+data <- clone
+
+# Hypothesis testing 1
+group1 <- subset(data, data$ncore %in% c(1,2))
+group3 <- subset(data, data$ncore %in% c(6,8,10,12,14))
+group4 <- subset(data, data$ncore %in% c(15,16,18,20,22))
+
+library(car)
+model<- aov(tdp ~ ncore ,data = group1)
+qqPlot(residuals(model))
+# Just by plotting a few graphs, we see that the data is not normal, therefore we must use kruskal-wallis test.
+
+# First we test if the groups are properly clustered
+kruskal.test(tdp ~ ncore, data = group1) 
+kruskal.test(tdp ~ ncore, data = group3)
+kruskal.test(tdp ~ ncore, data = group4)
+# TDP varies in ncore=(1..4), the become very stable in ncore=(6..14), and fluctuating a bit from (15..22)
+
+
+# Hypothesis testing 2
+group1 <- data[data$temp < 85, ]
+group2 <- data[data$temp >= 85, ]
+
+cov(group1$tdp, group1$temp)
+cov(group2$tdp, group2$temp)
+# The covariance between groups are not the same, indicating that they do not follow a homogeneous trend.
+```
 
 ```{r}
 data <- clone
 
 library(randomForest)
-# We have to use as many trees as possible, however n=500 is good enough.
-# We try different settings and see that this set of features produce the least error
-# (DONT FORGET TO SHOW SOME SET OF CONFIGURATIONS)
-# Perhaps you might use ANOVA to explain why we choose these configurations
-model.rfr <- randomForest(formula = tdp ~ ncore + bfreq + temp + litho , data = train, ntree = 500)
+# We ought to use as many trees as possible, however n=500 is good enough.
+model.rfr <- randomForest(formula = tdp ~ ncore + bfreq + temp + litho + market + status, data = train, ntree = 500)
 print(model.rfr)
 
 # Create data frame for real tdp value and predicted tdp value
@@ -243,38 +389,72 @@ comtab.rfr <- test['tdp']
 comtab.rfr['tdp_predicted'] <- as.data.frame(predict(model.rfr, newdata = test), row.names = NULL)
 
 # Plot the predicted - actual
-plot(comtab.rfr$tdp, comtab.rfr$tdp_predicted, xlab = "tdp", ylab = "tdp_predicted", asp = 1)
-lines(-5:500, -5:500, col = "red", lwd = 2)
+ggplot(comtab.rfr, aes(x = tdp, y = tdp_predicted)) +
+  geom_point(shape=1, color="blue") +
+  geom_abline(mapping=aes(intercept= 0, slope=1), color="darkblue") +
+  labs(x = "TDP", y = "TDP Predicted")
 
 # Compute error
 # We see that this is much better than the linear regression model (smaller than linear model)
-rmse <- sqrt ( sum((comtab.rfr$tdp_predicted - comtab.rfr$tdp)^2) / nrow(comtab.rfr) )
+rmse <- sqrt(mean((comtab.rfr$tdp_predicted - comtab.rfr$tdp)^2))
 print(paste0("Root Mean Squared Error: ", rmse))
+
+# The error is not consistent, however. It is expected, since the regression trees are generated "randomly". However, the mean and error of RMSE
+# is still pretty stable, and around ~10.54 -> ~10.59, pretty small (about 2x small) compare to multi-linear model.
 ```
 
-3. logistic model [bfreq * ncore * temp ~ market] 1.9%
+### 3. logistic model [ncore + bfreq + temp + litho ~ market]
+
+    -- Hypothesis testing --
+    Assumption: There is significant differences between CPUs produced for Desktop
+    & Server than ones produced for Embedded & Mobile
+    
+```{r}
+data <- clone
+
+# Computers - Desktop and Server
+# Devices - Embedded  and Mobile
+data$type <- ifelse(data$market == 'Server' | data$market == 'Desktop', "Computers", "Devices")
+
+data$type <- as.factor(data$type)
+# Plot it out
+ggplot(data, aes(x = type, y = tdp)) +
+  geom_boxplot(fill="deepskyblue")
+
+# We can see that there is an enourmous difference between Devices and Computers
+# So we are confident that these two has a completely different market segmentation
+# just by looking at TDP
+
+# In this case, the difference is very apparent. We don't need to use Hypothesis Testing.
+```
+
+-   We will try to classify which market CPU should belong too based on TDP
+-   And also on its other determinants
 
 ```{r}
 data <- clone
 
-# Add Type column
 # Server or Desktop will be in type 1, otherwise type 0
 train$type <- ifelse(train$market == 'Server' | train$market == 'Desktop', 1, 0)
 test$type <- ifelse(test$market == 'Server' | test$market == 'Desktop', 1, 0)
 
 # Model
-model.l <- glm(type ~ tdp, data = train, family = 'binomial')
+model.l <- glm(type ~ tdp, data = train, family = 'binomial') # Model 1
+model.l_others <- glm(type ~ temp, data = train, family = 'binomial') # Model 2
+# also check the model.l with type ~ temp -> contrast the difference
 
+### FOR MODEL 1
 # Config predictions' parameters on the test data
+# Heauristically, we see that with threshold = 0.6, we receive the best accuracy
 predicted_probs <- predict(model.l, newdata = test, type = "response")
-predicted_classes <- ifelse(predicted_probs > 0.5, 0, 1)
-
-plot(model.l)
+predicted_classes <- ifelse(predicted_probs > 0.6, 1, 0)
 
 # Evaluate model performance
 # Convert the predicted classes and actual classes to factors with the same levels and labels
-predicted_classes_factor <- factor(predicted_classes, levels = c(0, 1), labels = c("Negative", "Positive"))
-actual_classes_factor <- factor(test$type, levels = c(0, 1), labels = c("Negative", "Positive"))
+predicted_classes_factor <- 
+  factor(predicted_classes, levels = c(0, 1), labels = c("Negative", "Positive"))
+actual_classes_factor <- 
+  factor(test$type, levels = c(0, 1), labels = c("Negative", "Positive"))
 
 # Create a confusion matrix
 library(caret)
@@ -284,10 +464,10 @@ conf_matrix <- confusionMatrix(predicted_classes_factor, actual_classes_factor)
 print(conf_matrix)
 
 # Print performance metrics
-print(paste("Accuracy:", conf_matrix$overall['Accuracy']))
-# print(paste("Precision:", conf_matrix$byClass['Pos Pred Value']))
-# print(paste("Recall:", conf_matrix$byClass['Sensitivity']))
-# print(paste("F1 score:", conf_matrix$byClass['F1']))
+print(paste("Model 1 - Accuracy:", conf_matrix$overall['Accuracy']))
+print(paste("Model 1 - Precision:", conf_matrix$byClass['Pos Pred Value']))
+print(paste("Model 1 - Recall:", conf_matrix$byClass['Sensitivity']))
+print(paste("Model 1 - F1 score:", conf_matrix$byClass['F1']))
 ```
 
 
@@ -300,45 +480,26 @@ print(paste("Accuracy:", conf_matrix$overall['Accuracy']))
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+### DO NOT CONSIDER FROM THIS LINE
+### ------------------------------
 
 PART 3. ANALYSIS OF VARIANCE (focusing on tdp)
 (actually this part came before PART 2. :) )
 
 ANOVA [litho ~ tdp]
-
-```{r}
-data <- clone
-data_plot <- data
-data_plot$litho <- as.factor(data$litho)
-
-ggplot(data_plot, aes(x = litho,y = tdp))+
-  geom_boxplot(fill="deepskyblue")
-
-# We can see that recent Lithography is approximately the same, we will try to test it (using ANOVA)
-# We will try to test [14, 22, 32] to see whether it is the same or not, and is there any improvements in
-# tdp recent among Intel CPUs
-
-# data_litho_subset <- subset(data, data$litho %in% c(14,22,32,45,65))
-data_litho_subset <- data
-
-litho_anova_model <- aov(tdp ~ litho ,data = data_litho_subset)
-qqPlot(residuals(litho_anova_model))
-# OK, pretty bad that the residuals of the subset of Lithography does not folow Normality, so we can not just use One-way ANOVA.
-
-# Let's use Kruskal–Wallis one-way analysis of variance - a nonparametric test.
-# 12 -> 65 : kruskal does not detect any differences
-# 12 -> all : kruskal DETECTS tremendous differences
-kruskal.test(tdp ~ litho, data = data_litho_subset)
-
-# We perform a post-hoc comparisons between each lithography group to see which groups are different from others
-pairwise.wilcox.test(data$tdp, data$litho, p.adjust.method = "bonferroni")
-# Looking at the results, we see (explains...)
-
-# (should add this to the conclusion of the regression model)
-# We can conclude that, over the entire the development of lithography, thermal design power is increasing, but recently,
-# Intel has done their job to keep the TDP as stable as possible over the smaller lithography. That is illustrated by 
-# minor differences between 12, 22, 32, 45 and 65, in which there are no statistically differences between them
-```
 
 [ncore ~ tdp]
 
@@ -370,28 +531,6 @@ Well, nothing to ANOVA here really. ncore is not categorical
 
 
 
-
-Now we will find out, on what attribute that TDP actually depends on.
-
-Test for market ~ tdp
-```{r}
-ggplot(data, aes(x = market,y = tdp))+
-  geom_boxplot(fill="deepskyblue")
-
-# We see that the distribution of Desktop and Server is approximately the same.
-# We will cut the data, containing only Desktop and Server, to perform ANOVA test on it.
-data3 <- subset(data, data$market %in% c("Desktop","Server"))
-ggplot(data2, aes(x = market,y = tdp))+
-  geom_boxplot(fill="deepskyblue")
-
-data4 <- subset(data, data$market %in% c("Embedded","Mobile"))
-ggplot(data3, aes(x = market,y = tdp))+
-  geom_boxplot(fill="deepskyblue")
-
-
-kruskal.test(tdp ~ market, data = data3)
-kruskal.test(tdp ~ market, data = data4)
-```
 
 
 
