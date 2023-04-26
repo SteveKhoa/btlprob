@@ -319,7 +319,7 @@ rmse <- sqrt(mean((comtab.lr$tdp_predicted - comtab.lr$tdp)^2))
 print(paste0("Root Mean Squared Error: ", rmse))
 ```
 
-### 2. random-forrest model [ncore + bfreq + temp + litho ~ tdp] : 
+### 2. random-forrest model : 
 
 -   Why use tree-based regression model?
 As we saw from the above Linear Regression model. The relationships are not always linear
