@@ -1,81 +1,34 @@
-##  DATA CLEANING
-##
-##  Input: cpu-short.csv
-##  Output: cpu-clean.csv
-##
 ##  Dataset flow
 ##      cpu-raw.csv ---importing.r---> cpu-short.csv ---cleaning.r---> cpu-clean.csv
-##
-##  Description:
-##      The dataset produced by this code is cleaned and all unecessary strings
-##      such as 'nm', 'GHz', 'MHz' are cut out. Only numeric values are left.
-##
-##  Caveats:
-##      The NAs values are intentially NOT removed yet. It must be further 
-##      processed for you own interest.
-##
-##  NK
-##  ---
-
 ```{r}
-##  LOAD NECESSARY PACKAEGS
+
 pacman::p_load(
   rio,     # for imports & exports
   ggplot2, # for plots
   zoo      # for year-quarter formats
   )
-##  IMPORT THE DATA
-setwd("/Users/admin/Desktop/_probability_PROJECT/btlprob/rcode")   # set working directory
+
+setwd("/Users/admin/Desktop/_probability_PROJECT/btlprob/rcode")  # set working directory
 data <- import("cpu-short.csv")        # rio::import
 
-##
-##  CLEANING PROCESS
-##
-##  Since the original dataset contains non-numeric values, which is not suitable 
-##  for analyzing. The cleaning process attempts to normalize the data, into usable
-##  typeclasses.
-##  ---
-
-##  DATE
-#     note     "Q%q'%y"        : Our raw date format.
-#                                %q means quarter
-#                                %y means year
-#                                Just like C-format!
-#
-#     Transform raw date format into zoo's standard date format.
-#     Zoo's standard date format is easier to deal with, such as
-#     
 data[,"ldate"] <- (
   as.yearqtr(data[,"ldate"], format = "Q%q'%y")
 )
 
-##  LITHO
-#
-#     Remove "nm" from all lithography values, so we used
-#     gsub to substitute all patterns of " nm" with "".
-#    
 data[,"litho"] <- as.numeric(
   gsub(" nm", "", data[,"litho"])
 )
 
-##  RPRICE
 data[,"rprice"] <- gsub(
   "(^\\$(\\d)+.(\\d)+ - )", 
   "", 
   data[,"rprice"]
   )
-#preporcess prices - stage 2 : change all "N/A" to N/A
+
 data$rprice <- ifelse(data$rprice == "N/A", NA, data$rprice)
-# Preprocess prices - stage 3 : Cut out dollar sign '$ '
+
 data$rprice <- as.numeric(gsub('\\$|,', '', data$rprice))
 
-##  BFREQ
-#     note     /regex/       : Regex to match "GHz" or "MHz"
-#
-#     First, remove all occurences of "GHz" and "MHz".
-#     Second, all values greater than 10 must be MHz, we multiply them by 0.001
-#     They must be truncated first
-#
 data[,"bfreq"] <- as.numeric(
   gsub("( GHz)|( MHz)", "", data[,"bfreq"])
 )
@@ -83,17 +36,11 @@ data<- data[!is.na(data$bfreq), ]   # Truncate NAs because subscripting with NA
                                     # is not allowed.
 data$bfreq[data$bfreq > 10] <- data$bfreq[data$bfreq > 10]*0.001
 
-##  TDP
-#
-#     Remove all occurences of "W"
-#
 data[,"tdp"] <- as.numeric(
   gsub(" W", "", data[,"tdp"])
 )
 
-##  TEMP
-#     note    /regex/         : Match all decimal numbers and their sign
-#                               perl=TRUE to enable extended Regex feature
+#     perl=TRUE to enable extended Regex feature
 #     
 #     First, we match ony the decimal numbers, and separate them by comma,
 #     (all characters unrelated to a specific decimal number are forced to become
@@ -114,7 +61,7 @@ for (i in seq_along(data[["temp"]])) {                    # For each elements in
   data[i, "temp"] <- max_value                            # Store the maximum value
 }
 
-View(data)
+export(data, "cpu-clean.csv")
 
-export(data, "cpu-short.csv")
+# Dont pay attention to the warnings.
 ```
