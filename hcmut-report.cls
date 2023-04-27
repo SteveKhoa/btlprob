@@ -69,7 +69,8 @@
   paper=a4paper,
   vmargin=3cm,
   hmargin=2cm,
-  includeheadfoot=true,
+  includehead=false,
+  includefoot=true;
   headheight=30pt
 }
 
@@ -103,25 +104,25 @@
 
 \pagestyle{fancy}
 
-\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\headrulewidth}{0pt}
 \fancyhead{}
-\fancyhead[L]{
-  \begin{tabular}{rl}
-    \begin{picture}(25,15)(0,0)
-      \put(0,-8){\includegraphics[width=8mm,height=8mm]{graphics/hcmut.png}}
-    \end{picture}
-    \begin{tabular}{l}
-      \textbf{\bf \ttfamily University of Technology, Ho Chi Minh City} \\
-      \textbf{\bf \ttfamily Faculty of Computer Science and Engineering}
-    \end{tabular}
-  \end{tabular}
-}
-\fancyhead[R]{
-  \begin{tabular}{l}
-    \tiny \bf \\
-    \tiny \bf
-  \end{tabular}
-}
+% \fancyhead[L]{
+%   \begin{tabular}{rl}
+%     \begin{picture}(25,15)(0,0)
+%       \put(0,-8){\includegraphics[width=8mm,height=8mm]{graphics/hcmut.png}}
+%     \end{picture}
+%     \begin{tabular}{l}
+%       \textbf{\bf \ttfamily University of Technology, Ho Chi Minh City} \\
+%       \textbf{\bf \ttfamily Faculty of Computer Science and Engineering}
+%     \end{tabular}
+%   \end{tabular}
+% }
+% \fancyhead[R]{
+%   \begin{tabular}{l}
+%     \tiny \bf \\
+%     \tiny \bf
+%   \end{tabular}
+% }
 
 \renewcommand{\footrulewidth}{0.3pt}
 \fancyfoot{}

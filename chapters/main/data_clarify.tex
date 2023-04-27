@@ -6,18 +6,11 @@
 \section{Data clarification}
 \label{section:data_clarify}
 
+This section provides several visualizations to highlight the big pictures of our dataset, and it would
+focus mostly on the behaviour of each variable as independent individuals, rather than the interaction 
+between them, which we will focus in much details in \textbf{Section \ref{section:data_analysis}}.
 
-
-
-
-
-
-
-\subsection{Overview of attributes}
-
-In this section, we provide a big picture of the our data via visualizations.
-
-\subsubsection{Categorical attributes}
+\subsection{Categorical attributes}
 
 \begin{figure}[H]
     \centering
@@ -61,7 +54,7 @@ verbose to explain everything here, we leave the detailed implementation in \ver
 
 
 
-\subsubsection{Continuous attributes}
+\subsection{Continuous attributes}
 
 \begin{figure}[H]
     \centering
@@ -72,8 +65,10 @@ verbose to explain everything here, we leave the detailed implementation in \ver
 
 \inputcode[firstline=78,lastline=80]{R}{rcode/clarification.rmd}
 
-\textbf{[Figure \ref{fig:hist_ldate}]} The \textit{Launch date} histogram shown that most of Intel's CPUs are launched recently, with two notable peaks at 2014 and 2017. The legacy
-CPUs (before 2005) are only minor and can be treated as outliners if it is used in further analysis.
+\textbf{[Figure \ref{fig:hist_ldate}]} The \textit{Launch date} histogram shown that most of Intel's CPUs are launched recently, 
+with two notable peaks at 2014 and 2017. This would affect tremendously to the bias of the data since some variables are dependent 
+on \textit{Launch date}, making the prediction models (\textbf{Section \ref{section:data_analysis}}) weight the recent CPUs heavily,
+instead of old, legacy CPUs which are also neccessary to capture a fair pattern over the time.
 
 
 
@@ -114,8 +109,10 @@ Overall, the most common \textit{Lithography} is $32 nm$. The best printing tech
 number might come from old, legacy processors which were not designed with recent innovations in the Chip industry.
 
 \textbf{[Figure \ref{fig:scatter_litho}]} The scatter plot of \textit{Lithography} with respect to \textit{Launch date} shown that the lithography
-is getting smaller over time, and they are categorized into specific groups. So \textit{Lithography} can be treated as a Categorical attribute as well
-as Continuous attribute.
+is getting smaller over time, and they are categorized into specific time intervals. The fact the \textit{Lithography} spans the distribution over
+an interval of time instead of condensed into a specific quarter like \textit{Launch date} make it more powerful than \textit{Launch date}. In our
+models, we always use \textit{Lithography} instead of \textit{Launch date}. This fact will be visualized with numbers later to make this argument 
+more convincing.
 
 
 
@@ -133,9 +130,9 @@ as Continuous attribute.
 \inputcode[firstline=108,lastline=110]{R}{rcode/clarification.rmd}
 
 \textbf{[Figure \ref{fig:hist_bfreq}]} The most significant trend that could be observed in the \textit{Base frequency} histogram is its "normality".
-In fact, this is expected because though higher frequency results in better performance, it has power and heat trade-offs. Thus, we see most choices of
-frequencies concentrate around the mean of the distribution, which look pretty much like a bell-shape. We will discuss this property again in the Regression
-section.
+It can be seen that, the shape of \textit{Base frequency} disribution is convincingly a bell, and most \textit{Base frequency} concentrates around
+the mean (around $2.3$ GHz). This is expected since high \textit{Base frequency} can influence the amound of heat a CPU produces, and there are always
+trade-offs between performance and heat. This relationship (between heat and performance) will be visualized in \textbf{Section \ref{section:data_analysis}}.
 
 
 
@@ -144,110 +141,14 @@ section.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{./graphics/box_tdp.pdf}
+    \includegraphics[width=0.5\textwidth]{./graphics/hist_tdp.pdf}
     \includegraphics[width=0.5\textwidth]{./graphics/sum_tdp.png}
     \caption{Box plots and Summary of Thermal Design Power}
-    \label{fig:box_tdp}
+    \label{fig:hist_tdp}
 \end{figure}
 
 \inputcode[firstline=115,lastline=119]{R}{rcode/clarification.rmd}
 
-\textbf{[Figure \ref{fig:box_tdp}]} The box plot of \textit{Thermal design power} is very market-dependent. While Embedded needed a very decent amount of
-energy to release the heat, Server needed a lot, which is demonstrated by a much higher median. Server TDP's variance is also large, indicating
-that there are many choices within this market. However, even so, its first quantile is still larger than most of the CPUs used in other markets.
-
-
-
-
-
-% Should we plot memory bandwidth?
-% \begin{figure}[H]
-    %\centering
-    %\includegraphics[width=0.5\textwidth]{./graphics/box_memband.pdf}
-    %\includegraphics[width=0.5\textwidth]{./graphics/sum_memband.png}
-    %\caption{Histogram of Maximum Memory Bandwidth}
-%\end{figure}
-
-
-
-
-
-% Should we plot Temperature? 
-%\begin{figure}[H]
-    %\centering
-    %\includegraphics[width=0.5\textwidth]{./graphics/hist_temp.pdf}
-    %\caption{Histogram of Temperature}
-    %\label{fig:hist_temp}
-%\end{figure}
-
-
-
-
-
-
-
-
-
-\subsection{Analysis of attributes}
-
-In this section, we emphasize key relationships of our interest. The following plots will be reused in later parts of our report. The reasons why we paid our
-attention on these attributes will be discussed in \textbf{Section \ref{section:data_analysis}}.
-
-
-
-\subsubsection{Base frequency with respect to Lithography and Number of Cores}
-
-Firstly, focusing on the previous Lithography plot \textbf{[Figure \ref{fig:scatter_litho}]}, we can see that they are well categorized into particular groups.
-That speaks well for the reality, since there were not so much CPU printing techniques on the market.
-Thus, we can choose the represent this attribute as a categorical variable.
-
-We plot the distribution of \textit{base frequency} for each category of \textit{Lithography} as follows:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{./graphics/hist_bfreq_wrt_litho.pdf}
-    \caption{Base frequency distribution of each Lithography}
-    \label{fig:hist_bfreq_wrt_litho}
-\end{figure}
-
-%\inputcode[firstline=115,lastline=119]{R}{rcode/clarification.rmd}
-\textbf{NOTE: THERE IS A CODE REFERENCE HERE}
-
-We observed that some categories are not significant in terms of quantity, and large lithography ($> 45$) might come from old, obsolete CPUs. We choose
-only \verb|14, 22, 32, 45| and ignore the rest.
-
-\textbf{NOTE: THERE IS A CODE REFERENCE HERE}
-
-Secondly, we would like to see the relationship between \textit{Number of cores} and \textit{Base frequency}.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{./graphics/hist_bfreq_wrt_ncore.pdf}
-    \caption{Base frequency distribution of each Group of core number}
-    \label{fig:hist_bfreq_wrt_ncore}
-\end{figure}
-
-\textbf{NOTE: THERE IS A CODE REFERENCE HERE}
-
-There are a wide range of core numbers in the industry provided by Intel. However, only 1, 2 and 4 cores are the most popular. Therefore, we keep 2 and 4 only,
-while ignoring the rest. Note that the reason why we do not keep 1-core, 6-cores, 8-cores and 12-cores is that its frequencies are very small compared to 2 and 4.
-One more reasonable motivation behind this decision is that some \textit{Lithography} may not exist in these category (multiple cores trend is only induced recently,
-and lithography is heavily dependent on the era of which the CPU is launched), making it difficult to compare with other groups. Therefore, it is better to ignore it.
-
-\textbf{NOTE: THERE IS A CODE REFERENCE HERE}
-
-As a summary, we represent this boxplot between many variables, to have a broad view over what we have done so far:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{./graphics/box_bfreq_wrt_ncore_litho.pdf}
-    \caption{Box plot of Base frequency with respect to No. cores and Lithography}
-    \label{fig:box_bfreq_wrt_ncore_litho}
-\end{figure}
-
-\textbf{NOTE: THERE IS A CODE REFERENCE HERE}
-
-
-
-
-\subsubsection{Regression figures here, if any}
+\textbf{[Figure \ref{fig:hist_tdp}]} \textit{Thermal design power} is the of main interest in our topic. We can see that, the distribution of \verb|TDP| varies
+wildly, from 0W to 300W. However, the occurences of values $\ge 150$W is rare (we can see the 75\%-quantile is at 85W), indicating that we can treat these values 
+as outliners and remove them before carrying further analysis.

@@ -159,7 +159,8 @@ setwd("/Users/admin/Desktop/_probability_PROJECT/btlprob/rcode")   # set working
 data <- import("cpu-clean.csv")        # rio::import
 
 # CLEAN THE DATA
-# hist(data$tdp)
+ggplot(data, aes(x = tdp)) +
+  geom_histogram(binwidth = 5, fill="deepskyblue") # histogram of residuals
 
 data <- data[data$tdp < 150, ]
 data <- data[!is.na(data$tdp), ]
@@ -203,9 +204,10 @@ plot_data$litho <- as.factor(plot_data$litho)
 ggplot(plot_data, aes(x = litho, y = tdp)) +
   geom_boxplot(fill="deepskyblue")
 
-# For temperature < 100, tdp increases upward, but drops when it is > 100.
+# different trends
 ggplot(plot_data, aes(x = temp, y = tdp)) +
-  geom_point(color="deepskyblue", )
+  geom_point(color="deepskyblue", ) +
+  geom_abline(mapping=aes(intercept= -50, slope=1.2), color="darkblue")
 
 # We see that the CPUs produced for each market is different, but there are clear distinction between Desktop and Embedded.
 ggplot(plot_data, aes(x = market, y = tdp)) +
@@ -217,12 +219,10 @@ ggplot(plot_data, aes(x = market, y = tdp)) +
 ```{r}
 data <- clone
 
-# quantile(data$ldate,na.rm = T,probs = c(0.05,0.95))
-
 data$litho <- as.factor(data$litho)
 
-retval <- data.frame(NA, NA, NA)
-names(retval)<-c("5% quantile","95% quantile", "Interval")
+retval <- data.frame(NA, NA, NA, NA)
+names(retval)<-c("5% quantile","95% quantile", "STD Mean", "Confidence Interval")
 
 for (lit in levels(data$litho))
 {
@@ -232,10 +232,13 @@ for (lit in levels(data$litho))
         probs = c(0.05,0.95)
       )
       
-      new_row <- data.frame(quants[1], quants[2], quants[2]-quants[1])
-      names(new_row)<-c("5% quantile","95% quantile", "Interval")
+      dates <- data[data$litho == lit, ]$ldate
+      
+      new_row <- data.frame(quants[1], quants[2], mean(sd(dates, na.rm=TRUE), na.rm=TRUE),quants[2]-quants[1])
+      names(new_row)<-c("5% quantile","95% quantile", "STD Mean", "Confidence Interval")
       
       retval <- rbind(retval, new_row)
+      rm(dates)
 }
 rownames(retval) <- c("NULL", levels(data$litho))
 retval <- retval[-1,]
@@ -254,11 +257,18 @@ data <- clone
 # tdp recent among Intel CPUs
 
 data_litho_subset <- subset(data, data$litho %in% c(14,22,32,45,65))
-
 litho_anova_model <- aov(tdp ~ litho ,data = data_litho_subset)
-# OK, pretty bad that the residuals of the subset of Lithography does not folow Normality, so we can not just use One-way ANOVA.
 
 # Levene's & Shapiro
+qqPlot(residuals(litho_anova_model))
+shapiro.test(residuals(litho_anova_model))
+
+data_litho_subset_clone <- 
+data_litho_subset_clone$litho <- as.factor(data_litho_subset_clone$litho)
+leveneTest(tdp ~ litho ,data = data_litho_subset_clone)
+
+
+# OK, pretty bad that the residuals of the subset of Lithography does not folow Normality, so we can not just use One-way ANOVA.
 
 # Let's use Kruskal–Wallis one-way analysis of variance - a nonparametric test.
 # 12 -> 65 : kruskal does not detect any differences
@@ -290,7 +300,7 @@ data <- clone
 # RMSE a little bit, so we added it anyway attribute we choose, the less
 
 # We also see that the more attributes included, the better the model performs.
-model.lr <- lm(tdp ~ ncore + bfreq + temp + litho, data = train) 
+model.lr <- lm(tdp ~ ncore + bfreq + litho + temp, data = train) 
 
 # Test for Normality
 # and homoscedasticity
@@ -344,8 +354,7 @@ and choose the best interaction possible. This could help us to minimize our RMS
 Random forrest is frequently used as a good model to predict trends in the CPU industry [needs citation]
 
     -- Hypothesis testing --
-    1: Abnomal stability of TDP w.r.t ncores
-      `Abnomal` since it is not really `linear` as expected in the model above.
+    1: Stability of TDP w.r.t temp
     2: Different trends within `temp`
 ```{r}
 data <- clone
@@ -420,6 +429,10 @@ data$type <- as.factor(data$type)
 # Plot it out
 ggplot(data, aes(x = type, y = tdp)) +
   geom_boxplot(fill="deepskyblue")
+
+ggplot(data, aes(x = temp, y = tdp)) +
+  geom_point(color="deepskyblue", ) +
+  facet_wrap(~data$type)
 
 # We can see that there is an enourmous difference between Devices and Computers
 # So we are confident that these two has a completely different market segmentation

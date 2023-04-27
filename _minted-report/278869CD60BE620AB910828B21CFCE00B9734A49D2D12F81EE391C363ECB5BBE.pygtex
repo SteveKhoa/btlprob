@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{group1}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{[}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{temp}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{l+m}{85}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{]}
+\PYG{n}{group2}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{[}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{temp}\PYG{+w}{ }\PYG{o}{\PYGZgt{}=}\PYG{+w}{ }\PYG{l+m}{85}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{]}
+
+\PYG{n+nf}{cov}\PYG{p}{(}\PYG{n}{group1}\PYG{o}{\PYGZdl{}}\PYG{n}{tdp}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{group1}\PYG{o}{\PYGZdl{}}\PYG{n}{temp}\PYG{p}{)}
+\PYG{n+nf}{cov}\PYG{p}{(}\PYG{n}{group2}\PYG{o}{\PYGZdl{}}\PYG{n}{tdp}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{group2}\PYG{o}{\PYGZdl{}}\PYG{n}{temp}\PYG{p}{)}
+\end{Verbatim}

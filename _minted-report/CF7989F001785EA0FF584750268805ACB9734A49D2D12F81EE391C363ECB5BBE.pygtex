@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{model.lr}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{lm}\PYG{p}{(}\PYG{n}{tdp}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{ncore}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{bfreq}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{temp}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{train}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Test for Normality}
+\PYG{c+c1}{\PYGZsh{} and homoscedasticity}
+\PYG{n+nf}{ggplot}\PYG{p}{(}\PYG{n}{model.lr}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nf}{aes}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nf}{resid}\PYG{p}{(}\PYG{n}{model.lr}\PYG{p}{)))}\PYG{+w}{ }\PYG{o}{+}
+\PYG{+w}{  }\PYG{n+nf}{geom\PYGZus{}histogram}\PYG{p}{(}\PYG{n}{binwidth}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m}{2}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fill}\PYG{o}{=}\PYG{l+s}{\PYGZdq{}deepskyblue\PYGZdq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZsh{} histogram of residuals}
+\PYG{n+nf}{ggplot}\PYG{p}{(}\PYG{n}{model.lr}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nf}{aes}\PYG{p}{(}\PYG{n}{sample}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nf}{rstandard}\PYG{p}{(}\PYG{n}{model.lr}\PYG{p}{)))}\PYG{+w}{ }\PYG{o}{+}
+\PYG{+w}{  }\PYG{n+nf}{stat\PYGZus{}qq}\PYG{p}{(}\PYG{n}{shape}\PYG{o}{=}\PYG{l+m}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{color}\PYG{o}{=}\PYG{l+s}{\PYGZdq{}blue\PYGZdq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n+nf}{stat\PYGZus{}qq\PYGZus{}line}\PYG{p}{()}\PYG{+w}{ }\PYG{o}{+}
+\PYG{+w}{  }\PYG{n+nf}{labs}\PYG{p}{(}\PYG{n}{x}\PYG{o}{=}\PYG{l+s}{\PYGZdq{}Theoretical quantiles\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{y}\PYG{o}{=}\PYG{l+s}{\PYGZdq{}Standardized residuals\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Summary of the model}
+\PYG{n+nf}{summary}\PYG{p}{(}\PYG{n}{model.lr}\PYG{p}{)}
+\end{Verbatim}

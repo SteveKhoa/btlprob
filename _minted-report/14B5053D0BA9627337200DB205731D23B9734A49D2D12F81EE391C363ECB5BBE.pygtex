@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{ifelse}\PYG{p}{(}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{market}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}Server\PYGZsq{}}\PYG{+w}{ }\PYG{o}{|}\PYG{+w}{ }\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{market}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}Desktop\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Computers\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Devices\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{as.factor}\PYG{p}{(}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{type}\PYG{p}{)}
+
+\PYG{n+nf}{ggplot}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nf}{aes}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{type}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{y}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{tdp}\PYG{p}{))}\PYG{+w}{ }\PYG{o}{+}
+\PYG{n+nf}{geom\PYGZus{}boxplot}\PYG{p}{(}\PYG{n}{fill}\PYG{o}{=}\PYG{l+s}{\PYGZdq{}deepskyblue\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n+nf}{ggplot}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nf}{aes}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{temp}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{y}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{tdp}\PYG{p}{))}\PYG{+w}{ }\PYG{o}{+}
+\PYG{n+nf}{geom\PYGZus{}point}\PYG{p}{(}\PYG{n}{color}\PYG{o}{=}\PYG{l+s}{\PYGZdq{}deepskyblue\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}
+\PYG{n+nf}{facet\PYGZus{}wrap}\PYG{p}{(}\PYG{o}{\PYGZti{}}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{type}\PYG{p}{)}
+\end{Verbatim}

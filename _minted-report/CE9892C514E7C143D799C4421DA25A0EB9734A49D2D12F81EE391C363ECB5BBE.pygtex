@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{group1}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{subset}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{ncore}\PYG{+w}{ }\PYG{o}{\PYGZpc{}in\PYGZpc{}}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+m}{1}\PYG{p}{,}\PYG{l+m}{2}\PYG{p}{))}
+\PYG{n}{group3}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{subset}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{ncore}\PYG{+w}{ }\PYG{o}{\PYGZpc{}in\PYGZpc{}}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+m}{6}\PYG{p}{,}\PYG{l+m}{8}\PYG{p}{,}\PYG{l+m}{10}\PYG{p}{,}\PYG{l+m}{12}\PYG{p}{,}\PYG{l+m}{14}\PYG{p}{))}
+\PYG{n}{group4}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{subset}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{ncore}\PYG{+w}{ }\PYG{o}{\PYGZpc{}in\PYGZpc{}}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+m}{15}\PYG{p}{,}\PYG{l+m}{16}\PYG{p}{,}\PYG{l+m}{18}\PYG{p}{,}\PYG{l+m}{20}\PYG{p}{,}\PYG{l+m}{22}\PYG{p}{))}
+\end{Verbatim}

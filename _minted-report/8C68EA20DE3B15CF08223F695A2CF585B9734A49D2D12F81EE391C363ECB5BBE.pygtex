@@ -1,0 +1,30 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{as.factor}\PYG{p}{(}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{p}{)}
+
+\PYG{n}{retval}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{data.frame}\PYG{p}{(}\PYG{k+kc}{NA}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kc}{NA}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kc}{NA}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kc}{NA}\PYG{p}{)}
+\PYG{n+nf}{names}\PYG{p}{(}\PYG{n}{retval}\PYG{p}{)}\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}5\PYGZpc{} quantile\PYGZdq{}}\PYG{p}{,}\PYG{l+s}{\PYGZdq{}95\PYGZpc{} quantile\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}STD Mean\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Confidence Interval\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n+nf}{for }\PYG{p}{(}\PYG{n}{lit}\PYG{+w}{ }\PYG{n}{in}\PYG{+w}{ }\PYG{n+nf}{levels}\PYG{p}{(}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{p}{))}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{      }\PYG{n}{quants}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{quantile}\PYG{p}{(}
+\PYG{+w}{        }\PYG{n}{data}\PYG{p}{[}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n}{lit}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{]}\PYG{o}{\PYGZdl{}}\PYG{n}{ldate}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{na.rm}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb+bp}{T}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n}{probs}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+m}{0.05}\PYG{p}{,}\PYG{l+m}{0.95}\PYG{p}{)}
+\PYG{+w}{      }\PYG{p}{)}
+
+\PYG{+w}{      }\PYG{n}{dates}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{[}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n}{lit}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{]}\PYG{o}{\PYGZdl{}}\PYG{n}{ldate}
+
+\PYG{+w}{      }\PYG{n}{new\PYGZus{}row}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{data.frame}\PYG{p}{(}\PYG{n}{quants}\PYG{p}{[}\PYG{l+m}{1}\PYG{p}{],}\PYG{+w}{ }\PYG{n}{quants}\PYG{p}{[}\PYG{l+m}{2}\PYG{p}{],}\PYG{+w}{ }\PYG{n+nf}{mean}\PYG{p}{(}\PYG{n+nf}{sd}\PYG{p}{(}\PYG{n}{dates}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{na.rm}\PYG{o}{=}\PYG{k+kc}{TRUE}\PYG{p}{),}\PYG{+w}{ }\PYG{n}{na.rm}\PYG{o}{=}\PYG{k+kc}{TRUE}\PYG{p}{),}\PYG{n}{quants}\PYG{p}{[}\PYG{l+m}{2}\PYG{p}{]}\PYG{o}{\PYGZhy{}}\PYG{n}{quants}\PYG{p}{[}\PYG{l+m}{1}\PYG{p}{])}
+\PYG{+w}{      }\PYG{n+nf}{names}\PYG{p}{(}\PYG{n}{new\PYGZus{}row}\PYG{p}{)}\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}5\PYGZpc{} quantile\PYGZdq{}}\PYG{p}{,}\PYG{l+s}{\PYGZdq{}95\PYGZpc{} quantile\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}STD Mean\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Confidence Interval\PYGZdq{}}\PYG{p}{)}
+
+\PYG{+w}{      }\PYG{n}{retval}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{rbind}\PYG{p}{(}\PYG{n}{retval}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{new\PYGZus{}row}\PYG{p}{)}
+\PYG{+w}{      }\PYG{n+nf}{rm}\PYG{p}{(}\PYG{n}{dates}\PYG{p}{)}
+\PYG{p}{\PYGZcb{}}
+\PYG{n+nf}{rownames}\PYG{p}{(}\PYG{n}{retval}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}NULL\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nf}{levels}\PYG{p}{(}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{p}{))}
+\PYG{n}{retval}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n}{retval}\PYG{p}{[}\PYG{l+m}{\PYGZhy{}1}\PYG{p}{,]}
+
+\PYG{n+nf}{print}\PYG{p}{(}\PYG{n}{retval}\PYG{p}{)}
+
+\PYG{n+nf}{ggplot}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nf}{aes}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ldate}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{y}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{litho}\PYG{p}{))}\PYG{+w}{ }\PYG{o}{+}
+\PYG{+w}{  }\PYG{n+nf}{geom\PYGZus{}boxplot}\PYG{p}{(}\PYG{n}{fill}\PYG{o}{=}\PYG{l+s}{\PYGZdq{}deepskyblue\PYGZdq{}}\PYG{p}{)}
+\end{Verbatim}

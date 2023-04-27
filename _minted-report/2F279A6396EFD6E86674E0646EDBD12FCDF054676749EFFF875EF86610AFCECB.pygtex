@@ -1,0 +1,700 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  DATA CLARIFICATION}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  Input: cpu\PYGZhy{}clean.csv}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  Output: None}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  Description: }
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  Caveats: DO NOT CHANGE THE NUMBER OF LINES IN THIS FILE}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  NK}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}  \PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n}{PART}\PYG{+w}{ }\PYG{n}{I.}\PYG{+w}{ }\PYG{n}{OVERVIEW}\PYG{+w}{ }\PYG{n}{OF}\PYG{+w}{ }\PYG{n}{THE}\PYG{+w}{ }\PYG{n}{attributeS}
+
+\PYG{n}{LOADING}\PYG{+w}{ }\PYG{n}{PACKAGES}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{+w}{ }\PYG{n}{IMPORTING}\PYG{+w}{ }\PYG{n}{DATA}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{pacman::p\PYGZus{}load(}
+\PYG{n}{  rio,     \PYGZsh{} for imports \PYGZam{} exports}
+\PYG{n}{  ggplot2, \PYGZsh{} for plots}
+\PYG{n}{  zoo      \PYGZsh{} for year\PYGZhy{}quarter formats}
+\PYG{n}{)}
+\PYG{n}{\PYGZsh{}\PYGZsh{}  IMPORT THE DATA}
+\PYG{n}{setwd(\PYGZdq{}/Users/admin/Desktop/\PYGZus{}probability\PYGZus{}PROJECT/btlprob/rcode\PYGZdq{})   \PYGZsh{} set working directory}
+\PYG{n}{data \PYGZlt{}\PYGZhy{} import(\PYGZdq{}cpu\PYGZhy{}clean.csv\PYGZdq{})        \PYGZsh{} rio::import}
+\PYG{n}{```}
+
+\PYG{n}{CATEGORIAL}\PYG{+w}{ }\PYG{n}{PIES}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{\PYGZsh{} Config market pie}
+\PYG{n}{freq = as.vector(table(data\PYGZdl{}market))}
+\PYG{n}{levels = levels(factor(data\PYGZdl{}market))}
+\PYG{n}{title = \PYGZdq{}market\PYGZdq{}}
+\PYG{n}{```}
+
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{\PYGZsh{} Config status pie}
+\PYG{n}{freq = as.vector(table(data\PYGZdl{}status))}
+\PYG{n}{levels = levels(factor(data\PYGZdl{}status))}
+\PYG{n}{title = \PYGZdq{}status\PYGZdq{}}
+\PYG{n}{```}
+
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{\PYGZsh{} Drawing the pie}
+\PYG{n}{\PYGZsh{} Calculate the vector of percentages}
+\PYG{n}{percentages \PYGZlt{}\PYGZhy{} round(}
+\PYG{n}{  100 * freq / sum(freq), }
+\PYG{n}{  1}
+\PYG{n}{  )}
+
+\PYG{n}{\PYGZsh{} Create the data frame of levels, frequency of values, and percentages}
+\PYG{n}{data\PYGZus{}percentages \PYGZlt{}\PYGZhy{} data.frame(}
+\PYG{n}{  market = levels, }
+\PYG{n}{  value = freq, }
+\PYG{n}{  percent = percentages}
+\PYG{n}{  )}
+
+\PYG{n}{\PYGZsh{} Create a pie chart with percentages}
+\PYG{n}{ggplot(}
+\PYG{n}{  data\PYGZus{}percentages, }
+\PYG{n}{  aes(x=\PYGZdq{}\PYGZdq{}, y=value, fill=market)) +}
+\PYG{n}{  geom\PYGZus{}bar(stat=\PYGZdq{}identity\PYGZdq{}, width=1, color=\PYGZdq{}white\PYGZdq{}) + \PYGZsh{} Draw the bar}
+\PYG{n}{  coord\PYGZus{}polar(theta = \PYGZdq{}y\PYGZdq{}) +               \PYGZsh{} Representing the values in polar}
+\PYG{n}{                                           \PYGZsh{} coordinate. Instead of stacked bars}
+\PYG{n}{  \PYGZsh{} Add labels (percentage numbers)}
+\PYG{n}{  geom\PYGZus{}text(}
+\PYG{n}{    aes(label = paste0(percent, \PYGZdq{}\PYGZpc{}\PYGZdq{})),     \PYGZsh{} Concat \PYGZsq{}percent\PYGZsq{} + \PYGZsq{}\PYGZpc{}\PYGZsq{}}
+\PYG{n}{    position = position\PYGZus{}stack(vjust = 0.5) \PYGZsh{} Each slide is a stack bar}
+\PYG{n}{                                           \PYGZsh{} Use position\PYGZus{}stack to stack the labels}
+\PYG{n}{                                           \PYGZsh{} on each slide.}
+\PYG{n}{    ) +}
+\PYG{n}{  labs(fill = title) +}
+\PYG{n}{  theme\PYGZus{}void()}
+\PYG{n}{```}
+
+\PYG{n}{Histogram}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{launch}\PYG{+w}{ }\PYG{n}{date}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = ldate)) +}
+\PYG{n}{  geom\PYGZus{}histogram(binwidth = 1, fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Date\PYGZdq{}, y = \PYGZdq{}Count\PYGZdq{})                      \PYGZsh{} Label of axes}
+\PYG{n}{```}
+
+\PYG{n}{Boxplot}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{Lithography}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = market, y = litho)) +}
+\PYG{n}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Market\PYGZdq{}, y = \PYGZdq{}Lithography (nm)\PYGZdq{})}
+
+\PYG{n}{summary(data\PYGZdl{}litho)}
+\PYG{n}{```}
+
+\PYG{n}{Scatter}\PYG{+w}{ }\PYG{n}{plot}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{Lithography}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = ldate, y = litho)) +}
+\PYG{n}{  geom\PYGZus{}point(color=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Launch Date\PYGZdq{}, y = \PYGZdq{}Lithography (nm)\PYGZdq{})}
+\PYG{n}{```}
+
+\PYG{n}{Boxplot}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{Recommended}\PYG{+w}{ }\PYG{n}{Price}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = market, y = rprice)) +}
+\PYG{n}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Market\PYGZdq{}, y = \PYGZdq{}Recommended Price (\PYGZdl{})\PYGZdq{})}
+\PYG{n}{```}
+
+\PYG{n}{Histogram}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{Base}\PYG{+w}{ }\PYG{n}{frequency}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = bfreq)) +}
+\PYG{n}{  geom\PYGZus{}histogram(binwidth = 0.1, fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Base frequency (GHz)\PYGZdq{}, y = \PYGZdq{}Count\PYGZdq{})}
+\PYG{n}{```}
+
+\PYG{n}{Histogram}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{Thermal}\PYG{+w}{ }\PYG{n}{Design}\PYG{+w}{ }\PYG{n}{Power}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = market,y = tdp)) +}
+\PYG{n}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Market\PYGZdq{}, y = \PYGZdq{}Thermal deisgn power (W)\PYGZdq{})}
+
+\PYG{n}{summary(data\PYGZdl{}tdp)}
+\PYG{n}{```}
+
+\PYG{n}{Histogram}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{Memmory}\PYG{+w}{ }\PYG{n+nf}{Bandwith }\PYG{p}{(}\PYG{n}{HIDDEN}\PYG{+w}{ }\PYG{n}{IN}\PYG{+w}{ }\PYG{n}{OUR}\PYG{+w}{ }\PYG{n}{REPORT}\PYG{p}{)}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(y = memband)) +}
+\PYG{n}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Max Memory Bandwidth (GB/s)\PYGZdq{}, y = \PYGZdq{}Count\PYGZdq{})}
+
+\PYG{n}{summary(data\PYGZdl{}memband)}
+\PYG{n}{```}
+
+\PYG{n}{Histogram}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n+nf}{Temperature }\PYG{p}{(}\PYG{n}{HIDDEN}\PYG{+w}{ }\PYG{n}{IN}\PYG{+w}{ }\PYG{n}{OUR}\PYG{+w}{ }\PYG{n}{REPORT}\PYG{p}{)}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{ggplot(data, aes(x = temp)) +}
+\PYG{n}{  geom\PYGZus{}histogram(binwidth = 1, fill=\PYGZdq{}deepskyblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}Temperature (°C)\PYGZdq{}, y = \PYGZdq{}Count\PYGZdq{})}
+\PYG{n}{```}
+
+\PYG{c+c1}{\PYGZsh{} NOTE, PLEASE DO NOT CHANGE ANYTHING ABOVE THIS LINE}
+\PYG{c+c1}{\PYGZsh{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+
+
+
+
+
+
+
+\PYG{n}{PART}\PYG{+w}{ }\PYG{l+m}{2}\PYG{n}{.}\PYG{+w}{ }\PYG{n}{Regression}\PYG{+w}{ }\PYG{n}{models}
+
+\PYG{n}{Load}\PYG{+w}{ }\PYG{n}{and}\PYG{+w}{ }\PYG{n}{split}\PYG{+w}{ }\PYG{n}{the}\PYG{+w}{ }\PYG{n}{dataset}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{pacman::p\PYGZus{}load(}
+\PYG{n}{  rio,     \PYGZsh{} for imports \PYGZam{} exports}
+\PYG{n}{  ggplot2, \PYGZsh{} for plots}
+\PYG{n}{  zoo      \PYGZsh{} for year\PYGZhy{}quarter formats}
+\PYG{n}{)}
+\PYG{n}{\PYGZsh{}\PYGZsh{}  IMPORT THE DATA}
+\PYG{n}{setwd(\PYGZdq{}/Users/admin/Desktop/\PYGZus{}probability\PYGZus{}PROJECT/btlprob/rcode\PYGZdq{})   \PYGZsh{} set working directory}
+\PYG{n}{data \PYGZlt{}\PYGZhy{} import(\PYGZdq{}cpu\PYGZhy{}clean.csv\PYGZdq{})        \PYGZsh{} rio::import}
+
+\PYG{n}{\PYGZsh{} CLEAN THE DATA}
+\PYG{n}{ggplot(data, aes(x = tdp)) +}
+\PYG{n}{  geom\PYGZus{}histogram(binwidth = 5, fill=\PYGZdq{}deepskyblue\PYGZdq{}) \PYGZsh{} histogram of residuals}
+
+\PYG{n}{data \PYGZlt{}\PYGZhy{} data[data\PYGZdl{}tdp \PYGZlt{} 150, ]}
+\PYG{n}{data \PYGZlt{}\PYGZhy{} data[!is.na(data\PYGZdl{}tdp), ]}
+\PYG{n}{data \PYGZlt{}\PYGZhy{} data[!is.na(data\PYGZdl{}bfreq), ]}
+\PYG{n}{data \PYGZlt{}\PYGZhy{} data[!is.na(data\PYGZdl{}litho), ]}
+\PYG{n}{data \PYGZlt{}\PYGZhy{} data[!is.na(data\PYGZdl{}ncore), ]}
+\PYG{n}{data \PYGZlt{}\PYGZhy{} data[!is.na(data\PYGZdl{}temp), ]}
+\PYG{n}{\PYGZsh{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n}{clone \PYGZlt{}\PYGZhy{} data}
+
+\PYG{n}{\PYGZsh{} Set default seed for random}
+\PYG{n}{set.seed(123)}
+\PYG{n}{\PYGZsh{} Use 80\PYGZpc{} of dataframe as training set and 20\PYGZpc{} as test set }
+\PYG{n}{train\PYGZus{}indices \PYGZlt{}\PYGZhy{} sample(1:nrow(data), nrow(data) * 0.8)}
+\PYG{n}{train \PYGZlt{}\PYGZhy{} data[train\PYGZus{}indices, ]}
+\PYG{n}{test \PYGZlt{}\PYGZhy{} data[\PYGZhy{}train\PYGZus{}indices, ]}
+\PYG{n}{```}
+
+\PYG{o}{\PYGZhy{}}\PYG{+w}{   }\PYG{n}{A}\PYG{+w}{ }\PYG{n}{few}\PYG{+w}{ }\PYG{n}{plots}\PYG{+w}{ }\PYG{n}{to}\PYG{+w}{ }\PYG{n}{clarify}\PYG{+w}{ }\PYG{n}{our}\PYG{+w}{ }\PYG{n}{intentions}
+
+\PYG{o}{\PYGZhy{}}\PYG{+w}{   }\PYG{n}{We}\PYG{+w}{ }\PYG{n}{want}\PYG{+w}{ }\PYG{n}{to}\PYG{+w}{ }\PYG{n}{focus}\PYG{+w}{ }\PYG{n}{on}\PYG{+w}{ }\PYG{n}{TDP.}
+
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{plot\PYGZus{}data \PYGZlt{}\PYGZhy{} clone}
+
+\PYG{n}{plot\PYGZus{}data\PYGZdl{}ncore \PYGZlt{}\PYGZhy{} as.factor(plot\PYGZus{}data\PYGZdl{}ncore)}
+
+\PYG{n}{\PYGZsh{} There is a clear linear trend between ncore \PYGZti{} tdp}
+\PYG{n}{ggplot(plot\PYGZus{}data, aes(x = ncore, y = tdp)) +}
+\PYG{n}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{})}
+
+\PYG{n}{\PYGZsh{} Bfreq is a bit random, but the trend of linearity is still evident}
+\PYG{n}{ggplot(plot\PYGZus{}data, aes(x = bfreq, y = tdp)) +}
+\PYG{n}{  geom\PYGZus{}point(color=\PYGZdq{}deepskyblue\PYGZdq{})}
+
+\PYG{n}{plot\PYGZus{}data\PYGZdl{}litho \PYGZlt{}\PYGZhy{} as.factor(plot\PYGZus{}data\PYGZdl{}litho)}
+
+\PYG{n}{\PYGZsh{} Lithograhpy as tdp is less convincing however, we wee that recent lithography techniques}
+\PYG{n}{\PYGZsh{} tend to have stable bfreq}
+\PYG{n}{ggplot(plot\PYGZus{}data, aes(x = litho, y = tdp)) +}
+\PYG{n}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{})}
+
+\PYG{n}{\PYGZsh{} For temperature \PYGZlt{} 100, tdp increases upward, but drops when it is \PYGZgt{} 100.}
+\PYG{n}{ggplot(plot\PYGZus{}data, aes(x = temp, y = tdp)) +}
+\PYG{n}{  geom\PYGZus{}point(color=\PYGZdq{}deepskyblue\PYGZdq{}, )}
+
+\PYG{n}{\PYGZsh{} We see that the CPUs produced for each market is different, but there are clear distinction between Desktop and Embedded.}
+\PYG{n}{ggplot(plot\PYGZus{}data, aes(x = market, y = tdp)) +}
+\PYG{n}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{})}
+\PYG{n}{```}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}\PYGZsh{} 0.1 Lithography as an era of CPU design.}
+
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{} 0.1.1 Lithography distinction over the years}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{data \PYGZlt{}\PYGZhy{} clone}
+
+\PYG{n}{\PYGZsh{} quantile(data\PYGZdl{}ldate,na.rm = T,probs = c(0.05,0.95))}
+
+\PYG{n}{data\PYGZdl{}litho \PYGZlt{}\PYGZhy{} as.factor(data\PYGZdl{}litho)}
+
+\PYG{n}{retval \PYGZlt{}\PYGZhy{} data.frame(NA, NA, NA)}
+\PYG{n}{names(retval)\PYGZlt{}\PYGZhy{}c(\PYGZdq{}5\PYGZpc{} quantile\PYGZdq{},\PYGZdq{}95\PYGZpc{} quantile\PYGZdq{}, \PYGZdq{}Interval\PYGZdq{})}
+
+\PYG{n}{for (lit in levels(data\PYGZdl{}litho))}
+\PYG{n}{\PYGZob{}}
+\PYG{n}{      quants \PYGZlt{}\PYGZhy{} quantile(}
+\PYG{n}{        data[data\PYGZdl{}litho == lit, ]\PYGZdl{}ldate,}
+\PYG{n}{        na.rm = T,}
+\PYG{n}{        probs = c(0.05,0.95)}
+\PYG{n}{      )}
+
+\PYG{n}{      new\PYGZus{}row \PYGZlt{}\PYGZhy{} data.frame(quants[1], quants[2], quants[2]\PYGZhy{}quants[1])}
+\PYG{n}{      names(new\PYGZus{}row)\PYGZlt{}\PYGZhy{}c(\PYGZdq{}5\PYGZpc{} quantile\PYGZdq{},\PYGZdq{}95\PYGZpc{} quantile\PYGZdq{}, \PYGZdq{}Interval\PYGZdq{})}
+
+\PYG{n}{      retval \PYGZlt{}\PYGZhy{} rbind(retval, new\PYGZus{}row)}
+\PYG{n}{\PYGZcb{}}
+\PYG{n}{rownames(retval) \PYGZlt{}\PYGZhy{} c(\PYGZdq{}NULL\PYGZdq{}, levels(data\PYGZdl{}litho))}
+\PYG{n}{retval \PYGZlt{}\PYGZhy{} retval[\PYGZhy{}1,]}
+
+\PYG{n}{print(retval)}
+
+\PYG{n}{ggplot(data, aes(x = ldate, y = litho)) +}
+\PYG{n}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{})}
+\PYG{n}{```}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{} 0.1.2 Stability of Lithography in recent years}
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{data \PYGZlt{}\PYGZhy{} clone}
+
+\PYG{n}{\PYGZsh{} We can see that recent Lithography is approximately the same, we will try to test it (using ANOVA)}
+\PYG{n}{\PYGZsh{} We will try to test [14, 22, 32] to see whether it is the same or not, and is there any improvements in}
+\PYG{n}{\PYGZsh{} tdp recent among Intel CPUs}
+
+\PYG{n}{data\PYGZus{}litho\PYGZus{}subset \PYGZlt{}\PYGZhy{} subset(data, data\PYGZdl{}litho \PYGZpc{}in\PYGZpc{} c(14,22,32,45,65))}
+
+\PYG{n}{litho\PYGZus{}anova\PYGZus{}model \PYGZlt{}\PYGZhy{} aov(tdp \PYGZti{} litho ,data = data\PYGZus{}litho\PYGZus{}subset)}
+\PYG{n}{\PYGZsh{} OK, pretty bad that the residuals of the subset of Lithography does not folow Normality, so we can not just use One\PYGZhy{}way ANOVA.}
+
+\PYG{n}{\PYGZsh{} Levene\PYGZsq{}s \PYGZam{} Shapiro}
+
+\PYG{n}{\PYGZsh{} Let\PYGZsq{}s use Kruskal–Wallis one\PYGZhy{}way analysis of variance \PYGZhy{} a nonparametric test.}
+\PYG{n}{\PYGZsh{} 12 \PYGZhy{}\PYGZgt{} 65 : kruskal does not detect any differences}
+\PYG{n}{kruskal.test(tdp \PYGZti{} litho, data = data\PYGZus{}litho\PYGZus{}subset)}
+
+\PYG{n}{\PYGZsh{} (should add this to the conclusion of the regression model)}
+\PYG{n}{\PYGZsh{} We can conclude that, over the entire the development of lithography, thermal design power changes, but recently,}
+\PYG{n}{\PYGZsh{} Intel has done their job to keep the TDP as stable as possible over the smaller lithography. That is illustrated by}
+\PYG{n}{\PYGZsh{} minor differences between 12, 22, 32, 45 and 65, in which there are no statistically differences between them.}
+\PYG{n}{```}
+
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}\PYGZsh{} 1. multi\PYGZhy{}linear model [ncore + bfreq + litho + temp \PYGZti{} tdp]}
+
+\PYG{o}{\PYGZhy{}}\PYG{+w}{   }\PYG{n}{The}\PYG{+w}{ }\PYG{n}{fact}\PYG{+w}{ }\PYG{n}{that}\PYG{+w}{ }\PYG{n}{we}\PYG{+w}{ }\PYG{n}{use}\PYG{+w}{ }\PYG{n}{too}\PYG{+w}{ }\PYG{n}{much}\PYG{+w}{ }\PYG{n}{data}\PYG{+w}{ }\PYG{n}{so}\PYG{+w}{ }\PYG{n}{`Pr(\PYGZgt{}|t|)`}\PYG{+w}{ }\PYG{n}{values}\PYG{+w}{ }\PYG{n}{are}\PYG{+w}{ }\PYG{n}{oddly}\PYG{+w}{ }\PYG{n}{small}\PYG{p}{,}
+\PYG{n}{and}\PYG{+w}{ }\PYG{n}{the}\PYG{+w}{ }\PYG{n}{responses}\PYG{+w}{ }\PYG{n}{are}\PYG{+w}{ }\PYG{n}{extremely}\PYG{+w}{ }\PYG{n}{fit.}\PYG{+w}{ }\PYG{n}{That}\PYG{+w}{ }\PYG{n}{is}\PYG{+w}{ }\PYG{n}{one}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{the}\PYG{+w}{ }\PYG{n}{weakness}\PYG{+w}{ }\PYG{n}{of}
+\PYG{n}{statistics}\PYG{o}{\PYGZhy{}}\PYG{n}{based}\PYG{+w}{ }\PYG{n}{tests}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{they}\PYG{+w}{ }\PYG{n}{are}\PYG{+w}{ }\PYG{n}{really}\PYG{+w}{ }\PYG{n}{sensitive}\PYG{+w}{ }\PYG{n}{to}\PYG{+w}{ }\PYG{n}{large}\PYG{+w}{ }\PYG{n}{sample}\PYG{+w}{ }\PYG{n}{size.}\PYG{+w}{ }\PYG{n}{However}
+\PYG{n}{the}\PYG{+w}{ }\PYG{n}{R}\PYG{o}{\PYGZhy{}}\PYG{n}{squared}\PYG{+w}{ }\PYG{n}{value}\PYG{+w}{ }\PYG{n}{is}\PYG{+w}{ }\PYG{n}{acceptable}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{so}\PYG{+w}{ }\PYG{n}{this}\PYG{+w}{ }\PYG{n}{model}\PYG{+w}{ }\PYG{n}{is}\PYG{+w}{ }\PYG{n}{fitted}\PYG{+w}{ }\PYG{n}{properly.}
+
+\PYG{n}{```\PYGZob{}r\PYGZcb{}}
+\PYG{n}{data \PYGZlt{}\PYGZhy{} clone}
+\PYG{n}{\PYGZsh{} Config model}
+\PYG{n}{\PYGZsh{} Interchange the independent variables, we can see the difference in root mean squared error}
+\PYG{n}{\PYGZsh{} Choose the config with the least root mean squared error}
+\PYG{n}{\PYGZsh{} Choosing more attributes lead to smaller mean squared error, however, normality}
+\PYG{n}{\PYGZsh{} is also gradually damaged. Because of that, only a few notable attributes are selected.}
+
+\PYG{n}{\PYGZsh{} litho do not contribute so much to the prediction. (We see it on the previous section)}
+\PYG{n}{\PYGZsh{} However, adding one more attribute to the model improves normality, and does decrease}
+\PYG{n}{\PYGZsh{} RMSE a little bit, so we added it anyway attribute we choose, the less}
+
+\PYG{n}{\PYGZsh{} We also see that the more attributes included, the better the model performs.}
+\PYG{n}{model.lr \PYGZlt{}\PYGZhy{} lm(tdp \PYGZti{} ncore + bfreq + temp + litho, data = train) }
+
+\PYG{n}{\PYGZsh{} Test for Normality}
+\PYG{n}{\PYGZsh{} and homoscedasticity}
+\PYG{n}{ggplot(model.lr, aes(x = resid(model.lr))) +}
+\PYG{n}{  geom\PYGZus{}histogram(binwidth = 2, fill=\PYGZdq{}deepskyblue\PYGZdq{}) \PYGZsh{} histogram of residuals}
+\PYG{n}{ggplot(model.lr, aes(sample = rstandard(model.lr))) +}
+\PYG{n}{  stat\PYGZus{}qq(shape=1, color=\PYGZdq{}blue\PYGZdq{}) + stat\PYGZus{}qq\PYGZus{}line() +}
+\PYG{n}{  labs(x=\PYGZdq{}Theoretical quantiles\PYGZdq{}, y=\PYGZdq{}Standardized residuals\PYGZdq{})}
+
+\PYG{n}{\PYGZsh{} Summary of the model}
+\PYG{n}{summary(model.lr)}
+
+\PYG{n}{\PYGZsh{} Create data frame for real tdp value and predicted tdp value (for Testing the test set)}
+\PYG{n}{comtab.lr \PYGZlt{}\PYGZhy{} test[\PYGZsq{}tdp\PYGZsq{}]}
+\PYG{n}{comtab.lr[\PYGZsq{}tdp\PYGZus{}predicted\PYGZsq{}] \PYGZlt{}\PYGZhy{} as.data.frame(predict(model.lr, newdata = test))}
+
+\PYG{n}{\PYGZsh{} Plotting}
+\PYG{n}{\PYGZsh{} The majority of points lie near the line, so its ok.}
+\PYG{n}{ggplot(comtab.lr, aes(x = tdp, y = tdp\PYGZus{}predicted)) +}
+\PYG{n}{  geom\PYGZus{}point(shape=1, color=\PYGZdq{}blue\PYGZdq{}) +}
+\PYG{n}{  geom\PYGZus{}abline(mapping=aes(intercept= 0, slope=1), color=\PYGZdq{}darkblue\PYGZdq{}) +}
+\PYG{n}{  labs(x = \PYGZdq{}TDP\PYGZdq{}, y = \PYGZdq{}TDP Predicted\PYGZdq{})}
+
+\PYG{n}{\PYGZsh{} Check root mean squared error}
+\PYG{n}{rmse \PYGZlt{}\PYGZhy{} sqrt(mean((comtab.lr\PYGZdl{}tdp\PYGZus{}predicted \PYGZhy{} comtab.lr\PYGZdl{}tdp)\PYGZca{}2))}
+\PYG{n}{print(paste0(\PYGZdq{}Root Mean Squared Error: \PYGZdq{}, rmse))}
+\PYG{n}{```}
+
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}\PYGZsh{} 2. random\PYGZhy{}forrest model : }
+
+\PYG{o}{\PYGZhy{}}\PYG{+w}{   }\PYG{n}{Why}\PYG{+w}{ }\PYG{n}{use}\PYG{+w}{ }\PYG{n}{tree}\PYG{o}{\PYGZhy{}}\PYG{n}{based}\PYG{+w}{ }\PYG{n}{regression}\PYG{+w}{ }\PYG{n}{model}\PYG{o}{?}
+\PYG{n}{As}\PYG{+w}{ }\PYG{n}{we}\PYG{+w}{ }\PYG{n}{saw}\PYG{+w}{ }\PYG{n}{from}\PYG{+w}{ }\PYG{n}{the}\PYG{+w}{ }\PYG{n}{above}\PYG{+w}{ }\PYG{n}{Linear}\PYG{+w}{ }\PYG{n}{Regression}\PYG{+w}{ }\PYG{n}{model.}\PYG{+w}{ }\PYG{n}{The}\PYG{+w}{ }\PYG{n}{relationships}\PYG{+w}{ }\PYG{n}{are}\PYG{+w}{ }\PYG{n}{not}\PYG{+w}{ }\PYG{n}{always}\PYG{+w}{ }\PYG{n}{linear}
+\PYG{n}{for}\PYG{+w}{ }\PYG{n}{all}\PYG{+w}{ }\PYG{n}{attributes.}\PYG{+w}{ }\PYG{n}{In}\PYG{+w}{ }\PYG{n}{fact}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{some}\PYG{+w}{ }\PYG{n+nf}{attributes }\PYG{p}{(}\PYG{n}{such}\PYG{+w}{ }\PYG{n}{as}\PYG{+w}{ }\PYG{n}{ncore}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{temp}\PYG{+w}{ }\PYG{n}{and}\PYG{+w}{ }\PYG{n}{market}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{are}
+\PYG{n}{really}\PYG{+w}{ }\PYG{n}{different}\PYG{+w}{ }\PYG{n}{in}\PYG{+w}{ }\PYG{n}{each}\PYG{+w}{ }\PYG{n}{neighborhood}
+\PYG{+w}{  }\PYG{o}{\PYGZhy{}}\PYG{+w}{   }\PYG{n}{ncore}\PYG{+w}{ }\PYG{n}{is}\PYG{+w}{ }\PYG{n}{somehow}\PYG{+w}{ }\PYG{n}{divided}\PYG{+w}{ }\PYG{n}{into}\PYG{+w}{ }\PYG{n}{some}\PYG{+w}{ }\PYG{n}{distinguished}\PYG{+w}{ }\PYG{n}{parts.}\PYG{+w}{ }\PYG{n}{And}\PYG{+w}{ }\PYG{n}{each}\PYG{+w}{ }\PYG{n+nf}{part }\PYG{p}{(}\PYG{n}{or}\PYG{+w}{ }\PYG{n}{cluster}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{have}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{very}\PYG{+w}{ }\PYG{n}{different}
+\PYG{+w}{  }\PYG{n}{from}\PYG{+w}{ }\PYG{n}{each}\PYG{+w}{ }\PYG{n+nf}{other. }\PYG{p}{(}\PYG{n}{Kruskal}\PYG{o}{\PYGZhy{}}\PYG{n}{test}\PYG{p}{)}
+\PYG{+w}{  }\PYG{o}{\PYGZhy{}}\PYG{+w}{   }\PYG{n}{different}\PYG{+w}{ }\PYG{n}{trends}\PYG{+w}{ }\PYG{n}{observed}\PYG{+w}{ }\PYG{n}{for}\PYG{+w}{ }\PYG{n+nf}{temp }\PYG{p}{(}\PYG{n}{use}\PYG{+w}{ }\PYG{n}{Covariance}\PYG{p}{)}
+\PYG{+w}{  }\PYG{o}{\PYGZhy{}}\PYG{+w}{   }\PYG{n}{clear}\PYG{+w}{ }\PYG{n}{distinction}\PYG{+w}{ }\PYG{n}{between}\PYG{+w}{ }\PYG{n+nf}{markets }\PYG{p}{(}\PYG{n}{visualization}\PYG{p}{)}
+\PYG{n}{Furthermore}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{we}\PYG{+w}{ }\PYG{n}{have}\PYG{+w}{ }\PYG{n}{abundant}\PYG{+w}{ }\PYG{n}{amount}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n+nf}{data }\PYG{p}{(}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m}{1500}\PYG{+w}{ }\PYG{n}{instances}\PYG{+w}{ }\PYG{n}{in}\PYG{+w}{ }\PYG{n}{the}\PYG{+w}{ }\PYG{n}{training}\PYG{+w}{ }\PYG{n}{set}\PYG{p}{),}\PYG{+w}{ }\PYG{n}{which}\PYG{+w}{ }\PYG{n}{cover}\PYG{+w}{ }\PYG{n}{almost}\PYG{+w}{ }\PYG{n}{everything}\PYG{+w}{ }\PYG{n}{Intel}\PYG{+w}{ }\PYG{n}{has.}\PYG{+w}{ }\PYG{n}{This}\PYG{+w}{ }\PYG{n}{model}
+\PYG{n}{also}\PYG{+w}{ }\PYG{n}{does}\PYG{+w}{ }\PYG{n}{not}\PYG{+w}{ }\PYG{n}{need}\PYG{+w}{ }\PYG{n}{strict}\PYG{+w}{ }\PYG{n}{requirements}\PYG{+w}{ }\PYG{n}{like}\PYG{+w}{ }\PYG{n}{normality}\PYG{+w}{ }\PYG{n}{and}\PYG{+w}{ }\PYG{n}{homoscedasticity.}\PYG{+w}{ }\PYG{n}{With}\PYG{+w}{ }\PYG{n}{the}\PYG{+w}{ }\PYG{n}{amount}\PYG{+w}{ }\PYG{n}{of}\PYG{+w}{ }\PYG{n}{instances}\PYG{+w}{ }\PYG{n}{we}\PYG{+w}{ }\PYG{n}{have}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{and}\PYG{+w}{ }\PYG{n}{the}\PYG{+w}{ }\PYG{n}{high}\PYG{+w}{ }\PYG{n}{variance}\PYG{+w}{ }\PYG{n}{characteristic}
+\PYG{n}{of}\PYG{+w}{ }\PYG{n}{our}\PYG{+w}{ }\PYG{n}{dataset}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{adding}\PYG{+w}{ }\PYG{n}{more}\PYG{+w}{ }\PYG{n}{attributes}\PYG{+w}{ }\PYG{n}{will}\PYG{+w}{ }\PYG{n}{not}\PYG{+w}{ }\PYG{n}{likely}\PYG{+w}{ }\PYG{n}{to}\PYG{+w}{ }\PYG{n}{overfit}\PYG{+w}{ }\PYG{n}{our}\PYG{+w}{ }\PYG{n}{model}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{but}\PYG{+w}{ }\PYG{n}{infact}\PYG{+w}{ }\PYG{n}{improve}\PYG{+w}{ }\PYG{n}{accuracy.}\PYG{+w}{ }\PYG{n}{So}\PYG{+w}{ }\PYG{n}{it}\PYG{+w}{ }\PYG{n}{is}\PYG{+w}{ }\PYG{n}{reliable}\PYG{+w}{ }\PYG{n}{to}\PYG{+w}{ }\PYG{n}{use}\PYG{+w}{ }\PYG{n}{our}\PYG{+w}{ }\PYG{n}{dataset}\PYG{+w}{ }\PYG{n}{to}\PYG{+w}{ }\PYG{n}{examine}\PYG{+w}{ }\PYG{n}{the}\PYG{+w}{ }\PYG{n}{big}\PYG{+w}{ }\PYG{n}{picture}\PYG{+w}{ }
+\PYG{n}{of}\PYG{+w}{ }\PYG{n}{the}\PYG{+w}{ }\PYG{n}{Intel}\PYG{l+s}{\PYGZsq{}s CPU industry.}
+\PYG{l+s}{  \PYGZhy{}\PYGZgt{}    Because of that, it is better to use a regression tree model}
+
+\PYG{l+s}{\PYGZhy{} Why random forrest?}
+\PYG{l+s}{Random forrest is just an augmentation of regression trees and decision trees. In our dataset, there is a complex interaction between the variables that }
+\PYG{l+s}{we are not really sure to figure it out with bare eyes. Therefore, by using a random forrest, we can let the algorithm automatically capture these interaction,}
+\PYG{l+s}{and choose the best interaction possible. This could help us to minimize our RMSE, still apparently large in our last attempt of linear regression.}
+
+\PYG{l+s}{\PYGZhy{} Practical incentives}
+\PYG{l+s}{Random forrest is frequently used as a good model to predict trends in the CPU industry [needs citation]}
+
+\PYG{l+s}{    \PYGZhy{}\PYGZhy{} Hypothesis testing \PYGZhy{}\PYGZhy{}}
+\PYG{l+s}{    1: Abnomal stability of TDP w.r.t ncores}
+\PYG{l+s}{      `Abnomal` since it is not really `linear` as expected in the model above.}
+\PYG{l+s}{    2: Different trends within `temp`}
+\PYG{l+s}{```\PYGZob{}r\PYGZcb{}}
+\PYG{l+s}{data \PYGZlt{}\PYGZhy{} clone}
+
+\PYG{l+s}{\PYGZsh{} Hypothesis testing 1}
+\PYG{l+s}{group1 \PYGZlt{}\PYGZhy{} subset(data, data\PYGZdl{}ncore \PYGZpc{}in\PYGZpc{} c(1,2))}
+\PYG{l+s}{group3 \PYGZlt{}\PYGZhy{} subset(data, data\PYGZdl{}ncore \PYGZpc{}in\PYGZpc{} c(6,8,10,12,14))}
+\PYG{l+s}{group4 \PYGZlt{}\PYGZhy{} subset(data, data\PYGZdl{}ncore \PYGZpc{}in\PYGZpc{} c(15,16,18,20,22))}
+
+\PYG{l+s}{library(car)}
+\PYG{l+s}{model\PYGZlt{}\PYGZhy{} aov(tdp \PYGZti{} ncore ,data = group1)}
+\PYG{l+s}{qqPlot(residuals(model))}
+\PYG{l+s}{\PYGZsh{} Just by plotting a few graphs, we see that the data is not normal, therefore we must use kruskal\PYGZhy{}wallis test.}
+
+\PYG{l+s}{\PYGZsh{} First we test if the groups are properly clustered}
+\PYG{l+s}{kruskal.test(tdp \PYGZti{} ncore, data = group1) }
+\PYG{l+s}{kruskal.test(tdp \PYGZti{} ncore, data = group3)}
+\PYG{l+s}{kruskal.test(tdp \PYGZti{} ncore, data = group4)}
+\PYG{l+s}{\PYGZsh{} TDP varies in ncore=(1..4), the become very stable in ncore=(6..14), and fluctuating a bit from (15..22)}
+
+
+\PYG{l+s}{\PYGZsh{} Hypothesis testing 2}
+\PYG{l+s}{group1 \PYGZlt{}\PYGZhy{} data[data\PYGZdl{}temp \PYGZlt{} 85, ]}
+\PYG{l+s}{group2 \PYGZlt{}\PYGZhy{} data[data\PYGZdl{}temp \PYGZgt{}= 85, ]}
+
+\PYG{l+s}{cov(group1\PYGZdl{}tdp, group1\PYGZdl{}temp)}
+\PYG{l+s}{cov(group2\PYGZdl{}tdp, group2\PYGZdl{}temp)}
+\PYG{l+s}{\PYGZsh{} The covariance between groups are not the same, indicating that they do not follow a homogeneous trend.}
+\PYG{l+s}{```}
+
+\PYG{l+s}{```\PYGZob{}r\PYGZcb{}}
+\PYG{l+s}{data \PYGZlt{}\PYGZhy{} clone}
+
+\PYG{l+s}{library(randomForest)}
+\PYG{l+s}{\PYGZsh{} We ought to use as many trees as possible, however n=500 is good enough.}
+\PYG{l+s}{model.rfr \PYGZlt{}\PYGZhy{} randomForest(formula = tdp \PYGZti{} ncore + bfreq + temp + litho + market + status, data = train, ntree = 500)}
+\PYG{l+s}{print(model.rfr)}
+
+\PYG{l+s}{\PYGZsh{} Create data frame for real tdp value and predicted tdp value}
+\PYG{l+s}{comtab.rfr \PYGZlt{}\PYGZhy{} test[\PYGZsq{}}\PYG{n}{tdp}\PYG{l+s}{\PYGZsq{}]}
+\PYG{l+s}{comtab.rfr[\PYGZsq{}}\PYG{n}{tdp\PYGZus{}predicted}\PYG{l+s}{\PYGZsq{}] \PYGZlt{}\PYGZhy{} as.data.frame(predict(model.rfr, newdata = test), row.names = NULL)}
+
+\PYG{l+s}{\PYGZsh{} Plot the predicted \PYGZhy{} actual}
+\PYG{l+s}{ggplot(comtab.rfr, aes(x = tdp, y = tdp\PYGZus{}predicted)) +}
+\PYG{l+s}{  geom\PYGZus{}point(shape=1, color=\PYGZdq{}blue\PYGZdq{}) +}
+\PYG{l+s}{  geom\PYGZus{}abline(mapping=aes(intercept= 0, slope=1), color=\PYGZdq{}darkblue\PYGZdq{}) +}
+\PYG{l+s}{  labs(x = \PYGZdq{}TDP\PYGZdq{}, y = \PYGZdq{}TDP Predicted\PYGZdq{})}
+
+\PYG{l+s}{\PYGZsh{} Compute error}
+\PYG{l+s}{\PYGZsh{} We see that this is much better than the linear regression model (smaller than linear model)}
+\PYG{l+s}{rmse \PYGZlt{}\PYGZhy{} sqrt(mean((comtab.rfr\PYGZdl{}tdp\PYGZus{}predicted \PYGZhy{} comtab.rfr\PYGZdl{}tdp)\PYGZca{}2))}
+\PYG{l+s}{print(paste0(\PYGZdq{}Root Mean Squared Error: \PYGZdq{}, rmse))}
+
+\PYG{l+s}{\PYGZsh{} The error is not consistent, however. It is expected, since the regression trees are generated \PYGZdq{}randomly\PYGZdq{}. However, the mean and error of RMSE}
+\PYG{l+s}{\PYGZsh{} is still pretty stable, and around \PYGZti{}10.54 \PYGZhy{}\PYGZgt{} \PYGZti{}10.59, pretty small (about 2x small) compare to multi\PYGZhy{}linear model.}
+\PYG{l+s}{```}
+
+\PYG{l+s}{\PYGZsh{}\PYGZsh{}\PYGZsh{} 3. logistic model [ncore + bfreq + temp + litho \PYGZti{} market]}
+
+\PYG{l+s}{    \PYGZhy{}\PYGZhy{} Hypothesis testing \PYGZhy{}\PYGZhy{}}
+\PYG{l+s}{    Assumption: There is significant differences between CPUs produced for Desktop}
+\PYG{l+s}{    \PYGZam{} Server than ones produced for Embedded \PYGZam{} Mobile}
+
+\PYG{l+s}{```\PYGZob{}r\PYGZcb{}}
+\PYG{l+s}{data \PYGZlt{}\PYGZhy{} clone}
+
+\PYG{l+s}{\PYGZsh{} Computers \PYGZhy{} Desktop and Server}
+\PYG{l+s}{\PYGZsh{} Devices \PYGZhy{} Embedded  and Mobile}
+\PYG{l+s}{data\PYGZdl{}type \PYGZlt{}\PYGZhy{} ifelse(data\PYGZdl{}market == \PYGZsq{}}\PYG{n}{Server}\PYG{l+s}{\PYGZsq{} | data\PYGZdl{}market == \PYGZsq{}}\PYG{n}{Desktop}\PYG{l+s}{\PYGZsq{}, \PYGZdq{}Computers\PYGZdq{}, \PYGZdq{}Devices\PYGZdq{})}
+
+\PYG{l+s}{data\PYGZdl{}type \PYGZlt{}\PYGZhy{} as.factor(data\PYGZdl{}type)}
+\PYG{l+s}{\PYGZsh{} Plot it out}
+\PYG{l+s}{ggplot(data, aes(x = type, y = tdp)) +}
+\PYG{l+s}{  geom\PYGZus{}boxplot(fill=\PYGZdq{}deepskyblue\PYGZdq{})}
+
+\PYG{l+s}{\PYGZsh{} We can see that there is an enourmous difference between Devices and Computers}
+\PYG{l+s}{\PYGZsh{} So we are confident that these two has a completely different market segmentation}
+\PYG{l+s}{\PYGZsh{} just by looking at TDP}
+
+\PYG{l+s}{\PYGZsh{} In this case, the difference is very apparent. We don\PYGZsq{}}\PYG{n}{t}\PYG{+w}{ }\PYG{n}{need}\PYG{+w}{ }\PYG{n}{to}\PYG{+w}{ }\PYG{n}{use}\PYG{+w}{ }\PYG{n}{Hypothesis}\PYG{+w}{ }\PYG{n}{Testing.}
+\PYG{n}{```}
+
+\PYG{n}{\PYGZhy{}   We will try to classify which market CPU should belong too based on TDP}
+\PYG{n}{\PYGZhy{}   And also on its other determinants}
+
+\PYG{n}{```}\PYG{p}{\PYGZob{}}\PYG{n}{r}\PYG{p}{\PYGZcb{}}
+\PYG{n}{data}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n}{clone}
+
+\PYG{c+c1}{\PYGZsh{} Server or Desktop will be in type 1, otherwise type 0}
+\PYG{n}{train}\PYG{o}{\PYGZdl{}}\PYG{n}{type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{ifelse}\PYG{p}{(}\PYG{n}{train}\PYG{o}{\PYGZdl{}}\PYG{n}{market}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}Server\PYGZsq{}}\PYG{+w}{ }\PYG{o}{|}\PYG{+w}{ }\PYG{n}{train}\PYG{o}{\PYGZdl{}}\PYG{n}{market}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}Desktop\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m}{0}\PYG{p}{)}
+\PYG{n}{test}\PYG{o}{\PYGZdl{}}\PYG{n}{type}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{ifelse}\PYG{p}{(}\PYG{n}{test}\PYG{o}{\PYGZdl{}}\PYG{n}{market}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}Server\PYGZsq{}}\PYG{+w}{ }\PYG{o}{|}\PYG{+w}{ }\PYG{n}{test}\PYG{o}{\PYGZdl{}}\PYG{n}{market}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}Desktop\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m}{0}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Model}
+\PYG{n}{model.l}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{glm}\PYG{p}{(}\PYG{n}{type}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{tdp}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{train}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{family}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}binomial\PYGZsq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZsh{} Model 1}
+\PYG{n}{model.l\PYGZus{}others}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{glm}\PYG{p}{(}\PYG{n}{type}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{temp}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{train}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{family}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}binomial\PYGZsq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZsh{} Model 2}
+\PYG{c+c1}{\PYGZsh{} also check the model.l with type \PYGZti{} temp \PYGZhy{}\PYGZgt{} contrast the difference}
+
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}\PYGZsh{} FOR MODEL 1}
+\PYG{c+c1}{\PYGZsh{} Config predictions\PYGZsq{} parameters on the test data}
+\PYG{c+c1}{\PYGZsh{} Heauristically, we see that with threshold = 0.6, we receive the best accuracy}
+\PYG{n}{predicted\PYGZus{}probs}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{predict}\PYG{p}{(}\PYG{n}{model.l}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{newdata}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{test}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{type}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}response\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{predicted\PYGZus{}classes}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{ifelse}\PYG{p}{(}\PYG{n}{predicted\PYGZus{}probs}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m}{0.6}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m}{0}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Evaluate model performance}
+\PYG{c+c1}{\PYGZsh{} Convert the predicted classes and actual classes to factors with the same levels and labels}
+\PYG{n}{predicted\PYGZus{}classes\PYGZus{}factor}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }
+\PYG{+w}{  }\PYG{n+nf}{factor}\PYG{p}{(}\PYG{n}{predicted\PYGZus{}classes}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{levels}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+m}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m}{1}\PYG{p}{),}\PYG{+w}{ }\PYG{n}{labels}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Negative\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Positive\PYGZdq{}}\PYG{p}{))}
+\PYG{n}{actual\PYGZus{}classes\PYGZus{}factor}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }
+\PYG{+w}{  }\PYG{n+nf}{factor}\PYG{p}{(}\PYG{n}{test}\PYG{o}{\PYGZdl{}}\PYG{n}{type}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{levels}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+m}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m}{1}\PYG{p}{),}\PYG{+w}{ }\PYG{n}{labels}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Negative\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Positive\PYGZdq{}}\PYG{p}{))}
+
+\PYG{c+c1}{\PYGZsh{} Create a confusion matrix}
+\PYG{n+nf}{library}\PYG{p}{(}\PYG{n}{caret}\PYG{p}{)}
+\PYG{n}{conf\PYGZus{}matrix}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{confusionMatrix}\PYG{p}{(}\PYG{n}{predicted\PYGZus{}classes\PYGZus{}factor}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{actual\PYGZus{}classes\PYGZus{}factor}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Print the confusion matrix}
+\PYG{n+nf}{print}\PYG{p}{(}\PYG{n}{conf\PYGZus{}matrix}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Print performance metrics}
+\PYG{n+nf}{print}\PYG{p}{(}\PYG{n+nf}{paste}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Model 1 \PYGZhy{} Accuracy:\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{conf\PYGZus{}matrix}\PYG{o}{\PYGZdl{}}\PYG{n}{overall}\PYG{p}{[}\PYG{l+s}{\PYGZsq{}Accuracy\PYGZsq{}}\PYG{p}{]))}
+\PYG{n+nf}{print}\PYG{p}{(}\PYG{n+nf}{paste}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Model 1 \PYGZhy{} Precision:\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{conf\PYGZus{}matrix}\PYG{o}{\PYGZdl{}}\PYG{n}{byClass}\PYG{p}{[}\PYG{l+s}{\PYGZsq{}Pos Pred Value\PYGZsq{}}\PYG{p}{]))}
+\PYG{n+nf}{print}\PYG{p}{(}\PYG{n+nf}{paste}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Model 1 \PYGZhy{} Recall:\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{conf\PYGZus{}matrix}\PYG{o}{\PYGZdl{}}\PYG{n}{byClass}\PYG{p}{[}\PYG{l+s}{\PYGZsq{}Sensitivity\PYGZsq{}}\PYG{p}{]))}
+\PYG{n+nf}{print}\PYG{p}{(}\PYG{n+nf}{paste}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Model 1 \PYGZhy{} F1 score:\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{conf\PYGZus{}matrix}\PYG{o}{\PYGZdl{}}\PYG{n}{byClass}\PYG{p}{[}\PYG{l+s}{\PYGZsq{}F1\PYGZsq{}}\PYG{p}{]))}
+\PYG{n}{```}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\PYG{n}{\PYGZsh{}\PYGZsh{}\PYGZsh{} DO NOT CONSIDER FROM THIS LINE}
+\PYG{n}{\PYGZsh{}\PYGZsh{}\PYGZsh{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n}{PART 3. ANALYSIS OF VARIANCE (focusing on tdp)}
+\PYG{n}{(actually this part came before PART 2. :) )}
+
+\PYG{n}{ANOVA [litho \PYGZti{} tdp]}
+
+\PYG{n}{[ncore \PYGZti{} tdp]}
+
+\PYG{n}{Well, nothing to ANOVA here really. ncore is not categorical}
+
+\PYG{n}{[bfreq \PYGZti{} tdp]}
+
+\PYG{n}{Well, nothing to ANOVA here really. ncore is not categorical}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\PYG{n}{```}\PYG{p}{\PYGZob{}}\PYG{n}{r}\PYG{p}{\PYGZcb{}}
+\PYG{c+c1}{\PYGZsh{} We plot the histogram of litho \PYGZti{} bfreq}
+\PYG{n+nf}{ggplot}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nf}{aes}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{tdp}\PYG{p}{))}\PYG{+w}{ }\PYG{o}{+}
+\PYG{+w}{  }\PYG{n+nf}{geom\PYGZus{}histogram}\PYG{p}{(}\PYG{n}{binwidth}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m}{0.1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fill}\PYG{o}{=}\PYG{l+s}{\PYGZdq{}deepskyblue\PYGZdq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }
+\PYG{+w}{  }\PYG{n+nf}{facet\PYGZus{}wrap}\PYG{p}{(}\PYG{o}{\PYGZti{}}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} We see that some categories of lithography are not significant in terms of}
+\PYG{c+c1}{\PYGZsh{} quantity, and do not follow any clear distribution. We will treat them as}
+\PYG{c+c1}{\PYGZsh{} outliners.}
+
+\PYG{c+c1}{\PYGZsh{} We choose to keep the following category:}
+\PYG{c+c1}{\PYGZsh{} 14, 22, 32, 45:}
+\PYG{n}{data}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{subset}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{\PYGZpc{}in\PYGZpc{}}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+m}{14}\PYG{p}{,}\PYG{l+m}{22}\PYG{p}{,}\PYG{l+m}{32}\PYG{p}{,}\PYG{l+m}{45}\PYG{p}{))}
+
+\PYG{c+c1}{\PYGZsh{} We plot the histogram of ncore \PYGZti{} bfreq}
+\PYG{n+nf}{ggplot}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nf}{aes}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{bfreq}\PYG{p}{))}\PYG{+w}{ }\PYG{o}{+}
+\PYG{+w}{  }\PYG{n+nf}{geom\PYGZus{}histogram}\PYG{p}{(}\PYG{n}{binwidth}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m}{2}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fill}\PYG{o}{=}\PYG{l+s}{\PYGZdq{}deepskyblue\PYGZdq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }
+\PYG{+w}{  }\PYG{n+nf}{facet\PYGZus{}wrap}\PYG{p}{(}\PYG{o}{\PYGZti{}}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{ncore}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} We see that some categories of ncore are not significant in terms of quantity}
+\PYG{c+c1}{\PYGZsh{} \PYGZhy{}\PYGZgt{} remove it too}
+
+\PYG{c+c1}{\PYGZsh{} We choose to keep the following category:}
+\PYG{c+c1}{\PYGZsh{} 2, 4}
+\PYG{n}{data}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{subset}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{ncore}\PYG{+w}{ }\PYG{o}{\PYGZpc{}in\PYGZpc{}}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+m}{2}\PYG{p}{,}\PYG{l+m}{4}\PYG{p}{))}
+
+\PYG{c+c1}{\PYGZsh{} Group them as factors}
+\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{ncore}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{as.factor}\PYG{p}{(}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{ncore}\PYG{p}{)}
+\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{as.factor}\PYG{p}{(}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Now, we visualize all of this up, to see what did we get so far:}
+\PYG{n+nf}{ggplot}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nf}{aes}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ncore}\PYG{p}{,}\PYG{n}{y}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{bfreq}\PYG{p}{,}\PYG{n}{color}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{litho}\PYG{p}{))}\PYG{o}{+}
+\PYG{+w}{  }\PYG{n+nf}{geom\PYGZus{}boxplot}\PYG{p}{()}
+\PYG{n}{```}
+
+
+
+
+\PYG{n}{ANOVA \PYGZhy{} one way [litho \PYGZti{} bfreq when ncore = 4]}
+
+\PYG{n}{Since the variance and normality is not perfect, we better do a non\PYGZhy{}parametric test,}
+\PYG{n}{such as Kruskal–Wallis one\PYGZhy{}way analysis of variance.}
+
+\PYG{n}{We can see that the values of the test is small (\PYGZlt{} 0.05), we can say that there are significant differences between the}
+\PYG{n}{\PYGZdq{}ranks\PYGZdq{} (\PYGZlt{}\PYGZhy{} explain this further)}
+\PYG{n}{```}\PYG{p}{\PYGZob{}}\PYG{n}{r}\PYG{p}{\PYGZcb{}}
+\PYG{n+nf}{ggplot}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nf}{aes}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{litho}\PYG{p}{,}\PYG{n}{y}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{bfreq}\PYG{p}{))}\PYG{o}{+}
+\PYG{+w}{  }\PYG{n+nf}{geom\PYGZus{}boxplot}\PYG{p}{(}\PYG{n}{fill}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}deepskyblue\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nf}{kruskal.test}\PYG{p}{(}\PYG{n}{bfreq}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{litho}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{)}
+\PYG{n}{```}
+
+\PYG{n}{To see which group is significantly different from others, we must perform a}
+\PYG{n}{post\PYGZhy{}hoc comparison, in this case, we use Wilcoxon test}
+\PYG{n}{[https://en.wikipedia.org/wiki/Kruskal\PYGZpc{}E2\PYGZpc{}80\PYGZpc{}93Wallis\PYGZus{}one\PYGZhy{}way\PYGZus{}analysis\PYGZus{}of\PYGZus{}variance]}
+\PYG{n}{```}\PYG{p}{\PYGZob{}}\PYG{n}{r}\PYG{p}{\PYGZcb{}}
+\PYG{n+nf}{pairwise.wilcox.test}\PYG{p}{(}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{bfreq}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{p.adjust.method}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}bonferroni\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{```}
+
+
+
+\PYG{n}{ANOVA \PYGZhy{} one way (ncore \PYGZti{} bfreq)}
+
+\PYG{n}{```}\PYG{p}{\PYGZob{}}\PYG{n}{r}\PYG{p}{\PYGZcb{}}
+\PYG{c+c1}{\PYGZsh{} OK YOU GET THE IDEA, PLEASE DO THAT FOR ME VIETTUNG}
+\PYG{n}{```}
+
+
+
+
+\PYG{n}{ANOVA \PYGZhy{} two way [litho \PYGZam{} ncore \PYGZti{} bfreq]}
+
+\PYG{n}{Now we construct Two\PYGZhy{}way ANOVA model}
+\PYG{n}{```}\PYG{p}{\PYGZob{}}\PYG{n}{r}\PYG{p}{\PYGZcb{}}
+\PYG{n}{model}\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{aov}\PYG{p}{(}\PYG{n}{bfreq}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{n}{ncore}\PYG{+w}{ }\PYG{p}{,}\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{)}
+\PYG{n+nf}{qqPlot}\PYG{p}{(}\PYG{n+nf}{residuals}\PYG{p}{(}\PYG{n}{model}\PYG{p}{))}
+\PYG{n+nf}{shapiro.test}\PYG{p}{(}\PYG{n+nf}{residuals}\PYG{p}{(}\PYG{n}{model}\PYG{p}{))}
+\PYG{n+nf}{leveneTest}\PYG{p}{(}\PYG{n}{bfreq}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{  }\PYG{n}{ncore}\PYG{+w}{ }\PYG{p}{,}\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{)}
+\PYG{n+nf}{Anova}\PYG{p}{(}\PYG{n}{model}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{type}\PYG{o}{=}\PYG{l+s}{\PYGZsq{}III\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{```}
+
+
+\PYG{n}{Transform the data to rank\PYGZhy{}based. Nonparametric Two\PYGZhy{}way ANOVA}
+\PYG{n}{\PYGZdq{}Finaly, let’s perform two\PYGZhy{}way ANOVA on the rank\PYGZhy{}transformed data. Ranking is one of many procedures used to transform data that do not meet the assumptions of normality. Conover and Iman (1981) provided a review of the four main types of rank transformations. One method replaces each original data value by its rank (from 1 for the smallest to N for the largest, where N is the combined data sample size)\PYGZdq{}}
+\PYG{n}{[https://www.cfholbert.com/blog/nonparametric\PYGZus{}two\PYGZus{}way\PYGZus{}anova/]}
+
+\PYG{n}{As we can see, it looks worse.}
+\PYG{n}{```}\PYG{p}{\PYGZob{}}\PYG{n}{r}\PYG{p}{\PYGZcb{}}
+\PYG{n}{model}\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{aov}\PYG{p}{(}\PYG{n+nf}{rank}\PYG{p}{(}\PYG{n}{bfreq}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{n}{ncore}\PYG{+w}{ }\PYG{p}{,}\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{)}
+\PYG{n+nf}{qqPlot}\PYG{p}{(}\PYG{n+nf}{residuals}\PYG{p}{(}\PYG{n}{model}\PYG{p}{))}
+\PYG{n+nf}{shapiro.test}\PYG{p}{(}\PYG{n+nf}{residuals}\PYG{p}{(}\PYG{n}{model}\PYG{p}{))}
+\PYG{n+nf}{leveneTest}\PYG{p}{(}\PYG{n+nf}{rank}\PYG{p}{(}\PYG{n}{bfreq}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{  }\PYG{n}{ncore}\PYG{+w}{ }\PYG{p}{,}\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{)}
+\PYG{n+nf}{Anova}\PYG{p}{(}\PYG{n}{model}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{type}\PYG{o}{=}\PYG{l+s}{\PYGZsq{}III\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{``}`
+
+\PYG{n}{One}\PYG{+w}{ }\PYG{n}{frustrating}\PYG{+w}{ }\PYG{n}{thing}\PYG{+w}{ }\PYG{n}{about}\PYG{+w}{ }\PYG{n}{tests}\PYG{+w}{ }\PYG{n}{is}\PYG{+w}{ }\PYG{n}{that}\PYG{+w}{ }\PYG{n}{they}\PYG{+w}{ }\PYG{n}{are}\PYG{+w}{ }\PYG{n}{very}\PYG{+w}{ }\PYG{n}{sensitive}\PYG{+w}{ }\PYG{n}{to}\PYG{+w}{ }\PYG{n}{large}\PYG{+w}{ }\PYG{n}{data.}
+\PYG{n}{So}\PYG{+w}{ }\PYG{n}{do}\PYG{+w}{ }\PYG{n}{not}\PYG{+w}{ }\PYG{n}{trust}\PYG{+w}{ }\PYG{n}{in}\PYG{+w}{ }\PYG{n}{tests}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{but}\PYG{+w}{ }\PYG{n}{the}\PYG{+w}{ }\PYG{n}{intuition.}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{Verbatim}

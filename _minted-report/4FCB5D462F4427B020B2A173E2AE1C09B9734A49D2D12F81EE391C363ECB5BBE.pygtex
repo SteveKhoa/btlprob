@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{library}\PYG{p}{(}\PYG{n}{car}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{aov}\PYG{p}{(}\PYG{n}{tdp}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{ncore}\PYG{+w}{ }\PYG{p}{,}\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{group1}\PYG{p}{)}
+\PYG{n+nf}{qqPlot}\PYG{p}{(}\PYG{n+nf}{residuals}\PYG{p}{(}\PYG{n}{model}\PYG{p}{))}
+\end{Verbatim}

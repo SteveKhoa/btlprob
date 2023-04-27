@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{data\PYGZus{}litho\PYGZus{}subset}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{subset}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{\PYGZpc{}in\PYGZpc{}}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+m}{14}\PYG{p}{,}\PYG{l+m}{22}\PYG{p}{,}\PYG{l+m}{32}\PYG{p}{,}\PYG{l+m}{45}\PYG{p}{,}\PYG{l+m}{65}\PYG{p}{))}
+\PYG{n}{litho\PYGZus{}anova\PYGZus{}model}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{aov}\PYG{p}{(}\PYG{n}{tdp}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{litho}\PYG{+w}{ }\PYG{p}{,}\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{data\PYGZus{}litho\PYGZus{}subset}\PYG{p}{)}
+\end{Verbatim}

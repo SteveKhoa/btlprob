@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{qqPlot}\PYG{p}{(}\PYG{n+nf}{residuals}\PYG{p}{(}\PYG{n}{litho\PYGZus{}anova\PYGZus{}model}\PYG{p}{))}
+\PYG{n+nf}{shapiro.test}\PYG{p}{(}\PYG{n+nf}{residuals}\PYG{p}{(}\PYG{n}{litho\PYGZus{}anova\PYGZus{}model}\PYG{p}{))}
+\PYG{n}{data\PYGZus{}litho\PYGZus{}subset\PYGZus{}clone}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n}{data\PYGZus{}litho\PYGZus{}subset}
+\PYG{n}{data\PYGZus{}litho\PYGZus{}subset\PYGZus{}clone}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{as.factor}\PYG{p}{(}\PYG{n}{data\PYGZus{}litho\PYGZus{}subset\PYGZus{}clone}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{p}{)}
+\PYG{n+nf}{leveneTest}\PYG{p}{(}\PYG{n}{tdp}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{litho}\PYG{+w}{ }\PYG{p}{,}\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{data\PYGZus{}litho\PYGZus{}subset\PYGZus{}clone}\PYG{p}{)}
+\end{Verbatim}

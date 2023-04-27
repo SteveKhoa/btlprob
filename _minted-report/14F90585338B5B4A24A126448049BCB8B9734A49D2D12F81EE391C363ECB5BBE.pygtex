@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{kruskal.test}\PYG{p}{(}\PYG{n}{tdp}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{n}{litho}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{data\PYGZus{}litho\PYGZus{}subset}\PYG{p}{)}
+\end{Verbatim}

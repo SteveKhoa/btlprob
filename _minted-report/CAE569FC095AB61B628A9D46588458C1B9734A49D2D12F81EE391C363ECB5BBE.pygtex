@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{set.seed}\PYG{p}{(}\PYG{l+m}{123}\PYG{p}{)}
+
+\PYG{n}{train\PYGZus{}indices}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{sample}\PYG{p}{(}\PYG{l+m}{1}\PYG{o}{:}\PYG{n+nf}{nrow}\PYG{p}{(}\PYG{n}{data}\PYG{p}{),}\PYG{+w}{ }\PYG{n+nf}{nrow}\PYG{p}{(}\PYG{n}{data}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{l+m}{0.8}\PYG{p}{)}
+\PYG{n}{train}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{[}\PYG{n}{train\PYGZus{}indices}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{]}
+\PYG{n}{test}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{n}{train\PYGZus{}indices}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{]}
+\end{Verbatim}
