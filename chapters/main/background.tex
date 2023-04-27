@@ -5,3 +5,143 @@
 %   Le Hieu did present some weird stuff in this section (also called Theory Basis)
 \clearpage
 \section{Background}
+\subsection{ANOVA.}
+Analysis of variance (ANOVA) is a statistical method used to test for differences among two or more population means by analyzing the variances of samples taken from the populations.
+\subsubsection{One way ANOVA.}
+For one way ANOVA, we would like to anylyse the effect of a single factors with multiple level on a samples.
+
+For each observation under the treatment $i$ under the $j$ observation called $y_{ij}$ we have the linear combination:
+
+\[y_{ij} = \mu + \tau_i + \epsilon_{ij} 
+\begin{cases}
+    i = 1,2,...,a.\\
+    j = 1,2,...,n.
+\end{cases}
+\]
+Where:
+\begin{itemize}
+    \item $\mu$ is the overall mean.
+    \item $\tau_i$ is the effect of the $i$th treatment effect.
+    \item $\epsilon_{ij}$ is a random component error.
+\end{itemize}
+We could rewritten the model as.
+
+\[y_{ij} = \mu_i + \epsilon_{ij} 
+\begin{cases}
+    i = 1,2,...,a.\\
+    j = 1,2,...,n.
+\end{cases}
+\]
+Where:
+\begin{itemize}
+    \item $\mu_i$ =  $\mu + \tau_i$
+    \item $\tau_i$ is the effect of the $i$th treatment effect.
+    \item $\epsilon_{ij}$ is a random component error.
+\end{itemize}
+
+if we assume that the errors $\epsilon_{ij}$ are normally and independently distributed with mean 0 and variance $\sigma^2$. Each treatment can be treated as a normal population with the mean of $\mu_i$ and variance $\sigma^2$.
+
+So to perform a one way ANOVA the data will need to fufill the following assumption:
+\begin{enumerate}
+    \item Normality: The populations have distributions that are approximately normal.
+    \item   : The populations have the same variance
+    \item Independent: the data is random and independent.
+\end{enumerate}
+However the Normality and Homogeneity of variance are only loose requirement as the method still well despite failing these assumptionStatistician George E. P. Box.
+However we will also use the Kruskal - Wallis test for anything that do not sastify the assumption.
+We want to test the Null hypothesis:
+\[
+\begin{cases}
+    H_0: \mu_1 = \mu_2 = ... = \mu_n \\
+    H_1: \text{two mean are different}
+\end{cases}
+\]
+Total sum of squares:
+\[ SS_T = \sum_{i = 1}^{a} \sum_{j = 1}^{n} (y_{ij} - \bar{y})^2\]
+\[ SS_T = n\sum_{i=1}^{a}(\bar{y_i}-\bar{y})^2 + \sum_{i=1}^{a}\sum_{j=1}^{n}(y_{ij}-\bar{y_i})^2\]
+or
+\[ SS_T = SS_{Treatment}+SS_{Error}\]
+where degree of freedom is:
+\[df(SS_T) = N - 1 \quad df(SS_{Treatment}) = a - 1 \quad df(SS_{Error}) = N - a \]
+Mean square for treatments: 
+\[MS_{Treatment} = SS_{Treatment} / df(SS_{Treatment})\]
+\[MS_{Treatment} = SS_{Treatment} / (a - 1)\]
+Mean square for error: 
+\[MS_{Error} = SS_{Treatment} / df(SS_{Error})\]
+\[MS_{Error} = SS_{Treatment} / (N - a)\]   
+F test statistic: 
+\[F_0 = \frac{MS_{Treatment}}{MS_{Error}}\]
+If \[F_0 > F_{\alpha , a-1,a(n-1)}\]
+
+\subsection{Two way ANOVA.}
+similarly to one way, two way ANOVA is also a statistical method used to test for differences among two or more population means by analyzing the variances of samples taken from the populations. The difference here is that two way ANOVA used two factors for the test.
+
+% We also have to the linear combination for each observation as followed:
+% \[y_{ij} = \mu + \alpha_i + \beta_j +\gamma_{ij} +\epsilon_{ij}\]
+% Where  
+% \begin{itemize}
+%     \item $\mu$ is the overall mean.
+%     \item $\alpha_i$ is the additive main effect of the $i$th treatment effect.
+%     \item $\beta_i$ is the additive main effect of the $j$th treatment effect.
+%     \item $
+%     \item $\epsilon_{ij}$ is a random component error.
+% \end{itemize}
+\subsection{Kruskal - Wallis test}
+Kruskal - Wallis test which uses ranks of data from three or more independent simple random samples to test the null hypothesis that the samplees come from populations with the same median.
+The Kruskal-Wallis test for equal medians does not require normal distributions, so it is a distribution-free or non parametric test. 
+In applying the Kruskal - Wallis test we need to compute the test statistic H.
+\[H = \frac{12}{N(N+1)*\sum_{i=1}^{k}\frac{R_i^2}{n_i}-3(N+1)}\]
+Where:
+
+\begin{itemize}
+    \item $N$ is the number of values from all combined samples.
+    \item $R_i$ is the sum of ranks from a paricular sample, and $n_i$ is the number of values from the corresponding rank sum.
+    \item $n_i$ is the number of values from the corresponding rank sum.
+\end{itemize}
+
+\subsection{Levene test}
+Levene's test is used to test if k samples have equal variance.In this assignment, we will use it as the primary tool for testing the Homogeneity of variance.
+
+Given a variable Y with sample of sizeN divided into k subgroupsm where $N_i$ is the sample size of the $i$th subgroup, the Levene test is defined as:
+\[
+\begin{cases}
+    H_0: \sigma_1^2 = \sigma_2^2 =...=\sigma_k^2
+    H_1: there are at least one pair with unequal variance.
+\end{cases}
+\]
+\[W = \frac{(N-K)}{(k-1)}\frac{\sum_{i=1}^{k}N_i(\bar{Z_i}-\bar{Z})^2}{\sum_{i=1}^{j}\sum_{j=1}^{N_i}(Z_{ij}-\bar{Z_i})^2}\]
+where $Z_{ij}$ cahn have one of these following definitions:
+
+\begin{itemize}
+    \item $Z_{ij} = Y_{iJ} - \bar{Y_i}$ where $\bar{Y_i}$ is the mean  of the $i$th subgroup.
+    \item $Z_{ij} = Y_{iJ} - \tilde{Y_i}$ where $\tilde{Y_i}$ is the median of the $i$th subgroup.
+    \item $Z_{ij} = Y_{iJ} - \bar{Y_i}^{'}$ where $\bar{Y_i}^{'}$ is the trimmed mean of the $i$th subgroup.
+\end{itemize}
+
+The three choice for detemining $Z_{ij}$ determine the robustness and power of Levene's test. We will choose choice where $\tilde{Y_i}$ is the median as it is the default choice of LeveneTest in R
+
+\subsection{Shapiro-Wilk test}
+The Shapiro-Wilk test, calculates a W statistic that tests whether a random sample, $x_1$, $x_2$, ..., $x_n$ come from a normal distribution. 
+The W statistic is calculated as:
+\[W = \frac{(\sum_{i=1}^{n}a_ix_{(i)})^2}{\sum_{i=1}^{n}(x_i-\bar{x})^2}\]
+where:
+\begin{itemize}
+    \item $x_{(i)}are the ordered sample values$
+    \item $a_i$ are the constant generated from the means, variance and covariance of the order of a sample of size n from a normal distribution.
+    \item $\bar{x}$ is the sample mean
+\end{itemize}
+We would like to use this test to test the Null hypothesis:
+\[
+\begin{cases}
+    H_0: The population is normally distributed
+    H_1: the population is not normally distributed
+\end{cases}
+\]
+if the p-value is less than $\alpha$ then we can reject the null hypothesis this test and consider our data to not be Normally distributed.
+\subsection{Post hoc test}
+\subsubsection{TUKEY HSD test}
+
+\subsubsection{Dunn test}
+
+
+
