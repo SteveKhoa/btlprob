@@ -1,0 +1,23 @@
+```{r}
+pacman::p_load(rio,     # for dealing with basic import export
+               ggplot2, # for dealing with plot formats
+               zoo     # for dealing with year quarter formats
+)
+
+# Import data
+setwd("/Users/admin/Desktop/_probability_PROJECT/btlprob/rcode")
+data <- import("./cpu-raw.csv") # rio::import
+
+#Data attribute selection
+data <- data[, c("Vertical_Segment","Status","Launch_Date",
+                 "Lithography","Recommended_Customer_Price",
+                 "nb_of_Cores","Processor_Base_Frequency",
+                 "TDP","T")] 
+
+# Rename labels
+names(data) <- c("market", "status", "ldate", "litho", 
+                 "rprice", "ncore", "bfreq", "tdp", 
+                 "temp") # Rename columns, easier to deal with
+
+export(data,"cpu-short.csv")
+```

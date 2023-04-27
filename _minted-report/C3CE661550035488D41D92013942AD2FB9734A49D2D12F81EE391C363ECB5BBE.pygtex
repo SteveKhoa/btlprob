@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{names}\PYG{p}{(}\PYG{n}{data}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{c}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}market\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}status\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}ldate\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}litho\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{    }\PYG{l+s}{\PYGZdq{}rprice\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}ncore\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}bfreq\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}tdp\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{    }\PYG{l+s}{\PYGZdq{}temp\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n+nf}{export}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}./cpu\PYGZhy{}clean.csv\PYGZdq{}}\PYG{p}{)}
+\end{Verbatim}

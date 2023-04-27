@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{data}\PYG{p}{[,}\PYG{l+s}{\PYGZdq{}bfreq\PYGZdq{}}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{as.numeric}\PYG{p}{(}
+\PYG{+w}{    }\PYG{n+nf}{gsub}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}( GHz)|( MHz)\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{[,}\PYG{l+s}{\PYGZdq{}bfreq\PYGZdq{}}\PYG{p}{])}
+\PYG{p}{)}
+
+\PYG{n}{data}\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{[}\PYG{o}{!}\PYG{n+nf}{is.na}\PYG{p}{(}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{bfreq}\PYG{p}{),}\PYG{+w}{ }\PYG{p}{]}
+
+\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{bfreq}\PYG{p}{[}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{bfreq}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m}{10}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{bfreq}\PYG{p}{[}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{bfreq}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m}{10}\PYG{p}{]}\PYG{o}{*}\PYG{l+m}{0.001}
+\end{Verbatim}

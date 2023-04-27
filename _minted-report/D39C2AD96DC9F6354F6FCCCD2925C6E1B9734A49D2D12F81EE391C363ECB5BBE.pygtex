@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{data}\PYG{p}{[,}\PYG{l+s}{\PYGZdq{}tdp\PYGZdq{}}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{as.numeric}\PYG{p}{(}
+\PYG{+w}{    }\PYG{n+nf}{gsub}\PYG{p}{(}\PYG{l+s}{\PYGZdq{} W\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{p}{[,}\PYG{l+s}{\PYGZdq{}tdp\PYGZdq{}}\PYG{p}{])}
+\PYG{p}{)}
+\end{Verbatim}

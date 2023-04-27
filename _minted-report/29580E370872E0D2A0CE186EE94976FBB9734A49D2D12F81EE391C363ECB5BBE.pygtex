@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{data}\PYG{p}{[,}\PYG{l+s}{\PYGZdq{}rprice\PYGZdq{}}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{gsub}\PYG{p}{(}
+\PYG{+w}{    }\PYG{l+s}{\PYGZdq{}(\PYGZca{}\PYGZbs{}\PYGZbs{}\PYGZdl{}(\PYGZbs{}\PYGZbs{}d)+.(\PYGZbs{}\PYGZbs{}d)+ \PYGZhy{} )\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{    }\PYG{l+s}{\PYGZdq{}\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{data}\PYG{p}{[,}\PYG{l+s}{\PYGZdq{}rprice\PYGZdq{}}\PYG{p}{]}
+\PYG{p}{)}
+
+\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{rprice}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{ifelse}\PYG{p}{(}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{rprice}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}N/A\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kc}{NA}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{rprice}\PYG{p}{)}
+
+\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{rprice}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{n+nf}{as.numeric}\PYG{p}{(}\PYG{n+nf}{gsub}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}\PYGZbs{}\PYGZbs{}\PYGZdl{}|,\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{rprice}\PYG{p}{))}
+\end{Verbatim}

@@ -6,55 +6,14 @@
 \section{Data clarification}
 \label{section:data_clarify}
 
-This section provides several visualizations to highlight the big pictures of our dataset, and it would
-focus mostly on the behaviour of each variable as independent individuals, rather than the interaction 
-between them, which we will focus in much details in \textbf{Section \ref{section:data_analysis}}.
-
-\subsection{Categorical attributes}
-
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{./graphics/pie_market.pdf}
-        \caption{Pie of market share}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{./graphics/pie_status.pdf}
-        \caption{Pie of status}
-    \end{subfigure}
-    \caption{Pies of categorical attributes}
-    \label{fig:pie_category}
-\end{figure}
-
-\inputcode[firstline=59,lastline=73]{R}{rcode/clarification.rmd}
-
-\textbf{[Figure \ref{fig:pie_category}]} Two obvious categorical attributes of our data are \textit{Market} and \textit{Status}.
-\begin{itemize}
-    \item In \textit{Market} attribute, three primary shares of market are Desktop, Server and Mobile. Embedded constitues a very small
-    proportion.
-    \item In \textit{Status} attribute, most of them are Launched, End of Life or End of interactive support. A tiny amount of Announce
-    contributes modestly to total amount of CPU's model by provider Intel.
-\end{itemize}
-
-In terms of the code we used to plot two above pies. Each line is self-explanatory. Since two pies have different configurations, and would be
-verbose to explain everything here, we leave the detailed implementation in \verb|rcode/clarification.rmd|. A few things to note are:
-\begin{itemize}
-    \item \verb|data_percentages| is a data-frame containing three properties: \verb|market|, \verb|value| and \verb|percent|.
-    Note that, we use variable \verb|market| two times: one for plotting market-pie and one for plotting status-pie. This is just for ease
-    of use and avoid repeating the code. It should not be taken seriously (the same name for two different things could be confusing).
-    \item \verb|market| are the levels of \verb|market|-attribute (or \verb|status|-attribute)
-    \item \verb|value| is the vector of frequencies of each \verb|market| (or \verb|status|)
-    \item \verb|percent| is the vector percentages (computed by dividing the frequency by total and multiply by $100$)
-\end{itemize}
 
 
 
 
 
-\subsection{Continuous attributes}
+
+
+
 
 \begin{figure}[H]
     \centering

@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{data}\PYG{p}{[,}\PYG{l+s}{\PYGZdq{}ldate\PYGZdq{}}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{\PYGZlt{}\PYGZhy{}}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n+nf}{as.yearqtr}\PYG{p}{(}\PYG{n}{data}\PYG{p}{[,}\PYG{l+s}{\PYGZdq{}ldate\PYGZdq{}}\PYG{p}{],}\PYG{+w}{ }\PYG{n}{format}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Q\PYGZpc{}q\PYGZsq{}\PYGZpc{}y\PYGZdq{}}\PYG{p}{)}
+\PYG{p}{)}
+\end{Verbatim}

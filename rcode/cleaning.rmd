@@ -17,6 +17,7 @@
 ##  NK
 ##  ---
 
+```{r}
 ##  LOAD NECESSARY PACKAEGS
 pacman::p_load(
   rio,     # for imports & exports
@@ -26,12 +27,6 @@ pacman::p_load(
 ##  IMPORT THE DATA
 setwd("/Users/admin/Desktop/_probability_PROJECT/btlprob/rcode")   # set working directory
 data <- import("cpu-short.csv")        # rio::import
-
-##  RENAME LABELS
-names(data) <- c("market", "status", "ldate", "litho", 
-                 "rprice", "ncore", "nthread", "bfreq", "tdp", 
-                 "memband", "temp"
-                ) # Rename columns into shorter names
 
 ##
 ##  CLEANING PROCESS
@@ -64,12 +59,6 @@ data[,"litho"] <- as.numeric(
 )
 
 ##  RPRICE
-#     note      /regex/       : PLEASE EXPLAIN THE REGEX VIETUNG
-#
-#     TO-DO
-#     TO-DO
-#     TO-DO
-#
 data[,"rprice"] <- gsub(
   "(^\\$(\\d)+.(\\d)+ - )", 
   "", 
@@ -85,6 +74,7 @@ data$rprice <- as.numeric(gsub('\\$|,', '', data$rprice))
 #
 #     First, remove all occurences of "GHz" and "MHz".
 #     Second, all values greater than 10 must be MHz, we multiply them by 0.001
+#     They must be truncated first
 #
 data[,"bfreq"] <- as.numeric(
   gsub("( GHz)|( MHz)", "", data[,"bfreq"])
@@ -99,14 +89,6 @@ data$bfreq[data$bfreq > 10] <- data$bfreq[data$bfreq > 10]*0.001
 #
 data[,"tdp"] <- as.numeric(
   gsub(" W", "", data[,"tdp"])
-)
-
-##  MEMBAND
-#
-#     Remove all occurences of "GB/s"
-#
-data[,"memband"] <- as.numeric(
-  gsub(" GB/s", "", data[,"memband"])
 )
 
 ##  TEMP
@@ -132,4 +114,7 @@ for (i in seq_along(data[["temp"]])) {                    # For each elements in
   data[i, "temp"] <- max_value                            # Store the maximum value
 }
 
-export(data, "cpu-clean.csv")
+View(data)
+
+export(data, "cpu-short.csv")
+```
