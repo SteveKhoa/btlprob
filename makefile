@@ -7,11 +7,10 @@ default:
 	@pdflatex -shell-escape $(TARGETS)
 
 build:
-	@bibtex refs
+	@pdflatex -shell-escape $(TARGETS)
+	@bibtex report.aux
 	@pdflatex -shell-escape $(TARGETS)
 	@pdflatex -shell-escape $(TARGETS)
-
-rebuild: clean default
 
 clean:
 	find . -type f -name '*.aux'  -delete
@@ -23,3 +22,5 @@ clean:
 	find . -type f -name '*.fls'  -delete
 	find . -type f -name '*.pyg'  -delete
 	find . -type f -name '*.out'  -delete
+	find . -type f -name '*.bbl'  -delete
+	find . -type f -name '*.blg'  -delete

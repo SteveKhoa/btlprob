@@ -2,7 +2,6 @@
 %   Data Analysis
 %       - ANOVA and Regression and stuff.
 %   
-\clearpage
 \section{Data analysis}
 \label{section:data_analysis}
 
@@ -91,103 +90,6 @@ test <- data[-train_indices, ]
 
 \subsection{The relationships between TDP and other factors}
 
-\subsubsection{The visualizations}
-\label{section:data_analysis_visualizations}
-
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{./graphics/box_tdp_ncore.pdf}
-        \caption{Increasing trend of no. cores and TDP}
-        \label{fig:tdp_analysis_ncore}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{./graphics/scatter_tdp_bfreq.pdf}
-        \caption{Increasing trend of Base frequency and TDP}
-        \label{fig:tdp_analysis_bfreq}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{./graphics/box_tdp_litho.pdf}
-        \caption{TDP within different Lithography}
-        \label{fig:tdp_analysis_litho}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{./graphics/scatter_tdp_temp.pdf}
-        \caption{Different trends of TDP on different ranges of temperature}
-        \label{fig:tdp_analysis_temp}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{./graphics/box_tdp_market.pdf}
-        \caption{Differences of TDP in different Markets}
-        \label{fig:tdp_analysis_market}
-    \end{subfigure}
-
-    \caption{The relationship visualizations between TDP and other factors}
-    \label{fig:tdp_analysis}
-\end{figure}
-
-From the above visualizations, we could make a few comments from these relationships, which motivates us to use certain Regression models:
-\begin{itemize}
-    \item \textbf{[Figure \ref{fig:tdp_analysis_ncore}]} \verb|tdp ~ ncore| : As \verb|ncore| increases, \verb|TDP| also increases. The variance of \verb|TDP| gets smaller and smaller
-    when more and more cores within a CPU appears. This motivates us to with the first Linear regression model (\textbf{Section \ref{section:data_analysis_linear}}).
-    However, we also observe that, there was a sharp increase from 1 to 4 cores, then became pretty stable from 6 to 14 cores, then fluctuates wildly for 16 cores
-    and above (this argument will be validated in \textbf{Section \ref{section:data_analysis_anova}}). This indicates that Linearity might not be the most desirable
-    model, and we need something more powerful to handle such distinctive "clusters" on different ranges, like Random forrest regression
-    (\textbf{Section \ref{section:data_analysis_randomforrest}}).
-    
-    \item \textbf{[Figure \ref{fig:tdp_analysis_bfreq}]} \verb|tdp ~ bfreq| : The data for this relationship is quite variance. However, the dominant trend is still linearly increasing.
-    This could be a potential candidate for Linear regression (\textbf{Section \ref{section:data_analysis_linear}}).
-    
-    \item \textbf{[Figure \ref{fig:tdp_analysis_litho}]} \verb|tdp ~ litho| : There is no clear upward and downward trend for \verb|TDP| as \verb|litho| gets smaller. Instead, we can
-    see that \verb|TDP| is converging (\textbf{[Figure \ref{fig:box_litho}]}). Therefore, we can say that \verb|tdp| is getting more and more stable over time.
-    And note that, we did say that \verb|litho| is a nice representative of a CPU era instead of \verb|ldate| (thus we said "over time"). This will be explained in further details in 
-    \textbf{Section \ref{section:data_analysis_anova}} with visualizations and statistical tests.
-    
-    \item \textbf{[Figure \ref{fig:tdp_analysis_temp}, \ref{fig:tdp_analysis_market}]} \verb|tdp ~ temp| and \verb|tdp ~ market| : This relationship is interesting. Without the reference line, we can be tempted to conclude that this trend
-    is actually heading upward. However, if we take a closer look, there are two different trends happening: above the reference line, we \verb|TDP| actually is increasing and temperature gets higher,
-    but the opposite trend occurs for the points below the reference line. In fact, we have a feeling that these two trends come from different market segmentation, so we would plot them out to verify:
-
-        \begin{code}{R}
-data$type <- ifelse(data$market == 'Server' | data$market == 'Desktop', "Computers", "Devices")
-data$type <- as.factor(data$type)
-
-ggplot(data, aes(x = type, y = tdp)) +
-geom_boxplot(fill="deepskyblue")
-            
-ggplot(data, aes(x = temp, y = tdp)) +
-geom_point(color="deepskyblue", ) +
-facet_wrap(~data$type)
-        \end{code}
-
-        \begin{figure}[H]
-            \centering
-            \begin{subfigure}[]{0.4\textwidth}
-                \includegraphics[width=\textwidth]{./graphics/box_tdp_type.pdf}
-                \caption{TDP between Types.}
-            \end{subfigure}
-            \begin{subfigure}[]{0.4\textwidth}
-                \includegraphics[width=\textwidth]{./graphics/scatter_type_tdp_temp.pdf}
-                \caption{TDP in different Market segmentation}
-            \end{subfigure}
-        \end{figure}
-
-    Turns out, different trends belongs to different Market segmentations (\verb|type|). This could be a potential classfier our data, the idea is to classify \verb|TDP| based on their Market Segmentation first,
-    then, we feed the processed data to the Linear regression model or the Random Forrest model to get better performance. Unfortunately, due to the limitation of time and the scope of this assignment, we won't
-    go further by using Hybrid models. But this could be a great idea for us for later experiments with an aim to design a better predictor.
-\end{itemize}
-
-
-\subsubsection{Hypothesis testing}
-\label{section:data_analysis_anova}
 
 To explain further the statements we made above, we will assess the following assumptions by using several techniques such as 
 hypothesis testing, ANOVA and computing the covariances.
@@ -469,7 +371,7 @@ Two covariances are different from each other, meaning that there are two differ
 \subsection{Multiple Linear Regression Model}
 \label{section:data_analysis_linear}
 
-We attempt to capture the relationships by using a Linear Regression model. Based on the plots provided in \textbf{Section \ref{section:data_analysis_visualizations}}, 
+We attempt to capture the relationships by using a Linear Regression model. Based on the plots provided previously, 
 we have evidence too believe that a Multiple Linear Regression model would perform acceptably in predicting \verb|TDP| based on other factors.
 
 First, we construct the model and plot some figures to check if Normality and Homoscedasticity are satisfied or not:
@@ -495,29 +397,6 @@ summary(model.lr)
     \item The following lines are for plotting the histogram of residuals and standardized Q-Q plot.
     
     \item The last line prints the summary of the model.
-\end{itemize}
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{./graphics/linear_reg_hist.pdf}
-        \caption{Histogram of residuals}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{./graphics/linear_reg_qq.pdf}
-        \caption{Q-Q Plot of residuals}
-    \end{subfigure}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{./graphics/linear_reg_summary.png}
-    \label{fig:linear_reg_summary}
-\end{figure}
-There are some statements that can be concluded from the model summary:
-\begin{itemize}
-    \item 
 \end{itemize}
 
 

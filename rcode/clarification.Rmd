@@ -25,61 +25,6 @@ setwd("/Users/admin/Desktop/_probability_PROJECT/btlprob/rcode")   # set working
 data <- import("cpu-clean.csv")        # rio::import
 ```
 
-CATEGORIAL PIES
-```{r}
-# Config market pie
-freq = as.vector(table(data$market))
-levels = levels(factor(data$market))
-title = "market"
-```
-
-```{r}
-# Config status pie
-freq = as.vector(table(data$status))
-levels = levels(factor(data$status))
-title = "status"
-```
-
-```{r}
-# Drawing the pie
-# Calculate the vector of percentages
-percentages <- round(
-  100 * freq / sum(freq), 
-  1
-  )
-
-# Create the data frame of levels, frequency of values, and percentages
-data_percentages <- data.frame(
-  market = levels, 
-  value = freq, 
-  percent = percentages
-  )
-
-# Create a pie chart with percentages
-ggplot(
-  data_percentages, 
-  aes(x="", y=value, fill=market)) +
-  geom_bar(stat="identity", width=1, color="white") + # Draw the bar
-  coord_polar(theta = "y") +               # Representing the values in polar
-                                           # coordinate. Instead of stacked bars
-  # Add labels (percentage numbers)
-  geom_text(
-    aes(label = paste0(percent, "%")),     # Concat 'percent' + '%'
-    position = position_stack(vjust = 0.5) # Each slide is a stack bar
-                                           # Use position_stack to stack the labels
-                                           # on each slide.
-    ) +
-  labs(fill = title) +
-  theme_void()
-```
-
-Histogram of launch date
-```{r}
-ggplot(data, aes(x = ldate)) +
-  geom_histogram(binwidth = 1, fill="deepskyblue") +
-  labs(x = "Date", y = "Count")                      # Label of axes
-```
-
 Boxplot of Lithography
 ```{r}
 ggplot(data, aes(x = market, y = litho)) +
@@ -92,22 +37,8 @@ summary(data$litho)
 Scatter plot of Lithography
 ```{r}
 ggplot(data, aes(x = ldate, y = litho)) +
-  geom_point(color="deepskyblue") +
+  geom_point(shape=1,color="blue") +
   labs(x = "Launch Date", y = "Lithography (nm)")
-```
-
-Boxplot of Recommended Price
-```{r}
-ggplot(data, aes(x = market, y = rprice)) +
-  geom_boxplot(fill="deepskyblue") +
-  labs(x = "Market", y = "Recommended Price ($)")
-```
-
-Histogram of Base frequency
-```{r}
-ggplot(data, aes(x = bfreq)) +
-  geom_histogram(binwidth = 0.1, fill="deepskyblue") +
-  labs(x = "Base frequency (GHz)", y = "Count")
 ```
 
 Histogram of Thermal Design Power
@@ -117,22 +48,6 @@ ggplot(data, aes(x = market,y = tdp)) +
   labs(x = "Market", y = "Thermal deisgn power (W)")
 
 summary(data$tdp)
-```
-
-Histogram of Memmory Bandwith (HIDDEN IN OUR REPORT)
-```{r}
-ggplot(data, aes(y = memband)) +
-  geom_boxplot(fill="deepskyblue") +
-  labs(x = "Max Memory Bandwidth (GB/s)", y = "Count")
-
-summary(data$memband)
-```
-
-Histogram of Temperature (HIDDEN IN OUR REPORT)
-```{r}
-ggplot(data, aes(x = temp)) +
-  geom_histogram(binwidth = 1, fill="deepskyblue") +
-  labs(x = "Temperature (°C)", y = "Count")
 ```
 
 # NOTE, PLEASE DO NOT CHANGE ANYTHING ABOVE THIS LINE
@@ -187,11 +102,9 @@ test <- data[-train_indices, ]
 ```{r}
 plot_data <- clone
 
-plot_data$ncore <- as.factor(plot_data$ncore)
-
 # There is a clear linear trend between ncore ~ tdp
 ggplot(plot_data, aes(x = ncore, y = tdp)) +
-  geom_boxplot(fill="deepskyblue")
+  geom_point(shape=1, color="blue")
 
 # Bfreq is a bit random, but the trend of linearity is still evident
 ggplot(plot_data, aes(x = bfreq, y = tdp)) +
@@ -452,8 +365,7 @@ train$type <- ifelse(train$market == 'Server' | train$market == 'Desktop', 1, 0)
 test$type <- ifelse(test$market == 'Server' | test$market == 'Desktop', 1, 0)
 
 # Model
-model.l <- glm(type ~ tdp, data = train, family = 'binomial') # Model 1
-model.l_others <- glm(type ~ temp, data = train, family = 'binomial') # Model 2
+model.l <- glm(type ~ temp, data = train, family = 'binomial') # Model 1
 # also check the model.l with type ~ temp -> contrast the difference
 
 ### FOR MODEL 1

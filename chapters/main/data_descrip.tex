@@ -4,7 +4,6 @@
 %       - Data preprocessing
 %       - Data cleaning
 %   
-\clearpage
 \section{Data description}
 
 
@@ -148,7 +147,7 @@ data[,"litho"] <- as.numeric(
 
 Our goal is to cut out \verb|"nm"|, since every entry is recorded in nanometers anyway. In this code, \verb|gsub| substitutes 
 the pattern \verb|" nm"| to \verb|""|. Notice that the pattern are regular expressions, and would be used intensively during 
-this cleaning process (See \textbf{Section \nameref{section:appendix:regex}} for more details).
+this cleaning process.
 
 \subsubsection*{Recommended Customer Price (rprice)}
 

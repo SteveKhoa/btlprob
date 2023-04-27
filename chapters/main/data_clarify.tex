@@ -2,37 +2,8 @@
 %   Data Clarification
 %       - Plots...
 %   
-\clearpage
 \section{Data clarification}
 \label{section:data_clarify}
-
-
-
-
-
-
-
-
-
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{./graphics/hist_ldate.pdf}
-    \caption{Histogram of launch date}
-    \label{fig:hist_ldate}
-\end{figure}
-
-\inputcode[firstline=78,lastline=80]{R}{rcode/clarification.rmd}
-
-\textbf{[Figure \ref{fig:hist_ldate}]} The \textit{Launch date} histogram shown that most of Intel's CPUs are launched recently, 
-with two notable peaks at 2014 and 2017. This would affect tremendously to the bias of the data since some variables are dependent 
-on \textit{Launch date}, making the prediction models (\textbf{Section \ref{section:data_analysis}}) weight the recent CPUs heavily,
-instead of old, legacy CPUs which are also neccessary to capture a fair pattern over the time.
-
-
-
-
-
 
 \begin{figure}[H]
     \centering
@@ -51,27 +22,24 @@ instead of old, legacy CPUs which are also neccessary to capture a fair pattern 
     \caption{Lithography plots}
 \end{figure}
 
-\inputcode[firstline=85,lastline=89]{R}{rcode/clarification.rmd}
+\begin{code}{R}
+ggplot(data, aes(x = market, y = litho)) +
+    geom_boxplot(fill="deepskyblue") +
+    labs(x = "Market", y = "Lithography (nm)")
+  
+summary(data$litho)
 
-\inputcode[firstline=94,lastline=96]{R}{rcode/clarification.rmd}
+ggplot(data, aes(x = ldate, y = litho)) +
+    geom_point(shape=1,color="blue") +
+    labs(x = "Launch Date", y = "Lithography (nm)")
+\end{code}
 
-\textbf{[Figure \ref{fig:box_litho}]} The box plot of \textit{Lithography} (chip printing technique) demonstrates interesting characteristics:
-\begin{itemize}
-    \item There was a large variance in the types of Lithography designed in Intel's Desktop processors, a smaller, but significant variance of 
-    Mobile and Server are also observed. Embedded is less diverse, however, and also concentrates mostly on small \textit{Lithography} printings.
+The scatter plot of \textit{Lithography} \textbf{[Figure \ref{fig:scatter_litho}]} 
+shows that it is getting smaller over time, and is categorized into specific time intervals.
+\textit{Lithography} spans the distribution over an interval of time  make it more powerful than \textit{Launch date}. In our
+models, we always use \textit{Lithography} instead of \textit{Launch date}.
 
-    \item The mean of \textit{Lithography}, in whatever market, is also approximately the same. That number might represents the most suitable 
-    printing technique that is widely used among Intel's CPUs.
-\end{itemize}
 
-Overall, the most common \textit{Lithography} is $32 nm$. The best printing technique possible was $14 nm$ and the worst was $250 nm$. That large
-number might come from old, legacy processors which were not designed with recent innovations in the Chip industry.
-
-\textbf{[Figure \ref{fig:scatter_litho}]} The scatter plot of \textit{Lithography} with respect to \textit{Launch date} shown that the lithography
-is getting smaller over time, and they are categorized into specific time intervals. The fact the \textit{Lithography} spans the distribution over
-an interval of time instead of condensed into a specific quarter like \textit{Launch date} make it more powerful than \textit{Launch date}. In our
-models, we always use \textit{Lithography} instead of \textit{Launch date}. This fact will be visualized with numbers later to make this argument 
-more convincing.
 
 
 
@@ -81,33 +49,117 @@ more convincing.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{./graphics/hist_bfreq.pdf}
-    \caption{Histogram of Base Frequency}
-    \label{fig:hist_bfreq}
-\end{figure}
-
-\inputcode[firstline=108,lastline=110]{R}{rcode/clarification.rmd}
-
-\textbf{[Figure \ref{fig:hist_bfreq}]} The most significant trend that could be observed in the \textit{Base frequency} histogram is its "normality".
-It can be seen that, the shape of \textit{Base frequency} disribution is convincingly a bell, and most \textit{Base frequency} concentrates around
-the mean (around $2.3$ GHz). This is expected since high \textit{Base frequency} can influence the amound of heat a CPU produces, and there are always
-trade-offs between performance and heat. This relationship (between heat and performance) will be visualized in \textbf{Section \ref{section:data_analysis}}.
-
-
-
-
-
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{./graphics/hist_tdp.pdf}
-    \includegraphics[width=0.5\textwidth]{./graphics/sum_tdp.png}
-    \caption{Box plots and Summary of Thermal Design Power}
+    \includegraphics[width=0.75\textwidth]{./graphics/hist_tdp.pdf}
+    \includegraphics[width=0.75\textwidth]{./graphics/sum_tdp.png}
+    \caption{Histogram and Summary of Thermal Design Power}
     \label{fig:hist_tdp}
 \end{figure}
 
-\inputcode[firstline=115,lastline=119]{R}{rcode/clarification.rmd}
+\begin{code}{R}
+ggplot(data, aes(x = market,y = tdp)) +
+    geom_boxplot(fill="deepskyblue") +
+    labs(x = "Market", y = "Thermal deisgn power (W)")
+  
+  summary(data$tdp)
+\end{code}
 
-\textbf{[Figure \ref{fig:hist_tdp}]} \textit{Thermal design power} is the of main interest in our topic. We can see that, the distribution of \verb|TDP| varies
-wildly, from 0W to 300W. However, the occurences of values $\ge 150$W is rare (we can see the 75\%-quantile is at 85W), indicating that we can treat these values 
-as outliners and remove them before carrying further analysis.
+\textbf{[Figure \ref{fig:hist_tdp}]} The occurences of values $\ge 150$W are very rare, 
+so they could be treated as outliners in further analysis.
+
+
+
+
+
+
+
+
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/box_tdp_ncore.pdf}
+        \caption{Increasing trend of no. cores and TDP}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/scatter_tdp_ncore.pdf}
+        \caption{Increasing trend of no. cores and TDP}
+        \label{fig:tdp_analysis_ncore}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/scatter_tdp_bfreq.pdf}
+        \caption{Increasing trend of Base frequency and TDP}
+        \label{fig:tdp_analysis_bfreq}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/box_tdp_litho.pdf}
+        \caption{TDP within different Lithography}
+        \label{fig:tdp_analysis_litho}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/scatter_tdp_temp.pdf}
+        \caption{Different trends of TDP on different ranges of temperature}
+        \label{fig:tdp_analysis_temp}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+       \centering
+       \includegraphics[width=\textwidth]{./graphics/box_tdp_market.pdf}
+       \caption{Differences of TDP in different Markets}
+       \label{fig:tdp_analysis_market}
+    \end{subfigure}
+
+    \caption{The relationship visualizations between TDP and other factors}
+    \label{fig:tdp_analysis}
+\end{figure}
+
+From the above visualizations, we could make a few comments from these relationships, which motivates us to use certain Regression models:
+\begin{itemize}
+    \item \textbf{[Figure \ref{fig:tdp_analysis_ncore}]} \verb|tdp ~ ncore| : As \verb|ncore| increases, \verb|TDP| also increases. This motivates us to use 
+    a Linear regression model. However, we also observe that, there are distinctive "clusters" on different ranges. Maybe a decision-based model, like Random Forrest,
+    is better.
+    
+    \item \textbf{[Figure \ref{fig:tdp_analysis_bfreq}]} \verb|tdp ~ bfreq| : The data for this relationship is quite variant. However, the dominant trend is still linearly increasing,
+    using Linear regression can be reliable.
+    
+    \item \textbf{[Figure \ref{fig:tdp_analysis_litho}]} \verb|tdp ~ litho| : There is no clear upward and downward trend. Instead, \verb|TDP| is converging and gets more and more stable over time. 
+    
+    \item \textbf{[Figure \ref{fig:tdp_analysis_temp}, \ref{fig:tdp_analysis_market}]} \verb|tdp ~ temp| and \verb|tdp ~ market| : There are two different trends happening: 
+    above the reference line is increasing trend, while below is decreasing trend. In fact, we have a feeling that these two trends come from 
+    different market segments \verb|type=(Desktop + Server) or (Mobile + Embedded)|, so we would plot them out to verify:
+
+        \begin{code}{R}
+data$type <- ifelse(data$market == 'Server' | data$market == 'Desktop', "Computers", "Devices")
+data$type <- as.factor(data$type)
+
+ggplot(data, aes(x = type, y = tdp)) +
+geom_boxplot(fill="deepskyblue")
+            
+ggplot(data, aes(x = temp, y = tdp)) +
+geom_point(color="deepskyblue", ) +
+facet_wrap(~data$type)
+        \end{code}
+
+        \begin{figure}[H]
+            \centering
+            \begin{subfigure}[]{0.4\textwidth}
+                \includegraphics[width=\textwidth]{./graphics/box_tdp_type.pdf}
+                \caption{TDP between Types.}
+            \end{subfigure}
+            \begin{subfigure}[]{0.4\textwidth}
+                \includegraphics[width=\textwidth]{./graphics/scatter_type_tdp_temp.pdf}
+                \caption{TDP in different Market segmentation}
+            \end{subfigure}
+        \end{figure}
+
+    Turns out, different trends belongs to different Market segments (\verb|type|). This could be helpful for us to classify the \verb|TDP| into different markets
+    using Logistic regression.
+\end{itemize}

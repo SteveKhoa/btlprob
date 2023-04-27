@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{ggplot}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nf}{aes}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{market}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{y}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{litho}\PYG{p}{))}\PYG{+w}{ }\PYG{o}{+}
+\PYG{+w}{    }\PYG{n+nf}{geom\PYGZus{}boxplot}\PYG{p}{(}\PYG{n}{fill}\PYG{o}{=}\PYG{l+s}{\PYGZdq{}deepskyblue\PYGZdq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}
+\PYG{+w}{    }\PYG{n+nf}{labs}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Market\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{y}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Lithography (nm)\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n+nf}{summary}\PYG{p}{(}\PYG{n}{data}\PYG{o}{\PYGZdl{}}\PYG{n}{litho}\PYG{p}{)}
+
+\PYG{n+nf}{ggplot}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nf}{aes}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ldate}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{y}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{litho}\PYG{p}{))}\PYG{+w}{ }\PYG{o}{+}
+\PYG{+w}{    }\PYG{n+nf}{geom\PYGZus{}point}\PYG{p}{(}\PYG{n}{shape}\PYG{o}{=}\PYG{l+m}{1}\PYG{p}{,}\PYG{n}{color}\PYG{o}{=}\PYG{l+s}{\PYGZdq{}blue\PYGZdq{}}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}
+\PYG{+w}{    }\PYG{n+nf}{labs}\PYG{p}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Launch Date\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{y}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Lithography (nm)\PYGZdq{}}\PYG{p}{)}
+\end{Verbatim}
