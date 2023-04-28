@@ -3,7 +3,7 @@
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
-\LoadClass[a4paper]{article}
+\LoadClass[a4paper, twoside]{article}
 
 \RequirePackage[utf8]{vntex,inputenc}
 \RequirePackage{anyfontsize,amsmath,amssymb}
@@ -67,8 +67,9 @@
 % % Configurations
 \geometry{
   paper=a4paper,
-  vmargin=3cm,
+  vmargin=2cm,
   hmargin=2cm,
+  outer=3.8cm,
   includehead=false,
   includefoot=true;
   headheight=30pt
@@ -131,6 +132,16 @@
 
 % % Custom pages and sections
 \def\coverpage{
+
+\newgeometry{
+  paper=a4paper,
+  vmargin=2cm,
+  hmargin=2cm,
+  includehead=false,
+  includefoot=true;
+  headheight=30pt
+}
+
   \thispagestyle{empty}
 
   \vspace*{-3\baselineskip}
@@ -147,21 +158,49 @@
       \textbf{\Large \@coursename}                                 \\
       {}                                                           \\
       \midrule                                                     \\
-      {}                                                           \\
       \textbf{\Large \@reporttype}                                 \\
       {}                                                           \\
-      \textbf{\Huge \parbox[c]{0.8\linewidth}{\centering \@title}} \\
+      \textbf{\Large \parbox[c]{0.8\linewidth}{\centering \@title}} \\
       {}                                                           \\
       \bottomrule
     \end{tabular}
     \vfill%
     \begin{tabular}{rll}
-      Advisor: & \@advisor & \\
+      \textbf{Advisor}: & \large \@advisor & \\
       % Student: & Name      & ID \\
+    \end{tabular}
+    \\[3\baselineskip]
+    \begin{tabular}{>{\stepcounter{memberrowno}\thememberrowno}llcc}
+    \toprule
+    \multicolumn{1}{c}{\textbf{No.}} & \textbf{Full name} & \textbf{Student ID} & \textbf{Contribution} \\
+    \midrule
+                                     & Le Hoang	Duy                     & 2152040             & 20\%                       \\
+                                     & Dang Bao	Tin                     & 2152313             & 20\%                       \\
+                                     & Le Tran Nguyen Khoa              & 2152674             & 20\%                       \\
+                                     & Dinh Viet Thanh                  & 2152966             & 20\%                       \\
+                                     & Le Viet Tung                     & 2153083             & 20\%                       \\
+    \bottomrule
     \end{tabular}
     \\[3\baselineskip]
     \MakeUppercase{\@reportplace, \@reporttime}
   \end{center}
 
   \clearpage
+  \newpage
+  \restoregeometry
 }
+
+% \section*{Member list \& Workload}
+% \begin{center}
+%   \begin{tabular}{>{\stepcounter{memberrowno}\thememberrowno}llcc}
+%     \toprule
+%     \multicolumn{1}{c}{\textbf{No.}} & \textbf{Full name} & \textbf{Student ID} & \textbf{Contribution} \\
+%     \midrule
+%                                      & Le Hoang	Duy                     & 2152040             & 20\%                       \\
+%                                      & Dang Bao	Tin                     & 2152313             & 20\%                       \\
+%                                      & Le Tran Nguyen Khoa              & 2152674             & 20\%                       \\
+%                                      & Dinh Viet Thanh                  & 2152966             & 20\%                       \\
+%                                      & Le Viet Tung                     & 2153083             & 20\%                       \\
+%     \bottomrule
+%   \end{tabular}
+% \end{center}

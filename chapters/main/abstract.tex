@@ -12,3 +12,18 @@
 %   
 %   Should be written AFTER finishing the report
 \section{Abstract}
+
+The development trend of CPU (Central Processing Unit) has caught great interest among the technician
+community in recent years. To improve the performance and tackle the heat-tradeoffs, many solutions
+and modifications in CPU design has been taken. In this project, we will analyze the data of CPUs
+manufactured by Intel as a case study. This data contains almost every information of a complete, usable
+CPU, from technical specifications, to recommend prices and intended end-users. Specifically, Thermal Design Power (TDP)
+would be our main focus, since it represents the heat barrier and roughly the power consumption of a CPU generation.
+We made use of three regression models: Multiple Linear Regression model, Random Forrest Regression model and Logistic Regression
+model to examine the relationships between other attributes on Thermal Design Power. Along the way, Analysis of Variance (ANOVA) and
+non-parametric tests such as Kruskal-Wallis H-Test and Dunn's test were also use whenever normality of residuals and homoscedasticity
+were not satisfied. The results of experimenting multiple models demonstrated that Multiple Linear Regression model was not as good as 
+Random Forrest Regression model in predicting the TDP with respect to other attributes. We also found that, the Thermal Design Power in
+recent years was tremendously different from the past, indicating a big innovation is going on. In conclusion, by using statistical methods
+learnt in class, we got a deeper insight in how to analyze a data from scratch, and make conclusions about the trends and details that is
+not apparent.
